@@ -11,6 +11,8 @@ import javax.sound.sampled.SourceDataLine;
 
 import org.puredata.core.PdBase;
 
+import com.badlogic.gdx.Gdx;
+
 class JavaSoundThread extends Thread {
 
 	private final float sampleRate;  // Sample rate in Hz.
@@ -73,6 +75,11 @@ class JavaSoundThread extends Thread {
 
 		sourceDataLine.drain();
 		sourceDataLine.stop();
-		sourceDataLine.close(); // TODO Shutdown silently : pulse audio may throw runtime error here.
+		try{
+			sourceDataLine.close(); 
+		} catch(RuntimeException e){
+			// Shutdown silently : TODO pulse audio may throw runtime error here why ?
+			Gdx.app.error("gdx-pd", "unable to gracefully shutdown audio.");
+		}
 	}
 }
