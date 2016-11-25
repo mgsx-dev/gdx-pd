@@ -1,6 +1,6 @@
 package net.mgsx.gdx.pd;
 
-import net.mgsx.pd.PdAudio;
+import net.mgsx.pd.PdAudioBase;
 
 /**
  * Pd Audio desktop implementation using JavaSound library.
@@ -8,7 +8,7 @@ import net.mgsx.pd.PdAudio;
  * @author mgsx
  *
  */
-public class PdAudioDesktop extends PdAudio
+public class PdAudioDesktop extends PdAudioBase
 {
 	private JavaSoundThread audioThread;
 	
@@ -18,6 +18,12 @@ public class PdAudioDesktop extends PdAudio
 		if(audioThread != null) throw new Error("pd already started");
 		audioThread = new JavaSoundThread(44100, 2, 16); // TODO configure
 		audioThread.start();
+	}
+	
+	@Override
+	public void dispose() 
+	{
+		
 	}
 
 	@Override
@@ -29,6 +35,7 @@ public class PdAudioDesktop extends PdAudio
 		} catch (InterruptedException e) {
 			// silently fail.
 		}
+		audioThread = null;
 	}
 
 }
