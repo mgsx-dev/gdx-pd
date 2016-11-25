@@ -1,0 +1,37 @@
+apply plugin: "java"
+apply plugin: 'maven-publish'
+
+sourceCompatibility = 1.6
+sourceSets.main.java.srcDirs = [ "src/"]
+sourceSets.test.java.srcDirs = [ "test/"]
+sourceSets.test.resources.srcDirs = [ "test-resources/"]
+
+eclipse.project {
+    name = appName + "-desktop"
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir '../libpd/java-build'
+            include '**/*.so'
+       }
+   }
+}
+
+task desktopJar(type: Jar) {
+    baseName "publishing-desktop"
+    from sourceSets.main.output
+}
+
+publishing {
+    publications {
+        desktop(MavenPublication) {
+            groupId groupName
+            artifactId "$appName-platform"
+            artifact desktopJar {
+                classifier "natives-desktop"
+            }
+        }
+    }
+}

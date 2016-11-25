@@ -1,0 +1,23 @@
+apply plugin: "java"
+apply plugin: 'maven-publish'
+
+sourceCompatibility = 1.6
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/", "../libpd/java" ]
+
+
+eclipse.project {
+    name = appName + "-core"
+}
+
+publishing {
+    publications {
+        api(MavenPublication) {
+            groupId groupName
+            artifactId appName
+            
+            from components.java
+        }
+    }
+}
