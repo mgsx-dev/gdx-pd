@@ -21,6 +21,8 @@ public class PdAudioOpenAL extends PdAudioBase
 	@Override
 	public void create() 
 	{
+		super.create();
+		
 		PdBase.openAudio(0, 2, 44100);
 		PdBase.computeAudio(true);
 
@@ -34,6 +36,8 @@ public class PdAudioOpenAL extends PdAudioBase
 	public void release() {
 		thread.dispose();
 		thread = null;
+		
+		super.release();
 	}
 
 }

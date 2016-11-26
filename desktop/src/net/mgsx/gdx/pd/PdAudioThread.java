@@ -11,6 +11,9 @@ import com.badlogic.gdx.utils.Disposable;
 public class PdAudioThread extends Thread implements Disposable
 {
 	private volatile boolean processing;
+	private volatile boolean requirePolling = true;
+	
+	
 	
 	@Override
 	public void run() 
@@ -32,9 +35,22 @@ public class PdAudioThread extends Thread implements Disposable
 		
 		processing = true;
 		
+		final Runnable pollRunnable = new Runnable() {
+			
+			@Override
+			public void run() {
+				PdBase.pollPdMessageQueue();
+				requirePolling = true;
+			}
+		};
+		
 		while(processing){
 			PdBase.process(ticks, inBuffer, outBuffer);
 			device.writeSamples(outBuffer, 0, outBuffer.length);
+			
+			if(requirePolling){
+				Gdx.app.postRunnable(pollRunnable);
+			}
 		}
 		
 		device.dispose();

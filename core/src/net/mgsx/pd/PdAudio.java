@@ -1,6 +1,8 @@
 package net.mgsx.pd;
 
 
+import org.puredata.core.PdListener;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -107,4 +109,9 @@ public interface PdAudio extends Disposable
 	   */
 	  public void writeArray(String destination, int destOffset, float[] source, int srcOffset,
 	      int n);
+	  
+	  public void addListener(String source, PdListener listener);
+	  public void removeListener(String source, PdListener listener);
+	  
+	  
 }

@@ -9,6 +9,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.pd.Pd;
+import net.mgsx.pd.PdAdapter;
 
 public class PdAudioOpenALFullTest {
 
@@ -29,6 +30,13 @@ public class PdAudioOpenALFullTest {
 				Pd.audio.create();
 				Pd.audio.open(Gdx.files.local("test-resources/test.pd"));
 				
+				Pd.audio.addListener("event-test", new PdAdapter(){
+					@Override
+					public void receiveFloat(String source, float x) {
+						System.out.println(x);
+					}
+				});
+				
 				sound = Gdx.audio.newSound(Gdx.files.local("test-resources/shotgun.wav"));
 				music = Gdx.audio.newMusic(Gdx.files.local("test-resources/cloudconnected.ogg"));
 			}
@@ -43,6 +51,21 @@ public class PdAudioOpenALFullTest {
 				}
 				if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
 					sound.play();
+				}
+				if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+					Pd.audio.sendBang("test-bang");
+				}
+				if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
+					Pd.audio.sendFloat("test-float", 4.35f);
+				}
+				if(Gdx.input.isKeyJustPressed(Input.Keys.L)){
+					Pd.audio.sendList("test-list", 4.35f, 8, "foo");
+				}
+				if(Gdx.input.isKeyJustPressed(Input.Keys.M)){
+					Pd.audio.sendMessage("test-message", "bar", 4.35f, 8, "foo");
+				}
+				if(Gdx.input.isKeyJustPressed(Input.Keys.S)){
+					Pd.audio.sendSymbol("test-symbol", "John Doe");
 				}
 				
 				

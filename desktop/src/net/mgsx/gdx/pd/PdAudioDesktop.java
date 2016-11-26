@@ -15,17 +15,12 @@ public class PdAudioDesktop extends PdAudioBase
 	@Override
 	public void create() 
 	{
+		super.create();
 		if(audioThread != null) throw new Error("pd already started");
 		audioThread = new JavaSoundThread(44100, 2, 16); // TODO configure
 		audioThread.start();
 	}
 	
-	@Override
-	public void dispose() 
-	{
-		
-	}
-
 	@Override
 	public void release() {
 		if(audioThread == null) throw new Error("pd not started yet");
@@ -36,6 +31,12 @@ public class PdAudioDesktop extends PdAudioBase
 			// silently fail.
 		}
 		audioThread = null;
+		super.release();
+	}
+
+	@Override
+	public void dispose() {
+		
 	}
 
 }

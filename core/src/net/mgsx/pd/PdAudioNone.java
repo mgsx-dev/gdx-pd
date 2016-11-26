@@ -1,5 +1,7 @@
 package net.mgsx.pd;
 
+import org.puredata.core.PdListener;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -63,4 +65,12 @@ class PdAudioNone implements PdAudio
 
 	@Override
 	public void writeArray(String destination, int destOffset, float[] source, int srcOffset, int n) {}
+
+	@Override
+	public void addListener(String source, PdListener listener) {
+	}
+
+	@Override
+	public void removeListener(String source, PdListener listener) {
+	}
 }
