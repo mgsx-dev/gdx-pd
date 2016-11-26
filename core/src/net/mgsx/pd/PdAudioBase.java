@@ -23,7 +23,7 @@ abstract public class PdAudioBase implements PdAudio
 {
 	final private ObjectMap<String, Array<PdListener>> listeners = new ObjectMap<String, Array<PdListener>>();
 	
-	public void create(){
+	public void create(PdConfiguration config){
 		
 		PdBase.setReceiver(new PdReceiver(){
 
@@ -83,6 +83,7 @@ abstract public class PdAudioBase implements PdAudio
 				if(Gdx.app.getLogLevel() >= Application.LOG_DEBUG){
 					Gdx.app.debug(printTag, s);
 				}
+				Gdx.app.log(printTag, s);
 			}
 			
 		});

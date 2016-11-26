@@ -14,7 +14,7 @@ import com.badlogic.gdx.files.FileHandle;
 class PdAudioNone implements PdAudio 
 {
 	@Override
-	public void create() {
+	public void create(PdConfiguration config) {
 		Gdx.app.debug("audio", "audio create disabled");
 	}
 

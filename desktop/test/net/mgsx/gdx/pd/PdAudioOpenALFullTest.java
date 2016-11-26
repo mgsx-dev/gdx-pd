@@ -10,6 +10,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdAdapter;
+import net.mgsx.pd.PdConfiguration;
 
 public class PdAudioOpenALFullTest {
 
@@ -27,7 +28,9 @@ public class PdAudioOpenALFullTest {
 			public void create() {
 				
 				Pd.audio = new PdAudioOpenAL();
-				Pd.audio.create();
+				PdConfiguration config = new PdConfiguration();
+				config.inputChannels = 2;
+				Pd.audio.create(config);
 				Pd.audio.open(Gdx.files.local("test-resources/test.pd"));
 				
 				Pd.audio.addListener("event-test", new PdAdapter(){
@@ -35,6 +38,10 @@ public class PdAudioOpenALFullTest {
 					public void receiveFloat(String source, float x) {
 						System.out.println(x);
 					}
+				});
+				Pd.audio.addListener("test-in-left", new PdAdapter(){
+				});
+				Pd.audio.addListener("test-in-right", new PdAdapter(){
 				});
 				
 				sound = Gdx.audio.newSound(Gdx.files.local("test-resources/shotgun.wav"));

@@ -18,7 +18,7 @@ public interface PdAudio extends Disposable
 	/**
 	 * initialize audio
 	 */
-	public void create();
+	public void create(PdConfiguration config);
 	
 	/**
 	 * release audio

@@ -4,34 +4,43 @@ import org.puredata.core.PdBase;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
+import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
 import com.badlogic.gdx.backends.lwjgl.audio.OpenALDevicePatched;
 import com.badlogic.gdx.utils.Disposable;
+
+import net.mgsx.pd.PdConfiguration;
 
 public class PdAudioThread extends Thread implements Disposable
 {
 	private volatile boolean processing;
 	private volatile boolean requirePolling = true;
+	private PdConfiguration config;
 	
-	
+	public PdAudioThread(PdConfiguration config) {
+		this.config = config;
+	}
 	
 	@Override
 	public void run() 
 	{
-		int channels = 2;
-		
 		int samplePerBuffer = 512;
 		
 		int ticks = samplePerBuffer / PdBase.blockSize();
-		int bufferSamples = samplePerBuffer * channels;
-		int bytesPerBuffer = bufferSamples * 2;
 		
-		float [] inBuffer = new float[0];
-		float [] outBuffer = new float[bufferSamples];
+		short [] inBuffer = new short[samplePerBuffer * config.inputChannels];
+		short [] outBuffer = new short[samplePerBuffer * config.outputChannels];
 		
 		// TODO when bug is fix libgdx/libgdx#2252 : 
 		// Gdx.audio.newAudioDevice(samplingRate, isMono);
-		AudioDevice device = new OpenALDevicePatched((OpenALAudio)Gdx.audio, 44100, false, bytesPerBuffer, 8);
+		AudioDevice device = new OpenALDevicePatched((OpenALAudio)Gdx.audio, 44100, false, inBuffer.length * 2, 8);
+		
+		AudioRecorder recorder = null;
+		if(config.inputChannels > 0){
+			recorder = Gdx.audio.newAudioRecorder(config.sampleRate, config.inputChannels < 2);
+		}
+		PdBase.openAudio(config.inputChannels, config.outputChannels, config.sampleRate);
+		PdBase.computeAudio(true);
 		
 		processing = true;
 		
@@ -45,6 +54,9 @@ public class PdAudioThread extends Thread implements Disposable
 		};
 		
 		while(processing){
+			if(recorder != null){
+				recorder.read(inBuffer, 0, inBuffer.length);
+			}
 			PdBase.process(ticks, inBuffer, outBuffer);
 			device.writeSamples(outBuffer, 0, outBuffer.length);
 			
@@ -54,6 +66,8 @@ public class PdAudioThread extends Thread implements Disposable
 		}
 		
 		device.dispose();
+		
+		recorder.dispose();
 	}
 
 	@Override

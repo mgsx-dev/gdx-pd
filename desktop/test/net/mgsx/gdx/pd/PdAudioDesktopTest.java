@@ -6,6 +6,7 @@ import java.io.IOException;
 import com.badlogic.gdx.files.FileHandle;
 
 import net.mgsx.pd.Pd;
+import net.mgsx.pd.PdConfiguration;
 
 public class PdAudioDesktopTest {
 
@@ -15,7 +16,7 @@ public class PdAudioDesktopTest {
 		
 		Pd.audio = new PdAudioDesktop();
 		
-		Pd.audio.create();
+		Pd.audio.create(new PdConfiguration());
 		
 		Pd.audio.open(file);
 		

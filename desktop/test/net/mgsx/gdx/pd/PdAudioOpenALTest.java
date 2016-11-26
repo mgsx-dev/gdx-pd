@@ -7,6 +7,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.pd.Pd;
+import net.mgsx.pd.PdConfiguration;
 
 public class PdAudioOpenALTest {
 
@@ -20,7 +21,7 @@ public class PdAudioOpenALTest {
 			public void create() {
 				
 				Pd.audio = new PdAudioOpenAL();
-				Pd.audio.create();
+				Pd.audio.create(new PdConfiguration());
 				Pd.audio.open(Gdx.files.local("test-resources/test.pd"));
 				
 			}

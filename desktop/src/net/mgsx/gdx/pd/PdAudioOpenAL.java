@@ -1,8 +1,7 @@
 package net.mgsx.gdx.pd;
 
-import org.puredata.core.PdBase;
-
 import net.mgsx.pd.PdAudioBase;
+import net.mgsx.pd.PdConfiguration;
 
 /**
  * Pd Audio desktop implementation using libGDX OpenAL implementation.
@@ -19,14 +18,11 @@ public class PdAudioOpenAL extends PdAudioBase
 	}
 
 	@Override
-	public void create() 
+	public void create(PdConfiguration config) 
 	{
-		super.create();
+		super.create(config);
 		
-		PdBase.openAudio(0, 2, 44100);
-		PdBase.computeAudio(true);
-
-		thread = new PdAudioThread();
+		thread = new PdAudioThread(config);
 		thread.start();
 	}
 	
