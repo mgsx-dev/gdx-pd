@@ -4,6 +4,8 @@ import net.mgsx.pd.PdAudioBase;
 import net.mgsx.pd.PdConfiguration;
 
 /**
+ * XXX TEMPORARY (waiting for fix audio CPU)
+ * 
  * Pd Audio desktop implementation using libGDX OpenAL implementation.
  * 
  * @author mgsx
@@ -11,7 +13,7 @@ import net.mgsx.pd.PdConfiguration;
  */
 public class PdAudioOpenAL extends PdAudioBase
 {
-	private PdAudioThread thread;
+	private PdAudioThreadOpenAL thread;
 	
 	@Override
 	public void dispose() {
@@ -22,7 +24,7 @@ public class PdAudioOpenAL extends PdAudioBase
 	{
 		super.create(config);
 		
-		thread = new PdAudioThread(config);
+		thread = new PdAudioThreadOpenAL(config);
 		thread.start();
 	}
 	

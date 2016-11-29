@@ -11,13 +11,14 @@ import com.badlogic.gdx.utils.Disposable;
 
 import net.mgsx.pd.PdConfiguration;
 
-public class PdAudioThread extends Thread implements Disposable
+// XXX TEMPORARY (waiting for fix audio CPU)
+public class PdAudioThreadOpenAL extends Thread implements Disposable
 {
 	private volatile boolean processing;
 	private volatile boolean requirePolling = true;
 	private PdConfiguration config;
 	
-	public PdAudioThread(PdConfiguration config) {
+	public PdAudioThreadOpenAL(PdConfiguration config) {
 		this.config = config;
 	}
 	

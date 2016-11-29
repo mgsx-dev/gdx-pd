@@ -18,8 +18,6 @@ eclipse.project {
 sourceCompatibility = 1.6
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/", "../libpd/java" ]
-
 def pdSources = copySpec {
 	from("../libpd/pure-data/src"){
 		include "d_arithmetic.c", "d_array.c", "d_ctl.c",
