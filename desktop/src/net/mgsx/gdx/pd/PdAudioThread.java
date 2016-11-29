@@ -33,7 +33,7 @@ public class PdAudioThread extends Thread implements Disposable
 		
 		// TODO when bug is fix libgdx/libgdx#2252 : 
 		// Gdx.audio.newAudioDevice(samplingRate, isMono);
-		AudioDevice device = new OpenALDevicePatched((OpenALAudio)Gdx.audio, 44100, false, inBuffer.length * 2, 8);
+		AudioDevice device = new OpenALDevicePatched((OpenALAudio)Gdx.audio, 44100, false, outBuffer.length * 2, 8);
 		
 		AudioRecorder recorder = null;
 		if(config.inputChannels > 0){
