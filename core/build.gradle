@@ -11,6 +11,10 @@ eclipse.project {
     name = appName + "-core"
 }
 
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
 publishing {
     publications {
         api(MavenPublication) {
@@ -18,6 +22,10 @@ publishing {
             artifactId appName
             
             from components.java
+            
+            artifact sourceJar {
+                classifier "sources"
+            }
         }
     }
 }

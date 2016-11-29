@@ -24,6 +24,10 @@ task desktopJar(type: Jar) {
     from sourceSets.main.output
 }
 
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
 publishing {
     publications {
         desktop(MavenPublication) {
@@ -32,6 +36,10 @@ publishing {
             artifact desktopJar {
                 classifier "natives-desktop"
             }
+            artifact sourceJar {
+                classifier "sources"
+            }
+            
         }
     }
 }
