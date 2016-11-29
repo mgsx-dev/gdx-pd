@@ -1,0 +1,4 @@
+libgdx-build:
+  build: .
+  volumes:
+    - ~/android-ndk-r13b/:/ndk
