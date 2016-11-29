@@ -1,0 +1,43 @@
+buildscript {
+	repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.badlogicgames.gdx:gdx-jnigen:1.9.4'
+    }
+}
+
+apply plugin: "java"
+
+eclipse.project {
+    name = appName + "-native"
+}
+
+sourceCompatibility = 1.6
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/", "../libpd/java" ]
+
+import com.badlogic.gdx.jnigen.*
+
+/*
+task compileNatives(type: Jar){
+	// BuildExecutor.executeAnt("$projectDir/jni/build-linux64.xml", "-v -Dhas-compiler=true clean postcompile");
+	// BuildExecutor.executeAnt("jni/build-windows32.xml", "-v -Dhas-compiler=true clean postcompile")
+}
+
+task packageNatives(dependsOn: compileNatives, type: Jar){
+
+	// def linux32 = BuildTarget.newDefaultTarget(BuildTarget.TargetOS.Linux, false);
+	
+	// def config = new BuildConfig("gdx-pd")
+	
+	// new AntScriptGenerator().generate(config, linux32) // , linux64, windows32, windows64, macosx, android, ios)
+
+	BuildExecutor.executeAnt("$projectDir/jni/build.xml", "-v pack-natives");
+
+}
+
+// packageNatives.dependsOn(compileNatives)
+*/
