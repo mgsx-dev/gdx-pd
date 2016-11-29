@@ -14,7 +14,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '0.0.1-SNAPSHOT'
+    version = '0.1.0-SNAPSHOT'
     ext {
         appName = "gdx-pd"
         gdxVersion = '1.9.4'
