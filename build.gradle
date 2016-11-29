@@ -53,10 +53,6 @@ project(":core") {
 project(":native") {
     apply plugin: "java"
 
-
-    dependencies {
-        compile "com.badlogicgames.gdx:gdx-jnigen:$gdxVersion"
-    }
 }
  
 

@@ -1,4 +1,3 @@
-/jni/*
-!jni/build.xml
+/jni/
 /libs/
 /obj/

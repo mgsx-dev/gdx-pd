@@ -9,6 +9,7 @@ buildscript {
 }
 
 apply plugin: "java"
+apply plugin: 'maven-publish'
 
 eclipse.project {
     name = appName + "-native"
@@ -19,25 +20,228 @@ sourceCompatibility = 1.6
 
 sourceSets.main.java.srcDirs = [ "src/", "../libpd/java" ]
 
+def pdSources = copySpec {
+	from("../libpd/pure-data/src"){
+		include "d_arithmetic.c", "d_array.c", "d_ctl.c",
+				"d_dac.c", "d_delay.c", "d_fft.c",
+				"d_fft_fftsg.c",
+				"d_filter.c", "d_global.c", "d_math.c",
+				"d_misc.c", "d_osc.c", "d_resample.c",
+				"d_soundfile.c", "d_ugen.c",
+				"g_all_guis.c", "g_array.c", "g_bang.c",
+				"g_canvas.c", "g_clone.c", "g_editor.c",
+				"g_graph.c", "g_guiconnect.c", "g_hdial.c",
+				"g_hslider.c", "g_io.c", "g_mycanvas.c",
+				"g_numbox.c", "g_readwrite.c",
+				"g_rtext.c", "g_scalar.c", "g_template.c",
+				"g_text.c", "g_toggle.c", "g_traversal.c",
+				"g_vdial.c", "g_vslider.c", "g_vumeter.c",
+				"m_atom.c", "m_binbuf.c", "m_class.c",
+				"m_conf.c", "m_glob.c", "m_memory.c",
+				"m_obj.c", "m_pd.c", "m_sched.c",
+				"s_audio.c", "s_audio_dummy.c", "s_file.c", 
+				"s_inter.c",
+				"s_loader.c", "s_main.c", "s_path.c",
+				"s_print.c", "s_utf8.c", "x_acoustics.c",
+				"x_arithmetic.c", "x_array.c", "x_connective.c",
+				"x_gui.c", "x_interface.c", "x_list.c",
+				"x_midi.c", "x_misc.c", "x_net.c",
+				"x_scalar.c", "x_text.c", "x_time.c",
+				
+				"x_vexp.c", 
+				"x_vexp_if.c", 
+				"x_vexp_fun.c"
+	}
+	into "pd-sources"
+}
+
+
+def pdExtraSources = copySpec {
+
+	from("../libpd/pure-data/extra"){
+		include "bob~/bob~.c", 
+				"bonk~/bonk~.c",
+				"choice/choice.c",
+				"fiddle~/fiddle~.c", "loop~/loop~.c",
+				"lrshift~/lrshift~.c", "pique/pique.c",
+				"sigmund~/sigmund~.c", "stdout/stdout.c" 
+	}
+	into "pd-extra-sources"
+}
+
+def libpdSources = copySpec {
+	from("../libpd/libpd_wrapper"){
+		include "util/ringbuffer.c",
+				"util/z_print_util.c",
+				"util/z_queued.c",
+				"jni/z_jni_plain.c",
+				
+				"s_libpdmidi.c", 
+				"x_libpdreceive.c",
+				"z_hooks.c", 
+				"z_libpd.c"
+	}
+	into "libpd-sources"
+}
+
+def libpdJniSources = copySpec {
+	from("../libpd/jni"){
+		include "z_jni_plain.c"
+	}
+	into "libpdjni-sources"
+}
+
+import org.apache.tools.ant.DirectoryScanner
+
+task importSources(type: Copy) {
+
+	// Workaround to copy folder with tilde (~) as suggested here : https://issues.gradle.org/browse/GRADLE-1883
+	doFirst {
+      DirectoryScanner.defaultExcludes.each { DirectoryScanner.removeDefaultExclude it }
+   	}
+
+	with pdSources
+	with pdExtraSources
+	with libpdSources
+	with libpdJniSources
+	into "jni/pd"
+	
+	doLast {
+      DirectoryScanner.resetDefaultExcludes()
+   	}
+}
+
 import com.badlogic.gdx.jnigen.*
 
-/*
-task compileNatives(type: Jar){
-	// BuildExecutor.executeAnt("$projectDir/jni/build-linux64.xml", "-v -Dhas-compiler=true clean postcompile");
-	// BuildExecutor.executeAnt("jni/build-windows32.xml", "-v -Dhas-compiler=true clean postcompile")
+
+task generateBuildScripts(){
+
+	doLast{
+	
+		def headerDirs = [
+				"../../libpd/pure-data/src", 
+				"../../libpd/libpd_wrapper",
+				"../../libpd/jni",
+				"../../libpd/libpd_wrapper/util"]
+				
+		def cFlags = " -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DHAVE_LIBDL -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -fPIC";
+		def libraries = " -lm -ldl -lpthread"
+	
+		def linux64 = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Linux, true);
+		def linux32 = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Linux, false);
+		def windows64 = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Windows, true);
+		def windows32 = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Windows, false);
+		def macosx64 = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.MacOsX, true);
+		def macosx32 = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.MacOsX, false);
+
+		def android = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Android, false);
+	
+		// TODO IOS
+
+		[linux64, linux32, windows64, windows32, macosx64, macosx32].each {
+			it.libraries += libraries;
+			it.cFlags += cFlags;
+			it.headerDirs += headerDirs
+		}
+		
+		[android].each {
+			it.libraries += " -ldl";
+			it.cFlags += " -DPD -DHAVE_UNISTD_H -DHAVE_LIBDL -DUSEAPI_DUMMY -w -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast";;
+			it.headerDirs += headerDirs
+		}
+
+		BuildConfig config = new BuildConfig("gdx-pd", "target", "libs", "$projectDir/jni");
+		
+		new AntScriptGenerator().generate(config, linux64, linux32, windows64, windows32, macosx64, macosx32, android);
+	}
+
 }
 
-task packageNatives(dependsOn: compileNatives, type: Jar){
+// TODO use gradle ant (ant.echo)
 
-	// def linux32 = BuildTarget.newDefaultTarget(BuildTarget.TargetOS.Linux, false);
-	
-	// def config = new BuildConfig("gdx-pd")
-	
-	// new AntScriptGenerator().generate(config, linux32) // , linux64, windows32, windows64, macosx, android, ios)
-
-	BuildExecutor.executeAnt("$projectDir/jni/build.xml", "-v pack-natives");
-
+task buildLinux64(){
+	doLast{
+		BuildExecutor.executeAnt("$projectDir/jni/build-linux64.xml", "-v -Dhas-compiler=true clean postcompile");
+	}
 }
 
-// packageNatives.dependsOn(compileNatives)
-*/
+task buildLinux32(){
+	doLast{
+		BuildExecutor.executeAnt("$projectDir/jni/build-linux32.xml", "-v -Dhas-compiler=true clean postcompile");
+	}
+}
+
+task buildWindows64(){
+	doLast{
+		BuildExecutor.executeAnt("$projectDir/jni/build-windows64.xml", "-v -Dhas-compiler=true clean postcompile");
+	}
+}
+
+task buildWindows32(){
+	doLast{
+		BuildExecutor.executeAnt("$projectDir/jni/build-windows32.xml", "-v -Dhas-compiler=true clean postcompile");
+	}
+}
+
+task buildMacOSX64(){
+	doLast{
+		BuildExecutor.executeAnt("$projectDir/jni/build-macosx64.xml", "-v -Dhas-compiler=true clean postcompile");
+	}
+}
+
+task buildMacOSX32(){
+	doLast{
+		BuildExecutor.executeAnt("$projectDir/jni/build-macosx32.xml", "-v -Dhas-compiler=true clean postcompile");
+	}
+}
+
+task buildAll(dependsOn: [buildLinux64, buildLinux32]){
+	
+}
+
+task desktopJar(type: Jar) {
+    baseName "publishing-desktop"
+    from("libs/linux64"){
+    	into "org/puredata/core/natives/linux/x86_64"
+    }
+    from("libs/linux32"){
+    	into "org/puredata/core/natives/linux/x86"
+    }
+    from("libs/macosx64"){
+    	into "org/puredata/core/natives/macosx/x86_64"
+    }
+    from("libs/macosx"){
+    	into "org/puredata/core/natives/macosx/x86"
+    }
+    from("libs/windows64"){
+    	into "org/puredata/core/natives/windows/x86_64"
+    }
+    from("libs/windows32"){
+    	into "org/puredata/core/natives/windows/x86"
+    }
+    rename ".*\\.so", "libpdnative.so"
+}
+
+task androidJar(type: Jar) {
+    baseName "publishing-desktop"
+    from("libs"){
+    	include "arm64-v8a/**"
+    	include "armeabi/**"
+    	include "armeabi-v7a/**"
+    	include "x86/**"
+    	include "x86_64/**"
+    }
+    rename ".*\\.so", "libpdnative.so"
+}
+
+publishing {
+    publications {
+        desktop(MavenPublication) {
+            groupId groupName
+            artifactId "$appName-platform"
+            artifact desktopJar {
+                classifier "natives-desktop"
+            }
+        }
+    }
+}
