@@ -74,7 +74,6 @@ def libpdSources = copySpec {
 		include "util/ringbuffer.c",
 				"util/z_print_util.c",
 				"util/z_queued.c",
-				"jni/z_jni_plain.c",
 				
 				"s_libpdmidi.c", 
 				"x_libpdreceive.c",
@@ -88,7 +87,7 @@ def libpdJniSources = copySpec {
 	from("../libpd/jni"){
 		include "z_jni_plain.c"
 	}
-	into "libpdjni-sources"
+	into "libpdbinding-sources"
 }
 
 import org.apache.tools.ant.DirectoryScanner
@@ -195,6 +194,12 @@ task buildMacOSX32(){
 	}
 }
 
+task buildAndroid(){
+	doLast{
+		BuildExecutor.executeAnt("$projectDir/jni/build-android32.xml", "-v -Dhas-compiler=true clean postcompile");
+	}
+}
+
 task buildAll(dependsOn: [buildLinux64, buildLinux32]){
 	
 }
@@ -241,6 +246,13 @@ publishing {
             artifactId "$appName-platform"
             artifact desktopJar {
                 classifier "natives-desktop"
+            }
+        }
+        android(MavenPublication) {
+            groupId groupName
+            artifactId "$appName-platform"
+            artifact androidJar {
+                classifier "natives-android"
             }
         }
     }
