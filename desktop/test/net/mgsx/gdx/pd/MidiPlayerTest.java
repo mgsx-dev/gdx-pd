@@ -78,14 +78,24 @@ public class MidiPlayerTest {
 					public void onCompletion(Music music) {
 						Gdx.app.log("Test", "midi complete");
 						song = song2;
-						song2.play();
+						song.play();
+					}
+				});
+				
+				song2.setOnCompletionListener(new OnCompletionListener() {
+					
+					@Override
+					public void onCompletion(Music music) {
+						Gdx.app.log("Test", "midi complete");
+						song = song1;
+						song.play();
 					}
 				});
 				
 				Gdx.input.setInputProcessor(new InputAdapter(){
 					@Override
 					public boolean touchDragged(int screenX, int screenY, int pointer) {
-						MidiMusic mm = (MidiMusic)song1; // XXX cast !
+						MidiMusic mm = (MidiMusic)song; // XXX cast !
 						float duration = mm.getDuration();
 						float tx = (float)screenX / (float)Gdx.graphics.getWidth();
 						float ty = 1 - (float)screenY / (float)Gdx.graphics.getHeight();
