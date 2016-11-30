@@ -1,9 +1,12 @@
-package net.mgsx.pd;
+package net.mgsx.pd.audio;
 
 import org.puredata.core.PdListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+
+import net.mgsx.pd.PdConfiguration;
+import net.mgsx.pd.patch.PdPatch;
 
 /**
  * Disabled PdAudio implementation
@@ -11,7 +14,7 @@ import com.badlogic.gdx.files.FileHandle;
  * @author mgsx
  *
  */
-class PdAudioNone implements PdAudio 
+public class PdAudioNone implements PdAudio 
 {
 	@Override
 	public void create(PdConfiguration config) {

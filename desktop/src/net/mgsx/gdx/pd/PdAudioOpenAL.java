@@ -1,7 +1,7 @@
 package net.mgsx.gdx.pd;
 
-import net.mgsx.pd.PdAudioBase;
 import net.mgsx.pd.PdConfiguration;
+import net.mgsx.pd.audio.PdAudioBase;
 
 /**
  * XXX TEMPORARY (waiting for fix audio CPU)

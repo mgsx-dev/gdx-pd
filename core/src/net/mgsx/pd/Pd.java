@@ -2,6 +2,9 @@ package net.mgsx.pd;
 
 import com.badlogic.gdx.Gdx;
 
+import net.mgsx.pd.audio.PdAudio;
+import net.mgsx.pd.audio.PdAudioNone;
+
 /**
  * Environment class holding references to the {@link PdAudio} instance. 
  * The references are held in public static fields which allows static access to all sub systems. 

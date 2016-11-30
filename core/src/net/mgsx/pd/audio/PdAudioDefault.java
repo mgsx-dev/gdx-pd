@@ -1,4 +1,6 @@
-package net.mgsx.pd;
+package net.mgsx.pd.audio;
+
+import net.mgsx.pd.PdConfiguration;
 
 /**
  * futur unified implementation (when audio CPU bug will be fixed)

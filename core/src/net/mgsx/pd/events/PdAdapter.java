@@ -1,4 +1,4 @@
-package net.mgsx.pd;
+package net.mgsx.pd.events;
 
 import org.puredata.core.PdListener;
 

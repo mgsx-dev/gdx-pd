@@ -9,8 +9,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.pd.Pd;
-import net.mgsx.pd.PdAdapter;
 import net.mgsx.pd.PdConfiguration;
+import net.mgsx.pd.events.PdAdapter;
 
 public class PdAudioOpenALFullTest {
 

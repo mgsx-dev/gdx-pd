@@ -1,10 +1,13 @@
-package net.mgsx.pd;
+package net.mgsx.pd.audio;
 
 
 import org.puredata.core.PdListener;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Disposable;
+
+import net.mgsx.pd.PdConfiguration;
+import net.mgsx.pd.patch.PdPatch;
 
 /**
  * Pure Data audio interface.

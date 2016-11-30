@@ -1,11 +1,15 @@
-package net.mgsx.pd;
+package net.mgsx.pd.patch;
+
+import org.puredata.core.PdBase;
+
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * Puredata patch (file)
  * @author mgsx
  *
  */
-public class PdPatch 
+public class PdPatch implements Disposable
 {
 	int pdHandle;
 
@@ -16,6 +20,11 @@ public class PdPatch
 	public PdPatch(int pdHandle) {
 		super();
 		this.pdHandle = pdHandle;
+	}
+
+	@Override
+	public void dispose() {
+		PdBase.closePatch(pdHandle);
 	}
 	
 	

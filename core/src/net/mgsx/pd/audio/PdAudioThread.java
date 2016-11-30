@@ -1,4 +1,4 @@
-package net.mgsx.pd;
+package net.mgsx.pd.audio;
 
 import org.puredata.core.PdBase;
 
@@ -6,6 +6,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.utils.Disposable;
+
+import net.mgsx.pd.PdConfiguration;
 
 /**
  * futur unified implementation (when audio CPU bug will be fixed)

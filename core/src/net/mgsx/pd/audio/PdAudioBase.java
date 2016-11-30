@@ -1,4 +1,4 @@
-package net.mgsx.pd;
+package net.mgsx.pd.audio;
 
 import java.io.IOException;
 
@@ -12,6 +12,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+
+import net.mgsx.pd.PdConfiguration;
+import net.mgsx.pd.patch.PdPatch;
 
 /**
  * Pure Data default implementation (platform independent)
@@ -80,10 +83,14 @@ abstract public class PdAudioBase implements PdAudio
 
 			@Override
 			public void print(String s) {
-				if(Gdx.app.getLogLevel() >= Application.LOG_DEBUG){
-					Gdx.app.debug(printTag, s);
+				if(Gdx.app != null){
+					if(Gdx.app.getLogLevel() >= Application.LOG_DEBUG){
+						Gdx.app.debug(printTag, s);
+					}
+					Gdx.app.log(printTag, s);
+				}else{
+					System.out.println("pd " + s);
 				}
-				Gdx.app.log(printTag, s);
 			}
 			
 		});
@@ -129,7 +136,7 @@ abstract public class PdAudioBase implements PdAudio
 	
 	@Override
 	public void close(PdPatch patch) {
-		PdBase.closePatch(patch.pdHandle);
+		patch.dispose();
 	}
 	
 	  public void sendBang(String recv){
