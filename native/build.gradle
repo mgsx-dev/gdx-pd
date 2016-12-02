@@ -121,7 +121,7 @@ task generateBuildScripts(){
 				"../../libpd/jni",
 				"../../libpd/libpd_wrapper/util"]
 				
-		def cFlags = " -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DHAVE_LIBDL -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -fPIC";
+		def cFlags = " -DLIBPD_SETLOCALE -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DHAVE_LIBDL -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -fPIC";
 		def libraries = " -lm -ldl -lpthread"
 	
 		def linux64 = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Linux, true);
