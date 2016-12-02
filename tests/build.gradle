@@ -1,0 +1,38 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+    }
+}
+
+repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+    }
+    
+apply plugin: "java"
+apply plugin: "eclipse"
+
+sourceCompatibility = 1.6
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+dependencies {
+		compile "net.mgsx.gdx:gdx-pd:0.1.0-SNAPSHOT"
+     	compile "net.mgsx.gdx:gdx-pd-platform:0.2.0-SNAPSHOT:desktop"
+        compile "net.mgsx.gdx:gdx-pd-platform:0.2.0-SNAPSHOT:natives-desktop"
+}
+
+eclipse.project {
+    name = "gdx-pd-tests"
+}
+
+
+
