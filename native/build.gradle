@@ -264,6 +264,7 @@ task desktopJar(type: Jar) {
     	into "org/puredata/core/natives/windows/x86"
     }
     rename ".*\\.so", "libpdnative.so"
+    rename ".*\\.dll", "pdnative.dll"
 }
 
 task androidJar(type: Jar) {
