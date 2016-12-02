@@ -1,11 +1,37 @@
 
 Pure Data extension for LibGDX.
 
-Work in progress
+Work in progress :
+
+| Platform   | Scheduled | implemented | Tested |
+|------------|-----------|-------------|--------|
+| Linux 64   |     y     |      y      |   y    |
+| Linux 32   |     y     |      y      |        |
+| Android    |     y     |      y      |        |
+| Windows 64 |     y     |      y      |        |
+| Windows 32 |     y     |      y      |        |
+| MacOSX 64  |     -     |      -      |        |
+| MacOSX 32  |     -     |      -      |        |
+| iOS        |     -     |      -      |        |
+| Web        |     -     |      -      |        |
+
+# What is it ?
+
+LibGDX is a cross platform game framework. If you don't know, please visit them : http://www.badlogicgames.com/
+
+Puredata (Pd) is an audio synthesis application coded in C providing graphical programming. 
+gdx-pd is based on LibPD java bindings. If you don't know, please visit them : https://github.com/libpd/libpd
+
+This extension enable audio synthesis in games with pd patches and provides some usefull tools  :
+* new Music type : PdMusic which play midi files and route midi message to Pd.
+* Asset loaders for both Patch and Midi files.
+* Message dispatcher.
 
 # How to use
 
-## Use in your LibGDX projects
+## Configure your LibGDX project
+
+Just add gradle dependencies as usual :
 
 ```
 project(":core") {
@@ -22,40 +48,66 @@ project(":desktop") {
     dependencies {
     	compile project(":core")
         ...
+        compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:desktop"
         compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-desktop"
         ...
     }
 }
 ```
 
-## API
+## Initialize in your launchers
 
-### LibGDX extension layer
-
-In your desktop launcher :
 
 ```
-Pd.audio = new PdAudioDesktop(); // configure implementation
-		
+// Choose implementation :
+Pd.audio = new PdAudioOpenAL(); // Desktop using LibGDX desktop audio implementation (OpenAL)
+Pd.audio = new PdAudioDesktop(); // Desktop using JavaSoundImplmentation audio implementation
+
 Pd.audio.create(); // initialize once
 
-Pd.audio.open(file); // open a patch
+PdPatch patch = Pd.audio.open(file); // open a patch
 
-...
+... play with patch ...
+
+Pd.audio.close(patch); // close a patch
 
 Pd.audio.release(); // shutdown audio (before exit)
 ```
 
-### LibPD layer
+## Play with it
 
-PdBase class provides all you need to send/receive event to/from pure data.
+### Interact with patch
 
-See LibPD documentation for details.
+Most of PdAudio methods are same as LibPD PdBase class (send, read/write arrays), see PdAudio javadoc for details.
+
+You can register listeners to receive message from pd :
+
+```
+Pd.audio.addListener("symbol", new PdListener(){ ... })
+```
+
+### Playing music
+
+In order to play midi stream, your patch should implement some of general midi. You can start with provided example
+"pd/midiplayer.pd".
+
+To play a music, first open the patch and then load the midi file (.mid extension is automatically recognized).
+You can then use LibGDX Music API to play it (Music.play())
 
 
+## Take advantages of Live coding
 
+Designing a pd patch for a game could be cumbersome : you have to modify your patch in pd, launch your app and
+get to the context.
 
-# Work with sources
+With LibGDX you can already live code with JVM hot code swapping. With pd, you can use the OSC implementation which
+send all message to network in OSC format. You can then open your patch in Puredata and modify it directly.
+
+```
+Pd.audio = new PdAudioRemote();
+```
+
+# Build from sources
 
 Only require java and docker environement.
 Tested on Ubuntu 16.04 x64.
