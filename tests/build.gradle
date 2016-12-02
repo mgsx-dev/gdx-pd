@@ -25,9 +25,9 @@ sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 dependencies {
-		compile "net.mgsx.gdx:gdx-pd:0.1.0-SNAPSHOT"
-     	compile "net.mgsx.gdx:gdx-pd-platform:0.2.0-SNAPSHOT:desktop"
-        compile "net.mgsx.gdx:gdx-pd-platform:0.2.0-SNAPSHOT:natives-desktop"
+		compile "net.mgsx.gdx:gdx-pd:0.3.0-SNAPSHOT"
+     	compile "net.mgsx.gdx:gdx-pd-platform:0.3.0-SNAPSHOT:desktop"
+        compile "net.mgsx.gdx:gdx-pd-platform:0.3.0-SNAPSHOT:natives-desktop"
 }
 
 eclipse.project {
