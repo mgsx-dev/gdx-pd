@@ -79,7 +79,10 @@ class JavaSoundThread extends Thread {
 			sourceDataLine.close(); 
 		} catch(RuntimeException e){
 			// Shutdown silently : TODO pulse audio may throw runtime error here why ?
-			Gdx.app.error("gdx-pd", "unable to gracefully shutdown audio.");
+			if(Gdx.app != null)
+				Gdx.app.error("gdx-pd", "unable to gracefully shutdown audio.");
+			else
+				System.err.println("gdx-pd : unable to gracefully shutdown audio.");
 		}
 	}
 }
