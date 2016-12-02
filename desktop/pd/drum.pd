@@ -1,4 +1,4 @@
-#N canvas 365 334 498 406 10;
+#N canvas 623 616 498 406 10;
 #X obj 133 30 inlet;
 #X obj 139 368 outlet~;
 #X floatatom 339 64 5 0 0 0 - - -, f 5;
@@ -11,7 +11,7 @@
 #X obj 149 192 snare-drum;
 #X obj 81 85 route 93;
 #X obj 347 245 shot 5000;
-#N canvas 65 89 450 398 hh 0;
+#N canvas 65 93 450 398 hh 0;
 #X obj 179 28 inlet;
 #X obj 281 168 noise~;
 #X obj 179 50 select 0;
@@ -24,6 +24,7 @@
 #X msg 165 109 0 0;
 #X obj 186 246 bp~ 5000 1;
 #X msg 232 143 \$1 4 \, 0 20 4;
+#X msg 276 35 127;
 #X connect 0 0 2 0;
 #X connect 1 0 6 1;
 #X connect 2 0 9 0;
@@ -36,6 +37,7 @@
 #X connect 9 0 4 0;
 #X connect 10 0 7 0;
 #X connect 11 0 4 0;
+#X connect 12 0 2 0;
 #X restore 234 212 pd hh;
 #N canvas 65 97 450 300 bd1 0;
 #X obj 172 37 inlet;
@@ -61,7 +63,7 @@
 #X connect 9 0 5 1;
 #X connect 10 0 3 0;
 #X restore 283 201 pd bd1;
-#N canvas 65 93 450 300 crash 1;
+#N canvas 65 93 450 300 crash 0;
 #X obj 189 25 inlet;
 #X obj 291 165 noise~;
 #X obj 189 47 select 0;
@@ -87,6 +89,7 @@
 #X connect 11 0 4 0;
 #X restore 366 183 pd crash;
 #X obj 133 139 route 35 38 42 36 57;
+#X obj 160 98 print;
 #X connect 0 0 9 0;
 #X connect 3 0 1 0;
 #X connect 4 0 1 0;
@@ -94,6 +97,7 @@
 #X connect 6 0 1 0;
 #X connect 8 0 1 0;
 #X connect 9 1 14 0;
+#X connect 9 1 15 0;
 #X connect 10 0 1 0;
 #X connect 11 0 1 0;
 #X connect 12 0 1 0;
