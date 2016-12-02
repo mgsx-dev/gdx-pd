@@ -5,32 +5,6 @@ Work in progress
 
 # How to use
 
-## Install
-
-Only require java and docker environement. Tested on Ubuntu 16.04 x64.
-
-```
-git clone https://github.com/mgsx-dev/gdx-pd.git
-cd gdx-pd
-
-git submodule init
-git submodule update
-
-cd libpd
-git submodule init
-git submodule update
-make
-cd ..
-
-docker run --rm -v $(pwd):/work -it mgsx/libgdx bash
-cd native
-../gradlew buildNative
-exit
-
-gradle publishToMavenLocal
-
-```
-
 ## Use in your LibGDX projects
 
 ```
@@ -77,4 +51,34 @@ Pd.audio.release(); // shutdown audio (before exit)
 PdBase class provides all you need to send/receive event to/from pure data.
 
 See LibPD documentation for details.
+
+
+
+
+# Work with sources
+
+Only require java and docker environement.
+Tested on Ubuntu 16.04 x64.
+
+```
+git clone https://github.com/mgsx-dev/gdx-pd.git
+cd gdx-pd
+
+git submodule init
+git submodule update
+
+cd libpd
+git submodule init
+git submodule update
+cd ..
+
+docker run --rm -v $(pwd):/work -w /work/native -it mgsx/libgdx ../gradlew buildNative
+
+sudo chown -R $USER:$USER .
+
+gradle publishToMavenLocal
+
+```
+
+
 

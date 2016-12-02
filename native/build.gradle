@@ -96,9 +96,22 @@ def libpdJniSources = copySpec {
 	into "libpdbinding-sources"
 }
 
+task generateJniClasses(type:Exec) {
+    def classpath = "$projectDir/../libpd/java"
+    commandLine "javac", "-classpath", classpath, "$projectDir/../libpd/java/org/puredata/core/PdBase.java"
+}
+
+task generateJniHeaders(type:Exec) {
+    def classpath = "$projectDir/../libpd/java"
+    def nativeIncludes = "src/native/include"                     
+    commandLine "javah", "-o", "$projectDir/../libpd/jni/z_jni.h", "-classpath", classpath, "org.puredata.core.PdBase"
+
+    dependsOn generateJniClasses
+}
+
 import org.apache.tools.ant.DirectoryScanner
 
-task importSources(type: Copy) {
+task importSources(type: Copy, dependsOn: [generateJniHeaders]) {
 
 	// Workaround to copy folder with tilde (~) as suggested here : https://issues.gradle.org/browse/GRADLE-1883
 	doFirst {
@@ -119,8 +132,7 @@ task importSources(type: Copy) {
 
 import com.badlogic.gdx.jnigen.*
 
-
-task generateBuildScripts(){
+task generateBuildScripts(dependsOn: [importSources]){
 
 	doLast{
 	
@@ -142,7 +154,7 @@ task generateBuildScripts(){
 
 		def android = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Android, false);
 	
-		// Common flags (all platforms)
+		// Common flags (all platforms except android)
 		[linux64, linux32, windows64, windows32, macosx64, macosx32].each {
 			it.cFlags += " -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -O3 -DLIBPD_SETLOCALE";
 			it.libraries += " -lm -lpthread";
@@ -167,8 +179,10 @@ task generateBuildScripts(){
 		}
 		
 		[android].each {
+			it.cFlags += " -DPD -DHAVE_UNISTD_H -DHAVE_LIBDL -DUSEAPI_DUMMY -w"
+			it.cFlags += " -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast"
 			it.libraries += " -ldl";
-			it.cFlags += " -DHAVE_LIBDL -w -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast"
+			it.headerDirs += headerDirs
 		}
 		
 		// TODO IOS
@@ -183,49 +197,49 @@ task generateBuildScripts(){
 
 // TODO use gradle ant (ant.echo)
 
-task buildLinux64(){
+task buildLinux64(dependsOn: generateBuildScripts){
 	doLast{
 		BuildExecutor.executeAnt("$projectDir/jni/build-linux64.xml", "-v -Dhas-compiler=true clean postcompile");
 	}
 }
 
-task buildLinux32(){
+task buildLinux32(dependsOn: generateBuildScripts){
 	doLast{
 		BuildExecutor.executeAnt("$projectDir/jni/build-linux32.xml", "-v -Dhas-compiler=true clean postcompile");
 	}
 }
 
-task buildWindows64(){
+task buildWindows64(dependsOn: generateBuildScripts){
 	doLast{
 		BuildExecutor.executeAnt("$projectDir/jni/build-windows64.xml", "-v -Dhas-compiler=true clean postcompile");
 	}
 }
 
-task buildWindows32(){
+task buildWindows32(dependsOn: generateBuildScripts){
 	doLast{
 		BuildExecutor.executeAnt("$projectDir/jni/build-windows32.xml", "-v -Dhas-compiler=true clean postcompile");
 	}
 }
 
-task buildMacOSX64(){
+task buildMacOSX64(dependsOn: generateBuildScripts){
 	doLast{
 		BuildExecutor.executeAnt("$projectDir/jni/build-macosx64.xml", "-v -Dhas-compiler=true clean postcompile");
 	}
 }
 
-task buildMacOSX32(){
+task buildMacOSX32(dependsOn: generateBuildScripts){
 	doLast{
 		BuildExecutor.executeAnt("$projectDir/jni/build-macosx32.xml", "-v -Dhas-compiler=true clean postcompile");
 	}
 }
 
-task buildAndroid(){
+task buildAndroid(dependsOn: generateBuildScripts){
 	doLast{
 		BuildExecutor.executeAnt("$projectDir/jni/build-android32.xml", "-v -Dhas-compiler=true clean postcompile");
 	}
 }
 
-task buildAll(dependsOn: [buildLinux64, buildLinux32]){
+task buildNative(dependsOn: [buildLinux64, buildLinux32, buildWindows64, buildWindows32, buildAndroid]){
 	
 }
 
