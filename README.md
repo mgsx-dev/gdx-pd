@@ -7,10 +7,12 @@ Work in progress
 
 ## Install
 
-only require java environement. Tested on Ubuntu 16.04 x64.
-
+Only require java and docker environement. Tested on Ubuntu 16.04 x64.
 
 ```
+git clone https://github.com/mgsx-dev/gdx-pd.git
+cd gdx-pd
+
 git submodule init
 git submodule update
 
@@ -19,6 +21,11 @@ git submodule init
 git submodule update
 make
 cd ..
+
+docker run --rm -v $(pwd):/work -it mgsx/libgdx bash
+cd native
+../gradlew buildNative
+exit
 
 gradle publishToMavenLocal
 
