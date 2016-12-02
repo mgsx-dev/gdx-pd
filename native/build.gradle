@@ -67,6 +67,14 @@ def pdExtraSources = copySpec {
 	into "pd-extra-sources"
 }
 
+def extraSources = copySpec {
+
+	from("extra"){
+		include "**/*.c"
+	}
+	into "extra-sources"
+}
+
 def libpdSources = copySpec {
 	from("../libpd/libpd_wrapper"){
 		include "util/ringbuffer.c",
@@ -99,6 +107,7 @@ task importSources(type: Copy) {
 
 	with pdSources
 	with pdExtraSources
+	with extraSources
 	with libpdSources
 	with libpdJniSources
 	into "jni/pd"
@@ -117,12 +126,12 @@ task generateBuildScripts(){
 	
 		def headerDirs = [
 				"../../libpd/pure-data/src", 
+				"../../libpd/pure-data/extra",
+				"extra",
 				"../../libpd/libpd_wrapper",
 				"../../libpd/jni",
 				"../../libpd/libpd_wrapper/util"]
-				
-		def cFlags = " -DLIBPD_SETLOCALE -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DHAVE_LIBDL -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -fPIC";
-		def libraries = " -lm -ldl -lpthread"
+		
 	
 		def linux64 = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Linux, true);
 		def linux32 = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Linux, false);
@@ -133,19 +142,37 @@ task generateBuildScripts(){
 
 		def android = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Android, false);
 	
-		// TODO IOS
-
+		// Common flags (all platforms)
 		[linux64, linux32, windows64, windows32, macosx64, macosx32].each {
-			it.libraries += libraries;
-			it.cFlags += cFlags;
+			it.cFlags += " -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -O3 -DLIBPD_SETLOCALE";
+			it.libraries += " -lm -lpthread";
 			it.headerDirs += headerDirs
+		}
+
+		[linux64, linux32].each {
+			it.cFlags += " -DHAVE_LIBDL -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -fPIC";
+			it.libraries += " -shared -ldl -Wl,-Bsymbolic";
+		}
+		
+		[macosx64, macosx32].each {
+			it.cFlags += " -DHAVE_LIBDL -arch x86_64 -arch i386 -g"
+			it.libraries += " -framework JavaVM -arch x86_64 -arch i386 -dynamiclib -ldl"
+			it.headerDirs += ["/System/Library/Frameworks/JavaVM.framework/Headers"]
+		}
+		
+		[windows64, windows32].each {
+			it.cFlags += " -DWINVER=0x502 -DWIN32 -D_WIN32 -DPD_INTERNAL";
+			it.libraries += " -shared -Wl,--export-all-symbols -lws2_32 -lkernel32" // MINGW
+			it.libraries += " -Wl,--kill-at" // linker
 		}
 		
 		[android].each {
 			it.libraries += " -ldl";
-			it.cFlags += " -DPD -DHAVE_UNISTD_H -DHAVE_LIBDL -DUSEAPI_DUMMY -w -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast";;
-			it.headerDirs += headerDirs
+			it.cFlags += " -DHAVE_LIBDL -w -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast"
 		}
+		
+		// TODO IOS
+		
 
 		BuildConfig config = new BuildConfig("gdx-pd", "target", "libs", "$projectDir/jni");
 		
