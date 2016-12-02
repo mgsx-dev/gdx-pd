@@ -203,7 +203,7 @@ task buildAll(dependsOn: [buildLinux64, buildLinux32]){
 }
 
 task desktopJar(type: Jar) {
-    baseName "publishing-desktop"
+    baseName "desktop-native"
     from("libs/linux64"){
     	into "org/puredata/core/natives/linux/x86_64"
     }
@@ -226,7 +226,7 @@ task desktopJar(type: Jar) {
 }
 
 task androidJar(type: Jar) {
-    baseName "publishing-desktop"
+    baseName "android-natives"
     from("libs"){
     	include "arm64-v8a/**"
     	include "armeabi/**"

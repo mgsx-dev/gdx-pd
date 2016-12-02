@@ -10,15 +10,6 @@ eclipse.project {
     name = appName + "-desktop"
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDir '../libpd/java-build'
-            include '**/*.so'
-       }
-   }
-}
-
 task desktopJar(type: Jar) {
     baseName "publishing-desktop"
     from sourceSets.main.output
@@ -34,7 +25,7 @@ publishing {
             groupId groupName
             artifactId "$appName-platform"
             artifact desktopJar {
-                classifier "natives-desktop"
+                classifier "desktop"
             }
             artifact sourceJar {
                 classifier "sources"

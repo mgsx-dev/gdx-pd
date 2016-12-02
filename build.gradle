@@ -14,7 +14,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '0.1.0-SNAPSHOT'
+    version = '0.2.0-SNAPSHOT'
     ext {
         appName = "gdx-pd"
         gdxVersion = '1.9.4'
@@ -54,7 +54,6 @@ project(":native") {
     apply plugin: "java"
 
 }
- 
 
 tasks.eclipse.doLast {
     delete ".project"
