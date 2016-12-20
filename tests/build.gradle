@@ -64,7 +64,7 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
         
-        //compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:android"
+        compile "net.mgsx.gdx:gdx-pd-backend-android:$pdVersion"
         natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-android"
         
     }

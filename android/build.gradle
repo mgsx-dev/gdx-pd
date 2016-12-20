@@ -1,0 +1,39 @@
+apply plugin: "java"
+apply plugin: 'maven-publish'
+
+sourceCompatibility = 1.6
+sourceSets.main.java.srcDirs = [ "src/"]
+sourceSets.test.java.srcDirs = [ "test/"]
+sourceSets.test.resources.srcDirs = [ "test-resources/"]
+
+eclipse.project {
+    name = appName + "-android"
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+task androidJar(type: Jar) {
+    baseName "publishing-android"
+    from sourceSets.main.output
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        desktop(MavenPublication) {
+            groupId groupName
+            artifactId "$appName-backend-android"
+            artifact androidJar {
+            }
+            artifact sourceJar {
+                classifier "sources"
+            }
+            
+        }
+    }
+}
