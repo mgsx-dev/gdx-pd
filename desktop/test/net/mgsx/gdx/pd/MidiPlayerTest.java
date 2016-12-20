@@ -19,9 +19,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.midi.JavaMidiMusic;
+import net.mgsx.pd.midi.JavaPdMidiMusic;
 import net.mgsx.pd.midi.JavaSoundMidi;
 import net.mgsx.pd.midi.MidiMusicLoader;
-import net.mgsx.pd.midi.JavaPdMidiMusic;
 import net.mgsx.pd.patch.PatchLoader;
 import net.mgsx.pd.patch.PdPatch;
 

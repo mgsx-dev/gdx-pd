@@ -19,10 +19,12 @@ public class GdxPdTest extends ApplicationAdapter {
 		img = new Texture("badlogic.jpg");
 		
 		Pd.audio.create(new PdConfiguration());
-		Pd.audio.open(Gdx.files.internal("pd/test.pd"));
+		//Pd.audio.open(Gdx.files.internal("pdmidi/midiplayer.pd"));
+		Pd.audio.open(Gdx.files.internal("pdmidi/midiplayer.pd"));
+		//Pd.audio.open(Gdx.files.internal("pd/test.pd"));
 		
 		if(Pd.midi != null){
-			music = Pd.midi.createMidiMusic(Gdx.files.internal("alf.mid"));
+			music = Pd.midi.createMidiMusic(Gdx.files.internal("MuteCity.mid"));
 			music.play();
 		}
 	}
