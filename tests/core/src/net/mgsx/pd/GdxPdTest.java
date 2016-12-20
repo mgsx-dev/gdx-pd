@@ -14,6 +14,9 @@ public class GdxPdTest extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
+		
+		Pd.audio.create(new PdConfiguration());
+		Pd.audio.open(Gdx.files.internal("test.pd"));
 	}
 
 	@Override
@@ -29,5 +32,6 @@ public class GdxPdTest extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 		img.dispose();
+		Pd.audio.release();
 	}
 }
