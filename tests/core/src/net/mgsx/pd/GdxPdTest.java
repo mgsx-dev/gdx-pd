@@ -6,9 +6,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import net.mgsx.pd.midi.MidiMusic;
+
 public class GdxPdTest extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
+	MidiMusic music;
 	
 	@Override
 	public void create () {
@@ -17,6 +20,11 @@ public class GdxPdTest extends ApplicationAdapter {
 		
 		Pd.audio.create(new PdConfiguration());
 		Pd.audio.open(Gdx.files.internal("test.pd"));
+		
+		if(Pd.midi != null){
+			music = Pd.midi.createMidiMusic(Gdx.files.internal("alf.mid"));
+			music.play();
+		}
 	}
 
 	@Override
@@ -32,6 +40,7 @@ public class GdxPdTest extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 		img.dispose();
+		music.dispose();
 		Pd.audio.release();
 	}
 }
