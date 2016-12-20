@@ -35,6 +35,9 @@ allprojects {
     }
 }
 
+apply plugin: "eclipse"
+eclipse.project.name = appName
+
 project(":desktop") {
     apply plugin: "java"
 
@@ -107,6 +110,3 @@ project(":core") {
     }
 }
 
-tasks.eclipse.doLast {
-    delete ".project"
-}
