@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 
 import net.mgsx.pd.audio.PdAudio;
 import net.mgsx.pd.audio.PdAudioNone;
+import net.mgsx.pd.midi.PdMidi;
 
 /**
  * Environment class holding references to the {@link PdAudio} instance. 
@@ -23,6 +24,8 @@ public class Pd
 {
 	public static PdAudio audio;
 
+	public static PdMidi midi;
+	
 	/**
 	 * None implementation : does not call any audio layers. Usefull for debug purpose.
 	 */

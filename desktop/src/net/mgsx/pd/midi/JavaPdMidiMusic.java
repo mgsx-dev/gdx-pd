@@ -6,7 +6,7 @@ import org.puredata.core.PdBase;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class PdMidiMusic extends MidiMusic
+public class JavaPdMidiMusic extends JavaMidiMusic
 {
 	/**
 	 * Note On velocity are scaled by this factor.
@@ -14,7 +14,7 @@ public class PdMidiMusic extends MidiMusic
 	 */
 	public float velocityScale = 1.f;
 	
-	public PdMidiMusic() {
+	public JavaPdMidiMusic() {
 		super(false);
 		try {
 			getSequencer().getTransmitter().setReceiver(new PdMidiReceiver(this));

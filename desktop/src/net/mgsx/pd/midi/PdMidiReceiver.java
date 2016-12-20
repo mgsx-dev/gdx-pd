@@ -9,9 +9,9 @@ import org.puredata.core.PdBase;
 
 class PdMidiReceiver implements Receiver
 {
-	private PdMidiMusic music;
+	private JavaPdMidiMusic music;
 	
-	public PdMidiReceiver(PdMidiMusic music) {
+	public PdMidiReceiver(JavaPdMidiMusic music) {
 		super();
 		this.music = music;
 	}

@@ -18,9 +18,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
-import net.mgsx.pd.midi.MidiMusic;
+import net.mgsx.pd.midi.JavaMidiMusic;
+import net.mgsx.pd.midi.JavaSoundMidi;
 import net.mgsx.pd.midi.MidiMusicLoader;
-import net.mgsx.pd.midi.PdMidiMusic;
+import net.mgsx.pd.midi.JavaPdMidiMusic;
 import net.mgsx.pd.patch.PatchLoader;
 import net.mgsx.pd.patch.PdPatch;
 
@@ -37,7 +38,7 @@ public class MidiPlayerTest {
 			
 			OrthographicCamera camera;
 
-			private PdMidiMusic song, song1, song2, songA, songB;
+			private JavaPdMidiMusic song, song1, song2, songA, songB;
 			private float crossfade;
 			
 			@Override
@@ -45,6 +46,8 @@ public class MidiPlayerTest {
 				
 				shape = new ShapeRenderer();
 				camera = new OrthographicCamera();
+				
+				Pd.midi = new JavaSoundMidi();
 				
 				Pd.audio = new PdAudioOpenAL();
 				Pd.audio.create(new PdConfiguration());
@@ -63,8 +66,8 @@ public class MidiPlayerTest {
 				assets.load(song2Asset);
 				assets.finishLoading();
 				
-				song1 = (PdMidiMusic)assets.get(song1Asset);
-				song2 = (PdMidiMusic)assets.get(song2Asset);
+				song1 = (JavaPdMidiMusic)assets.get(song1Asset);
+				song2 = (JavaPdMidiMusic)assets.get(song2Asset);
 				
 				Pd.audio.sendFloat("volume", 0.2f); // XXX
 				
@@ -95,7 +98,7 @@ public class MidiPlayerTest {
 				Gdx.input.setInputProcessor(new InputAdapter(){
 					@Override
 					public boolean touchDragged(int screenX, int screenY, int pointer) {
-						MidiMusic mm = (MidiMusic)song; // XXX cast !
+						JavaMidiMusic mm = (JavaMidiMusic)song; // XXX cast !
 						float duration = mm.getDuration();
 						float tx = (float)screenX / (float)Gdx.graphics.getWidth();
 						float ty = 1 - (float)screenY / (float)Gdx.graphics.getHeight();
@@ -110,7 +113,7 @@ public class MidiPlayerTest {
 						}
 						else if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)){
 							if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)){
-								((PdMidiMusic)mm).velocityScale = ty; // XXX cast
+								((JavaPdMidiMusic)mm).velocityScale = ty; // XXX cast
 							}else{
 								song.setPan(2 * tx - 1, ty);
 							}
@@ -124,7 +127,7 @@ public class MidiPlayerTest {
 			public void render() {
 				super.render();
 				
-				MidiMusic mm = (MidiMusic)song;
+				JavaMidiMusic mm = (JavaMidiMusic)song;
 				
 				if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
 					Pd.audio.release();
