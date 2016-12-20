@@ -191,9 +191,16 @@ task generateBuildScripts(dependsOn: [importSources]){
 		BuildConfig config = new BuildConfig("gdx-pd", "target", "libs", "$projectDir/jni");
 		
 		new AntScriptGenerator().generate(config, linux64, linux32, windows64, windows32, macosx64, macosx32, android);
+		
+		copy{
+			from(".")
+			into "jni"
+			include "Application.mk"
+		}
 	}
 
 }
+
 
 // TODO use gradle ant (ant.echo)
 
