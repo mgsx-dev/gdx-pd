@@ -56,6 +56,8 @@ project(":desktop") {
 project(":android") {
     apply plugin: "android"
 
+	sourceCompatibility = 1.6
+
     configurations { natives }
 
     dependencies {
@@ -103,6 +105,7 @@ project(":html") {
 project(":core") {
     apply plugin: "java"
 
+	sourceCompatibility = 1.6
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
