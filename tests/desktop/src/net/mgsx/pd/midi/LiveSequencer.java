@@ -18,10 +18,11 @@ public class LiveSequencer {
 	boolean shouldPlay = true;
 	float timePos = 0;
 	MidiFile file;
+	MidiEventListener listener;
 	public void load(MidiFile file)
 	{
 		this.file = file;
-		MidiEventListener listener = new MidiEventListener() {
+		listener = new MidiEventListener() {
 			
 			@Override
 			public void onStop(boolean finished) {
@@ -49,25 +50,6 @@ public class LiveSequencer {
 					PdBase.sendProgramChange(no.getChannel(), no.getProgramNumber());
 				}
 				
-			}
-		};
-		
-		MidiEventListener debugListener = new MidiEventListener() {
-			
-			@Override
-			public void onStop(boolean finished) {
-				System.out.println("onStop");
-			}
-			
-			@Override
-			public void onStart(boolean fromBeginning) {
-				System.out.println("onStart");
-				
-			}
-			
-			@Override
-			public void onEvent(MidiEvent event, long ms) {
-				System.out.println(event);
 			}
 		};
 		
@@ -115,8 +97,12 @@ public class LiveSequencer {
 						e.printStackTrace();
 					}
 				}
-				for(LiveTrack track : runningTracks){
-					track.sendNotesOff();
+				// XXX force all note off (all note and all channels)
+				ResetNote off = new ResetNote();
+				for(int i=0 ; i<16 ; i++){
+					for(int j=0 ; j<127 ; j++){
+						listener.onEvent(off.set(i, j), 0);
+					}
 				}
 				
 			}

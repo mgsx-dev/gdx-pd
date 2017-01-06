@@ -161,7 +161,7 @@ public class LiveSequencerDemoApplication extends Game
 		}
 		table.row();
 		
-		final TextButton btLoopAll = new TextButton("No Loop", skin, "toggle");
+		final TextButton btLoopAll = new TextButton("Unloop All", skin);
 		btLoopAll.addListener(new ChangeListener(){
 
 			@Override
@@ -173,7 +173,7 @@ public class LiveSequencerDemoApplication extends Game
 			}});
 		table.add(btLoopAll);
 		for(int x=0 ; x<nTracks ; x++){
-			final TextButton btClip = new TextButton("Loop", skin);
+			final TextButton btClip = new TextButton("Unloop", skin);
 			final int chan = x;
 			btClip.addListener(new ChangeListener() {
 				
@@ -210,6 +210,8 @@ public class LiveSequencerDemoApplication extends Game
 			table.add(btClip);
 		}
 		table.row();
+		table.add().height(10).row();
+		
 		for(int y=0 ; ; y++){
 			final int clip = y;
 			boolean hasMore = false;

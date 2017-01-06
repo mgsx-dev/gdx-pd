@@ -10,13 +10,15 @@ import com.leff.midi.util.MidiEventListener;
 
 public class LiveTrack
 {
-	MidiEventListener listener;
+	final private MidiEventListener listener;
 	public long loopStart, loopEnd, trackEnd;
 	public int nextLoopStart, nextLoopEnd, modulus;
 	public boolean loop = false;
 	public boolean nextLoop = false;
 	public int index, loopStartIndex;
 	public int resolution;
+	private long offset;
+	private long virtualPosition;
 	
 	final private Array<MidiEvent> events;
 	
@@ -53,6 +55,8 @@ public class LiveTrack
 		index = loopStartIndex;
 		prePos = 0;
 		sendNotesOff();
+		loop = true;
+		offset = 0;
 	}
 	public void setLoop(int startBeat, int endBeat, int modulus){
 		nextLoopStart = startBeat;
@@ -66,8 +70,8 @@ public class LiveTrack
 	
 	public long update(long position)
 	{
-		position += resolution * 0;
-		if(position < 0) return 0;
+		virtualPosition = position;
+		
 		if(nextLoop){
 			
 			long pPosMod = prePos % (modulus * resolution);
@@ -78,9 +82,16 @@ public class LiveTrack
 			}
 		}
 		
-		long loopLen = loopEnd - loopStart;
-		if(loopLen <= 0) return 0;
-		long inPos = loopStart + (((position) % loopLen) + loopLen) % loopLen;
+		long inPos;
+		
+		if(loop){
+			long loopLen = loopEnd - loopStart;
+			if(loopLen <= 0) return 0;
+			inPos = loopStart + (((position) % loopLen) + loopLen) % loopLen;
+		}else{
+			inPos = position + offset;
+		}
+		
 		
 		// check if nextEvent should be played now
 		MidiEvent nextEvent = events.get(index);
@@ -101,16 +112,7 @@ public class LiveTrack
 			
 			index = loopStartIndex;
 			nextEvent = events.get(index);
-//				while(inPos > nextEvent.getTick()){
-//					if(index < events.size - 1){
-//						index++;
-//					}else{
-//						break;
-//					}
-//					nextEvent = events.get(index);
-//				}
 		}
-		// System.out.println(inPos);
 		while(inPos >= nextEvent.getTick()){
 			if(nextEvent instanceof NoteOn){
 				NoteOn e = ((NoteOn) nextEvent);
@@ -157,8 +159,12 @@ public class LiveTrack
 	}
 
 	public void loop(boolean b) {
+		if(b == false && loop != b){
+			long loopLen = loopEnd - loopStart;
+			long localPos = ((virtualPosition % loopLen) + loopLen) % loopLen;
+			offset = loopStart + localPos - virtualPosition;
+		}
 		loop = b;
-		setLoop(0, (int)(trackEnd / resolution));
 	}
 
 	public int endBeat() {
