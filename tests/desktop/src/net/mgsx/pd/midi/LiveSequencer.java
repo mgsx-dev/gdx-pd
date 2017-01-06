@@ -5,13 +5,11 @@ import com.leff.midi.MidiFile;
 import com.leff.midi.MidiTrack;
 import com.leff.midi.util.MidiEventListener;
 
-public class LiveSequencer {
-
+public class LiveSequencer extends BaseSequencer
+{
 	private final Array<LiveTrack> tracks = new Array<LiveTrack>();
 	
 	private volatile boolean shouldPlay = true;
-	
-	private final MidiEventListener listener;
 	
 	private Thread thread;
 	
@@ -21,7 +19,7 @@ public class LiveSequencer {
 	public volatile float bpm = 100f;
 	
 	public LiveSequencer(MidiEventListener listener) {
-		this.listener = listener;
+		super(listener);
 	}
 	
 	public void load(MidiFile file)
