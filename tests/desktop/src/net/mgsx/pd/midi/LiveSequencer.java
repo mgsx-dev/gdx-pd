@@ -81,8 +81,13 @@ public class LiveSequencer {
 
 	long prevTimeNS, timeNS;
 	
+	public void stop() {
+		shouldPlay = false;
+	}
+	
 	public void play() 
 	{
+		final Array<LiveTrack> runningTracks = new Array<LiveTrack>(tracks);
 		shouldPlay = true;
 		new Thread(new Runnable() {
 			
@@ -92,7 +97,7 @@ public class LiveSequencer {
 				timeNS = 0;
 				int BPM = 100;
 				float ticksPerSec = (BPM / 60f) * file.getResolution();
-				for(LiveTrack track : tracks){
+				for(LiveTrack track : runningTracks){
 					track.sendMeta();
 				}
 				while(shouldPlay){
@@ -101,7 +106,7 @@ public class LiveSequencer {
 					float timeS = (float)timeNS / 1e9f;
 					long posTick = (long)(timeS * ticksPerSec);
 					// timePos
-					for(LiveTrack track : tracks){
+					for(LiveTrack track : runningTracks){
 						if(track.active) track.update(posTick);
 					}
 					try {
@@ -109,6 +114,9 @@ public class LiveSequencer {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+				}
+				for(LiveTrack track : runningTracks){
+					track.sendNotesOff();
 				}
 				
 			}
@@ -136,4 +144,10 @@ public class LiveSequencer {
 	public void loop(int chan, boolean b) {
 		if(chan >= 0 && chan < tracks.size) tracks.get(chan).loop(b);
 	}
+
+	public Array<LiveTrack> getTracks() {
+		return tracks;
+	}
+
+	
 }

@@ -3,9 +3,7 @@ package net.mgsx.pd.midi;
 import com.badlogic.gdx.utils.Array;
 import com.leff.midi.MidiFile;
 import com.leff.midi.MidiTrack;
-import com.leff.midi.event.ChannelEvent;
 import com.leff.midi.event.MidiEvent;
-import com.leff.midi.event.NoteOff;
 import com.leff.midi.event.NoteOn;
 import com.leff.midi.event.ProgramChange;
 import com.leff.midi.util.MidiEventListener;
@@ -14,7 +12,7 @@ public class LiveTrack
 {
 	MidiEventListener listener;
 	public long loopStart, loopEnd, trackEnd;
-	private int nextLoopStart, nextLoopEnd, modulus;
+	public int nextLoopStart, nextLoopEnd, modulus;
 	public boolean loop = false;
 	public boolean nextLoop = false;
 	public int index, loopStartIndex;
@@ -22,19 +20,16 @@ public class LiveTrack
 	
 	final private Array<MidiEvent> events;
 	
-	private int [] notes = new int[127];
+	private int [] notes = new int[127 * 16];
+	private int [] notesOnIndices = new int[127 * 16];
+	private int notesOnCount = 0;
 	
 	private ResetNote off = new ResetNote();
-	
-	int channel;
 	
 	public LiveTrack(MidiFile file, MidiTrack track, MidiEventListener listener) {
 		events = new Array<MidiEvent>();
 		for(MidiEvent e : track.getEvents()){
 			events.add(e);
-			if(e instanceof ChannelEvent){
-				channel = ((ChannelEvent) e).getChannel();
-			}
 		}
 		loopStart = 0;
 		trackEnd = loopEnd = track.getLengthInTicks();
@@ -57,6 +52,7 @@ public class LiveTrack
 		}
 		index = loopStartIndex;
 		prePos = 0;
+		sendNotesOff();
 	}
 	public void setLoop(int startBeat, int endBeat, int modulus){
 		nextLoopStart = startBeat;
@@ -70,6 +66,8 @@ public class LiveTrack
 	
 	public long update(long position)
 	{
+		position += resolution * 0;
+		if(position < 0) return 0;
 		if(nextLoop){
 			
 			long pPosMod = prePos % (modulus * resolution);
@@ -99,12 +97,7 @@ public class LiveTrack
 				nextEvent = events.get(index);
 			}
 			
-			for(int i=0 ; i<notes.length ; i++){
-				if(notes[i] != 0){
-					listener.onEvent(off.set(channel, i), 0);
-					notes[i] = 0;
-				}
-			}
+			sendNotesOff();
 			
 			index = loopStartIndex;
 			nextEvent = events.get(index);
@@ -121,10 +114,12 @@ public class LiveTrack
 		while(inPos >= nextEvent.getTick()){
 			if(nextEvent instanceof NoteOn){
 				NoteOn e = ((NoteOn) nextEvent);
-				notes[e.getNoteValue()] = e.getVelocity();
-			}else if(nextEvent instanceof NoteOff){
-				NoteOff e = ((NoteOff) nextEvent);
-				notes[e.getNoteValue()] = 0;
+				int index = (e.getChannel() << 7) | e.getNoteValue();
+				int value = e.getVelocity();
+				if(notes[index] == 0 && value > 0){
+					notes[index] = value;
+					notesOnIndices[notesOnCount++] = index;
+				}
 			}
 			listener.onEvent(nextEvent, 0);
 			if(index < events.size - 1){
@@ -154,13 +149,7 @@ public class LiveTrack
 
 	public void mute(boolean on) {
 		active  = on;
-		if(!active)
-		for(int i=0 ; i<notes.length ; i++){
-			if(notes[i] != 0){
-				listener.onEvent(off.set(channel, i), 0);
-				notes[i] = 0;
-			}
-		}
+		if(!active) sendNotesOff();
 	}
 
 	public int getPosition() {
@@ -170,5 +159,27 @@ public class LiveTrack
 	public void loop(boolean b) {
 		loop = b;
 		setLoop(0, (int)(trackEnd / resolution));
+	}
+
+	public int endBeat() {
+		return (int)(events.get(events.size-1).getTick() / resolution);
+	}
+
+	public void sendNotesOff() {
+		
+		for(int i=0 ; i<notesOnCount ; i++){
+			int index = notesOnIndices[i];
+			int note = index & 0x7F;
+			int channel = index >> 7;
+			if(notes[index] != 0){
+				listener.onEvent(off.set(channel, note), 0);
+				notes[index] = 0;
+			}
+		}
+		notesOnCount = 0;
+	}
+
+	public Array<MidiEvent> getEvents() {
+		return events;
 	}
 }

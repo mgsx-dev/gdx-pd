@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -16,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.leff.midi.MidiFile;
+import com.leff.midi.event.MidiEvent;
+import com.leff.midi.event.meta.TrackName;
 
 import net.mgsx.gdx.pd.PdAudioOpenAL;
 import net.mgsx.pd.Pd;
@@ -23,6 +26,7 @@ import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.midi.DefaultMidiMusic;
 import net.mgsx.pd.midi.DefaultPdMidi;
 import net.mgsx.pd.midi.LiveSequencer;
+import net.mgsx.pd.midi.LiveTrack;
 import net.mgsx.pd.midi.MidiMusicLoader;
 import net.mgsx.pd.patch.PatchLoader;
 import net.mgsx.pd.patch.PdPatch;
@@ -40,10 +44,12 @@ public class LiveSequencerDemoApplication extends Game {
 			Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 			
 			Table table = new Table(skin);
-			table.setFillParent(true);
-			stage.addActor(table);
 			
-			buildGUI(table, skin);
+			ScrollPane pane = new ScrollPane(table, skin);
+			
+			pane.setFillParent(true);
+			
+			stage.addActor(pane);
 			
 			Pd.midi = new DefaultPdMidi();
 			
@@ -72,24 +78,24 @@ public class LiveSequencerDemoApplication extends Game {
 			seq = new LiveSequencer();
 			seq.load(midiFile);
 			
-			
-			
-			seq.play();
-			
-//				song.play();
-//				
-//				song.setOnCompletionListener(new OnCompletionListener() {
-//					
-//					@Override
-//					public void onCompletion(Music music) {
-//						Gdx.app.log("Test", "midi complete");
-//					}
-//				});
+			buildGUI(table, skin);
 			
 		}
 
 		private void buildGUI(Table table, Skin skin) 
 		{
+			table.defaults().fill();
+			
+			final TextButton btPlay = new TextButton("Play", skin, "toggle");
+			btPlay.addListener(new ChangeListener() {
+				
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					if(btPlay.isChecked()) seq.play(); else seq.stop();
+				}
+			});
+			table.add(btPlay);
+			
 			final SelectBox<Division> trigBox = new SelectBox<>(skin);
 			trigBox.setItems(Division.all());
 			table.add("trigger");
@@ -100,17 +106,48 @@ public class LiveSequencerDemoApplication extends Game {
 			lenBox.setItems(Division.all());
 			table.add("size");
 			table.add(lenBox);
-			lenBox.setSelectedIndex(4);
+			lenBox.setSelectedIndex(3);
 
 			table.row();
 			
-			int NCLIP = 20;
-			for(int x=0 ; x<16 ; x++){
-				table.add("Chan " + (x+1));
+			int nTracks = seq.getTracks().size;
+			
+			int NCLIP = 50;
+			
+			table.add("Omni");
+			for(int x=0 ; x<nTracks ; x++){
+				table.add("Track " + (x+1)).padLeft(10).padRight(10);
 			}
 			table.row();
 			
-			for(int x=0 ; x<16 ; x++){
+			table.add("Omni");
+			for(int x=0 ; x<nTracks ; x++){
+				String name = null;
+				for(MidiEvent e : seq.getTracks().get(x).getEvents()){
+					if(e instanceof TrackName){
+						if(name != null){
+							Gdx.app.error("Midi", "warning : multiple track names in same track");
+							continue;
+						}
+						name = ((TrackName) e).getTrackName();
+					}
+				}
+				table.add(name == null ? "???" : name);
+			}
+			table.row();
+			
+			final TextButton btLoopAll = new TextButton("Loop All", skin, "toggle");
+			btLoopAll.addListener(new ChangeListener(){
+
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					for(LiveTrack track : seq.getTracks()){
+						track.loop(btLoopAll.isChecked());
+					}
+					
+				}});
+			table.add(btLoopAll);
+			for(int x=0 ; x<nTracks ; x++){
 				final TextButton btClip = new TextButton("Loop " + (x+1), skin, "toggle");
 				final int chan = x;
 				btClip.addListener(new ChangeListener() {
@@ -124,12 +161,21 @@ public class LiveSequencerDemoApplication extends Game {
 			}
 			table.row();
 			
-			
-			for(int x=0 ; x<16 ; x++){
+			final TextButton btMuteAll = new TextButton("Mute All", skin, "toggle");
+			btMuteAll.addListener(new ChangeListener(){
+
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					for(LiveTrack track : seq.getTracks()){
+						track.mute(!btMuteAll.isChecked());
+					}
+					
+				}});
+			table.add(btMuteAll);
+			for(int x=0 ; x<nTracks ; x++){
 				final TextButton btClip = new TextButton("Mute " + (x+1), skin, "toggle");
 				final int chan = x;
 				btClip.addListener(new ChangeListener() {
-					
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
 						seq.mute(chan, !btClip.isChecked());
@@ -140,8 +186,30 @@ public class LiveSequencerDemoApplication extends Game {
 			table.row();
 			for(int y=0 ; y<NCLIP ; y++){
 				final int clip = y;
-				for(int x=0 ; x<16 ; x++){
+				boolean hasMore = false;
+				
+				final TextButton btPlayAll = new TextButton("Play All", skin);
+				btPlayAll.addListener(new ChangeListener(){
+
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						int len = lenBox.getSelected().value;
+						
+						for(LiveTrack track : seq.getTracks()){
+							track.setLoop(clip * len, (clip+1) * len, trigBox.getSelected().value);
+						}
+						
+					}});
+				table.add(btPlayAll);
+				
+				for(int x=0 ; x<nTracks ; x++){
 					final int chan = x;
+					
+					if(seq.getTracks().get(chan).endBeat() < clip * 8){ // XXX BAR
+						table.add();
+						continue;
+					}
+					hasMore = true;
 					TextButton btClip = new TextButton("Clip " + (x+1) + "-" + (y+1), skin){
 						public void act(float delta) {
 							super.act(delta);
@@ -149,7 +217,19 @@ public class LiveSequencerDemoApplication extends Game {
 							int p = seq.getPosition(chan);
 							int len = lenBox.getSelected().value;
 							boolean in = p >= clip * len && p < (clip+1) * len;
-							setColor(in ? Color.GOLD : Color.WHITE);
+							
+							if(seq.getTracks().get(chan).nextLoop){
+								if(seq.getTracks().get(chan).nextLoopStart == clip * len &&
+										seq.getTracks().get(chan).nextLoopEnd == (clip+1)*len	){
+									setColor(Color.CYAN);
+								}else{
+									setColor(in ? Color.GOLD : Color.WHITE);
+								}
+							}else{
+								setColor(in ? Color.GREEN : Color.WHITE);
+							}
+							
+							
 						};
 					};
 					btClip.addListener(new ChangeListener() {
@@ -163,6 +243,7 @@ public class LiveSequencerDemoApplication extends Game {
 					table.add(btClip);
 				}
 				table.row();
+				if(!hasMore) break;
 			}
 		}
 
