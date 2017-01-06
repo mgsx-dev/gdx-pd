@@ -41,6 +41,7 @@ public class LiveSequencerDemoApplication extends Game
 	Stage stage;
 	private DefaultMidiMusic song;
 	private LiveSequencer seq;
+	private AssetManager assets;
 
 	@Override
 	public void create() {
@@ -61,27 +62,21 @@ public class LiveSequencerDemoApplication extends Game
 		Pd.audio = new PdAudioOpenAL();
 		Pd.audio.create(new PdConfiguration());
 		
-		AssetManager assets = new AssetManager();
+		assets = new AssetManager();
 		
 		assets.setLoader(Music.class, "mid", new MidiMusicLoader(assets.getFileHandleResolver()));
 		assets.setLoader(PdPatch.class, "pd", new PatchLoader(assets.getFileHandleResolver()));
 		
 		AssetDescriptor<PdPatch> patchAsset = new AssetDescriptor<PdPatch>("pdmidi/midiplayer.pd", PdPatch.class);
-		AssetDescriptor<Music> songAsset = new AssetDescriptor<Music>("MuteCity.mid", Music.class);
 		
 		assets.load(patchAsset);
-		assets.load(songAsset);
 		assets.finishLoading();
-		
-		song = (DefaultMidiMusic)assets.get(songAsset);
-		MidiFile midiFile = song.mfile;
 		
 		Pd.audio.sendFloat("volume", 0.2f); // XXX
 		Pd.audio.sendFloat("pan", 0); // XXX
 		Pd.audio.sendFloat("reverb", 0); // XXX
 		
 		seq = new LiveSequencer(PdMidiSynth.instance);
-		seq.load(midiFile);
 		
 		buildGUI(table, skin);
 	}
@@ -91,7 +86,37 @@ public class LiveSequencerDemoApplication extends Game
 	
 	private void buildGUI(Table table, Skin skin) 
 	{
+		final SelectBox<Division> lenBox = new SelectBox<>(skin);
+		
 		Table header = new Table(skin);
+		
+		final SelectBox<String> songBox = new SelectBox<>(skin);
+		songBox.setItems("", "MuteCity.mid", "alf.mid", "pd-midi/macross.mid");
+		header.add("Song");
+		header.add(songBox);
+		
+		songBox.addListener(new ChangeListener(){
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				String name = songBox.getSelected();
+				seq.stop();
+				seq.clear();
+				if(!name.isEmpty()){
+					AssetDescriptor<Music> songAsset = new AssetDescriptor<Music>(name, Music.class);
+					
+					assets.load(songAsset);
+					assets.finishLoading();
+					song = (DefaultMidiMusic)assets.get(songAsset);
+					MidiFile midiFile = song.mfile;
+	
+					seq.load(midiFile);
+					matrix.clear();
+					buildMatrix(matrix, skin, lenBox.getSelected());
+				}
+				
+			}});
+		
 		
 		Label bpmField = new Label("", skin);
 		
@@ -127,7 +152,6 @@ public class LiveSequencerDemoApplication extends Game
 		header.add(trigBox);
 		trigBox.setSelected(Division.quarterNote);
 		
-		final SelectBox<Division> lenBox = new SelectBox<>(skin);
 		lenBox.setItems(Division.all);
 		header.add("size");
 		header.add(lenBox);

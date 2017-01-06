@@ -95,4 +95,8 @@ public class LiveSequencer extends BaseSequencer
 		thread.start();
 	}
 
+	public void clear() {
+		tracks.clear();
+	}
+
 }
