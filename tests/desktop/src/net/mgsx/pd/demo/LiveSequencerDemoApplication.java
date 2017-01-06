@@ -30,6 +30,7 @@ import net.mgsx.pd.midi.DefaultPdMidi;
 import net.mgsx.pd.midi.LiveSequencer;
 import net.mgsx.pd.midi.LiveTrack;
 import net.mgsx.pd.midi.MidiMusicLoader;
+import net.mgsx.pd.midi.PdMidiSynth;
 import net.mgsx.pd.patch.PatchLoader;
 import net.mgsx.pd.patch.PdPatch;
 
@@ -77,7 +78,7 @@ public class LiveSequencerDemoApplication extends Game
 		Pd.audio.sendFloat("pan", 0); // XXX
 		Pd.audio.sendFloat("reverb", 0); // XXX
 		
-		seq = new LiveSequencer();
+		seq = new LiveSequencer(PdMidiSynth.instance);
 		seq.load(midiFile);
 		
 		buildGUI(table, skin);
@@ -167,7 +168,7 @@ public class LiveSequencerDemoApplication extends Game
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				for(LiveTrack track : seq.getTracks()){
-					track.loop(false);
+					track.unloop();
 				}
 				
 			}});
@@ -179,7 +180,7 @@ public class LiveSequencerDemoApplication extends Game
 				
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
-					seq.loop(chan, false);
+					seq.getTrack(chan).unloop();
 				}
 			});
 			table.add(btClip);
@@ -204,7 +205,7 @@ public class LiveSequencerDemoApplication extends Game
 			btClip.addListener(new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
-					seq.mute(chan, !btClip.isChecked());
+					seq.getTrack(chan).mute(!btClip.isChecked());
 				}
 			});
 			table.add(btClip);
@@ -253,7 +254,7 @@ public class LiveSequencerDemoApplication extends Game
 					public void act(float delta) {
 						super.act(delta);
 						
-						int p = seq.getPosition(chan);
+						int p = seq.getTrack(chan).getPosition();
 						int len = division.value;
 						boolean in = p >= clip * len && p < (clip+1) * len;
 						
@@ -276,7 +277,7 @@ public class LiveSequencerDemoApplication extends Game
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
 						int len = division.value;
-						seq.sched(chan, clip * len, (clip+1) * len, trigBox.getSelected().value);
+						seq.getTracks().get(chan).setLoop(clip * len, (clip+1) * len, trigBox.getSelected().value);
 					}
 				});
 				table.add(btClip);

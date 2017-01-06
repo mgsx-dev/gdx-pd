@@ -38,7 +38,7 @@ public class LiveTrack
 		index = loopStartIndex = 0;
 		resolution = file.getResolution();
 		this.listener = listener;
-		prePos = loopEnd + 1;
+		prePos = 0;
 	}
 	
 	public void setLoop(int startBeat, int endBeat){
@@ -67,6 +67,7 @@ public class LiveTrack
 	
 	long prePos;
 	boolean active = true;
+	private boolean running = false;
 	
 	public long update(long position)
 	{
@@ -92,6 +93,11 @@ public class LiveTrack
 			inPos = position + offset;
 		}
 		
+		if(!running){
+			// send some event at first run
+			sendProgramChange(inPos);
+			running = true;
+		}
 		
 		// check if nextEvent should be played now
 		MidiEvent nextEvent = events.get(index);
@@ -136,14 +142,10 @@ public class LiveTrack
 		return nextEvent.getTick();
 	}
 
-	public void sendMeta() {
+	private void sendProgramChange(long position) {
 		for(int i=0 ; i<events.size ; i++){
 			MidiEvent nextEvent = events.get(i);
-			if(nextEvent instanceof ProgramChange && nextEvent.getTick() == 0){
-				ProgramChange pgm = (ProgramChange)nextEvent;
-				listener.onEvent(nextEvent, 0);
-				System.out.println("pgm change channel " + pgm.getChannel());
-			}else if(nextEvent.getTick() == 0 && !(nextEvent instanceof NoteOn)){
+			if(nextEvent instanceof ProgramChange && nextEvent.getTick() <= position){
 				listener.onEvent(nextEvent, 0);
 			}
 		}
@@ -158,13 +160,14 @@ public class LiveTrack
 		return (int)(prePos / resolution);
 	}
 
-	public void loop(boolean b) {
-		if(b == false && loop != b){
+	// TODO sync ?
+	public void unloop() {
+		if(loop){
 			long loopLen = loopEnd - loopStart;
 			long localPos = ((virtualPosition % loopLen) + loopLen) % loopLen;
 			offset = loopStart + localPos - virtualPosition;
+			loop = false;
 		}
-		loop = b;
 	}
 
 	public int endBeat() {
@@ -187,5 +190,10 @@ public class LiveTrack
 
 	public Array<MidiEvent> getEvents() {
 		return events;
+	}
+
+	public void reset() 
+	{
+		running  = false;
 	}
 }
