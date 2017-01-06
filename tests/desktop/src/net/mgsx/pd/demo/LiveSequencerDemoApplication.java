@@ -10,9 +10,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -90,6 +92,24 @@ public class LiveSequencerDemoApplication extends Game
 	private void buildGUI(Table table, Skin skin) 
 	{
 		Table header = new Table(skin);
+		
+		Label bpmField = new Label("", skin);
+		
+		header.add("BPM");
+		header.add(bpmField).width(60);
+		final Slider slider = new Slider(30, 240, .01f, false, skin);
+		header.add(slider);
+		
+		slider.setValue(100);
+		slider.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				seq.bpm = slider.getValue();
+				bpmField.setText(String.valueOf((int)seq.bpm));
+			}
+		});
+		
 		
 		final TextButton btPlay = new TextButton("Play", skin, "toggle");
 		btPlay.addListener(new ChangeListener() {

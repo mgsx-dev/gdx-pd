@@ -18,6 +18,8 @@ public class LiveSequencer {
 	/** ticks per quarter note */
 	private int resolution;
 	
+	public volatile float bpm = 100f;
+	
 	public LiveSequencer(MidiEventListener listener) {
 		this.listener = listener;
 	}
@@ -53,25 +55,31 @@ public class LiveSequencer {
 			@Override
 			public void run() {
 				
-				long absoluteTimeNS = System.nanoTime();
-				long relativeTimeNS = 0;
-				int BPM = 100;
-				float ticksPerSec = (BPM / 60f) * resolution;
+				long previousTimeNS = System.nanoTime();
+				float timeS = 0;
 				
 				// reset track before a new run
 				for(LiveTrack track : runningTracks){
 					track.reset();
 				}
-				while(shouldPlay){
-					relativeTimeNS = System.nanoTime() - absoluteTimeNS;
+				while(shouldPlay)
+				{
+					float ticksPerSec = (bpm / 60f) * resolution;
+					int bestTickDurationMS = Math.max(1, (int)(1000f / ticksPerSec));
+					// TODO tickDurationMS could be more (tradeoff between performance and accuracy)
+					int tickDurationMS = bestTickDurationMS;
 					
-					float timeS = (float)relativeTimeNS / 1e9f;
-					long posTick = (long)(timeS * ticksPerSec);
+					long currentTimeNS = System.nanoTime();
+					long deltaTimeNS = currentTimeNS - previousTimeNS;
+					previousTimeNS = currentTimeNS;
+					
+					timeS += (float)deltaTimeNS * ticksPerSec / 1e9f;
+					long posTick = (long)(timeS);
 					for(LiveTrack track : runningTracks){
 						if(track.active) track.update(posTick);
 					}
 					try {
-						Thread.sleep(1);
+						Thread.sleep(tickDurationMS);
 					} catch (InterruptedException e) {
 						// silent fail.
 					}
