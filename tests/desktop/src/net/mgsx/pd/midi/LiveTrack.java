@@ -16,7 +16,7 @@ public class LiveTrack
 	public boolean loop = false;
 	public boolean nextLoop = false;
 	public int index, loopStartIndex;
-	int resolution;
+	public int resolution;
 	
 	final private Array<MidiEvent> events;
 	
