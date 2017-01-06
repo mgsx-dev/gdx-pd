@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.leff.midi.MidiFile;
 import com.leff.midi.event.MidiEvent;
+import com.leff.midi.event.NoteOn;
 import com.leff.midi.event.meta.TrackName;
 
 import net.mgsx.gdx.pd.PdAudioOpenAL;
@@ -286,15 +287,32 @@ public class LiveSequencerDemoApplication extends Game
 				
 				int len = division.value;
 				int hasIn = 0;
+				int notesIn = 0;
+				int otherIn = 0;
 				for(MidiEvent e : seq.getTracks().get(chan).getEvents()){
 					long p = e.getTick() / seq.getTracks().get(chan).resolution;
 					boolean in = p >= clip * len && p < (clip+1) * len;
 					if(in){
 						hasIn++;
+						
+						if(e instanceof NoteOn){
+							notesIn++;
+						}else{
+							otherIn++;
+						}
+						
 					}
 				}
 				
-				TextButton btClip = new TextButton(hasIn > 0 ? String.valueOf(hasIn) : "-", skin){
+				String label;
+				if(hasIn > 0){
+					label = String.valueOf(notesIn);
+					if(otherIn > 0) label += "|" + String.valueOf(otherIn);
+				}else{
+					label = "-";
+				}
+				
+				TextButton btClip = new TextButton(label, skin){
 					public void act(float delta) {
 						super.act(delta);
 						

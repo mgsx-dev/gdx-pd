@@ -6,6 +6,7 @@ import com.leff.midi.MidiTrack;
 import com.leff.midi.event.MidiEvent;
 import com.leff.midi.event.NoteOn;
 import com.leff.midi.event.ProgramChange;
+import com.leff.midi.event.meta.Tempo;
 import com.leff.midi.util.MidiEventListener;
 
 public class LiveTrack
@@ -27,8 +28,10 @@ public class LiveTrack
 	private int notesOnCount = 0;
 	
 	private ResetNote off = new ResetNote();
+	private final LiveSequencer master;
 	
-	public LiveTrack(MidiFile file, MidiTrack track, MidiEventListener listener) {
+	public LiveTrack(LiveSequencer master, MidiFile file, MidiTrack track, MidiEventListener listener) {
+		this.master = master;
 		events = new Array<MidiEvent>();
 		for(MidiEvent e : track.getEvents()){
 			events.add(e);
@@ -74,9 +77,9 @@ public class LiveTrack
 		virtualPosition = position;
 		
 		if(nextLoop){
-			
-			long pPosMod = prePos % (modulus * resolution);
-			long cPosMod = position % (modulus * resolution);
+			int mod = modulus * resolution;
+			long pPosMod = (prePos % mod + mod) % mod;
+			long cPosMod = (position % mod + mod) % mod;;
 			if(pPosMod > cPosMod){
 				setLoop(nextLoopStart, nextLoopEnd);
 				nextLoop = false;
@@ -128,13 +131,16 @@ public class LiveTrack
 					notes[index] = value;
 					notesOnIndices[notesOnCount++] = index;
 				}
+			}else if(nextEvent instanceof Tempo){
+				master.bpm = ((Tempo) nextEvent).getBpm();
 			}
-			listener.onEvent(nextEvent, 0);
+			
 			if(index < events.size - 1){
 				index++;
 			}else{
 				break;
 			}
+			listener.onEvent(nextEvent, 0);
 			nextEvent = events.get(index);
 		}
 		prePos = inPos;

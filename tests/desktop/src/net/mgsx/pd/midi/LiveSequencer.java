@@ -27,7 +27,7 @@ public class LiveSequencer extends BaseSequencer
 		resolution = file.getResolution(); // TODO resolution may change between files but not in tracks !
 		
 		for(MidiTrack track : file.getTracks()){
-			tracks.add(new LiveTrack(file, track, listener));
+			tracks.add(new LiveTrack(this, file, track, listener));
 		}
 	}
 	
