@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -92,7 +93,14 @@ public class LiveSequencerDemoApplication extends Game
 		Table header = new Table(skin);
 		
 		final SelectBox<String> songBox = new SelectBox<>(skin);
-		songBox.setItems("", "MuteCity.mid", "alf.mid", "pd-midi/macross.mid");
+		
+		Array<String> items = new Array<String>();
+		items.add("");
+		for(FileHandle f : Gdx.files.internal("pd-midi").list()){
+			if(f.extension().equals("mid")) items.add(f.path());
+		}
+		
+		songBox.setItems(items);
 		header.add("Song");
 		header.add(songBox);
 		
