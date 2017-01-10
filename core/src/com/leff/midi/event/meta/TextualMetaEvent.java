@@ -19,7 +19,6 @@ package com.leff.midi.event.meta;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.leff.midi.event.MidiEvent;
 import com.leff.midi.util.VariableLengthInt;
 
 public abstract class TextualMetaEvent extends MetaEvent
@@ -57,28 +56,6 @@ public abstract class TextualMetaEvent extends MetaEvent
 
         out.write(mLength.getBytes());
         out.write(mText.getBytes());
-    }
-
-    @Override
-    public int compareTo(MidiEvent other)
-    {
-        if(mTick != other.getTick())
-        {
-            return mTick < other.getTick() ? -1 : 1;
-        }
-        if(mDelta.getValue() != other.getDelta())
-        {
-            return mDelta.getValue() < other.getDelta() ? 1 : -1;
-        }
-
-        if(!(other instanceof TextualMetaEvent))
-        {
-            return 1;
-        }
-
-        TextualMetaEvent o = (TextualMetaEvent) other;
-
-        return mText.compareTo(o.mText);
     }
 
     @Override

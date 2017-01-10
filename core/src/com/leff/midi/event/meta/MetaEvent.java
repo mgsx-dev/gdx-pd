@@ -38,15 +38,9 @@ public abstract class MetaEvent extends MidiEvent
 
     protected abstract int getEventSize();
 
-    @Override
-    public void writeToFile(OutputStream out, boolean writeType) throws IOException
+    public void writeToFile(OutputStream out) throws IOException
     {
-        writeToFile(out);
-    }
-
-    protected void writeToFile(OutputStream out) throws IOException
-    {
-        super.writeToFile(out, true);
+        super.writeToFile(out);
         out.write(0xFF);
         out.write(mType);
     }
