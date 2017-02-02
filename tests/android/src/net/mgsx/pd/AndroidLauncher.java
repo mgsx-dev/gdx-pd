@@ -13,6 +13,6 @@ public class AndroidLauncher extends AndroidApplication {
 		Pd.audio = new PdAudioAndroid(this);
 		Pd.midi = new DefaultPdMidi();
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new GdxPdTest(), config);
+		initialize(new GdxPdDemo(), config);
 	}
 }
