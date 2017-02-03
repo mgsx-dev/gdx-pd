@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.midi.sequence.event.MidiEvent;
 import net.mgsx.midi.sequence.util.MidiUtil;
@@ -62,24 +64,33 @@ public class MidiSequence
         mType = mTrackCount > 1 ? 1 : 0;
     }
 
+    @Deprecated
     public MidiSequence(File fileIn) throws FileNotFoundException, IOException
     {
         this(new FileInputStream(fileIn));
     }
+    
+    public MidiSequence(FileHandle file)
+    {
+    	this(file.read());
+    }
 
-    public MidiSequence(InputStream rawIn) throws IOException
+    public MidiSequence(InputStream rawIn)
     {
         BufferedInputStream in = new BufferedInputStream(rawIn);
-
-        byte[] buffer = new byte[HEADER_SIZE];
-        in.read(buffer);
-
-        initFromBuffer(buffer);
-
-        mTracks = new ArrayList<MidiTrack>();
-        for(int i = 0; i < mTrackCount; i++)
-        {
-            mTracks.add(new MidiTrack(in));
+        try{
+	        byte[] buffer = new byte[HEADER_SIZE];
+	        in.read(buffer);
+	
+	        initFromBuffer(buffer);
+	
+	        mTracks = new ArrayList<MidiTrack>();
+	        for(int i = 0; i < mTrackCount; i++)
+	        {
+	            mTracks.add(new MidiTrack(in));
+	        }
+        }catch(IOException e){
+        	throw new GdxRuntimeException(e);
         }
     }
     

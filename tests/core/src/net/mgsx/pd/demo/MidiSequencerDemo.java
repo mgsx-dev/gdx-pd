@@ -1,15 +1,12 @@
 package net.mgsx.pd.demo;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -20,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.midi.playback.LiveSequencer;
 import net.mgsx.midi.playback.LiveTrack;
@@ -38,7 +34,7 @@ import net.mgsx.pd.midi.MidiMusicLoader;
 import net.mgsx.pd.patch.PatchLoader;
 import net.mgsx.pd.patch.PdPatch;
 
-public class LiveSequencerDemoApplication extends Game 
+public class MidiSequencerDemo implements Demo
 {
 	public static class Division{
 		
@@ -73,24 +69,15 @@ public class LiveSequencerDemoApplication extends Game
 		}
 	}
 	
-	Stage stage;
 	private DefaultMidiMusic song;
 	private LiveSequencer seq;
 	private AssetManager assets;
 
 	@Override
-	public void create() {
-		
-		stage = new Stage(new ScreenViewport());
-		Gdx.input.setInputProcessor(stage);
-		Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-		
+	public Actor create(Skin skin) 
+	{
 		Table table = new Table(skin);
 		
-		
-		table.setFillParent(true);
-		
-		stage.addActor(table);
 		
 		Pd.midi = new DefaultPdMidi();
 		
@@ -114,6 +101,8 @@ public class LiveSequencerDemoApplication extends Game
 		seq = new LiveSequencer(PdMidiSynth.instance);
 		
 		buildGUI(table, skin);
+		
+		return table;
 	}
 
 	private Table matrix;
@@ -391,17 +380,13 @@ public class LiveSequencerDemoApplication extends Game
 	}
 
 	@Override
-	public void render() {
-		super.render();
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act();
-		stage.draw();
+	public void dispose() {
+		// TODO dispose all stuff
+		
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		stage.getViewport().update(width, height, true);
-		super.resize(width, height);
+	public String toString() {
+		return "Midi Sequencer";
 	}
 }

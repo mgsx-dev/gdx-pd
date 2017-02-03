@@ -39,11 +39,12 @@ public class LiveSequencer extends BaseSequencer
 	public LiveTrack getTrack(int index) {
 		return tracks.get(index);
 	}
-
+	@Override
 	public void stop() {
 		shouldPlay = false;
 	}
 	
+	@Override
 	public void play() 
 	{
 		// copy tracks reference to avoid concurrent access on list.
@@ -98,6 +99,16 @@ public class LiveSequencer extends BaseSequencer
 
 	public void clear() {
 		tracks.clear();
+	}
+	
+	@Override
+	public void reset() {
+		// TODO ???
+	}
+
+	@Override
+	public boolean isRunning() {
+		return shouldPlay;
 	}
 
 }

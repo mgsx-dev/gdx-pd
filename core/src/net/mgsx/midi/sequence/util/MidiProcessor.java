@@ -20,12 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import net.mgsx.midi.playback.Sequencer;
 import net.mgsx.midi.sequence.MidiSequence;
 import net.mgsx.midi.sequence.MidiTrack;
 import net.mgsx.midi.sequence.event.MidiEvent;
 import net.mgsx.midi.sequence.event.meta.Tempo;
 
-public class MidiProcessor
+public class MidiProcessor implements Sequencer
 {
     private static final int PROCESS_RATE_MS = 8;
 
@@ -56,7 +57,7 @@ public class MidiProcessor
         this.reset();
     }
 
-    public synchronized void start()
+    public synchronized void play()
     {
         if(mRunning)
             return;
