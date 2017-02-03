@@ -66,7 +66,7 @@ public class MidiMusicDemo implements Demo
 		positionController.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				// TODO change position
+				music.setPosition(positionController.getValue() * music.getDuration());
 			}
 		});
 		
