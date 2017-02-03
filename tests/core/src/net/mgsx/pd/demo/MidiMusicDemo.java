@@ -15,7 +15,7 @@ import net.mgsx.pd.Pd;
 import net.mgsx.pd.midi.MidiMusic;
 import net.mgsx.pd.patch.PdPatch;
 
-public class MidiDemo implements Demo
+public class MidiMusicDemo implements Demo
 {
 	private PdPatch patch;
 	private MidiMusic music;

@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.patch.PdPatch;
 
-public class MicrophoneDemo implements Demo
+public class MicProcessingDemo implements Demo
 {
 	private PdPatch patch;
 	
@@ -79,7 +79,7 @@ public class MicrophoneDemo implements Demo
 	
 	@Override
 	public String toString() {
-		return "Microphone";
+		return "Mic Processing";
 	}
 	
 }

@@ -13,10 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import net.mgsx.pd.demo.AtmosphereDemo;
 import net.mgsx.pd.demo.Demo;
 import net.mgsx.pd.demo.IntroDemo;
-import net.mgsx.pd.demo.MicrophoneDemo;
-import net.mgsx.pd.demo.MidiDemo;
+import net.mgsx.pd.demo.MicAnalysisDemo;
+import net.mgsx.pd.demo.MicProcessingDemo;
+import net.mgsx.pd.demo.MidiMusicDemo;
+import net.mgsx.pd.demo.SoundEffectsDemo;
 
 public class GdxPdDemo extends ApplicationAdapter 
 {
@@ -51,8 +54,11 @@ public class GdxPdDemo extends ApplicationAdapter
 		
 		demoSelector.setItems(new Demo[]{
 			new IntroDemo(),
-			new MicrophoneDemo(),
-			new MidiDemo()
+			new MidiMusicDemo(),
+			new AtmosphereDemo(),
+			new SoundEffectsDemo(),
+			new MicAnalysisDemo(),
+			new MicProcessingDemo(),
 		});
 		
 		demoPlaceholder = new Table(skin);
