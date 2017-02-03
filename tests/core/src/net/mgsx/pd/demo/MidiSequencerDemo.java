@@ -110,11 +110,11 @@ public class MidiSequencerDemo implements Demo
 	
 	private void buildGUI(Table table, Skin skin) 
 	{
-		final SelectBox<Division> lenBox = new SelectBox<>(skin);
+		final SelectBox<Division> lenBox = new SelectBox<Division>(skin);
 		
 		Table header = new Table(skin);
 		
-		final SelectBox<String> songBox = new SelectBox<>(skin);
+		final SelectBox<String> songBox = new SelectBox<String>(skin);
 		
 		Array<String> items = new Array<String>();
 		items.add("");
@@ -177,7 +177,7 @@ public class MidiSequencerDemo implements Demo
 		});
 		header.add(btPlay);
 		
-		trigBox = new SelectBox<>(skin);
+		trigBox = new SelectBox<Division>(skin);
 		trigBox.setItems(Division.all);
 		header.add("trigger");
 		header.add(trigBox);

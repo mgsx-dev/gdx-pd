@@ -371,4 +371,14 @@ public class MidiProcessor implements Sequencer
 	public float getBPM() {
 		return mMPQN / 60000000f;
 	}
+
+	@Override
+	public long getPositionInTicks() {
+		return (long)mTicksElapsed;
+	}
+
+	@Override
+	public void setPositionInTicks(long ticks) {
+		// not supported
+	}
 }

@@ -8,4 +8,6 @@ public interface Sequencer {
 	public boolean isRunning();
 	public void setBPM(float bpm);
 	public float getBPM();
+	public long getPositionInTicks();
+	public void setPositionInTicks(long ticks);
 }

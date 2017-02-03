@@ -121,4 +121,16 @@ public class LiveSequencer extends BaseSequencer
 		return bpm;
 	}
 
+	@Override
+	public long getPositionInTicks() {
+		// TODO add support
+		return 0;
+	}
+
+	@Override
+	public void setPositionInTicks(long ticks) {
+		// TODO add support
+		
+	}
+
 }

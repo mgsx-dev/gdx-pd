@@ -2,6 +2,7 @@ package net.mgsx.pd.midi;
 
 import net.mgsx.midi.playback.Sequencer;
 import net.mgsx.midi.sequence.MidiSequence;
+import net.mgsx.midi.sequence.util.MidiUtil;
 
 public class DefaultMidiMusic implements MidiMusic
 {
@@ -63,13 +64,12 @@ public class DefaultMidiMusic implements MidiMusic
 
 	@Override
 	public void setPosition(float position) {
-		// not supported yet
+		sequencer.setPositionInTicks((long)MidiUtil.msToTicks((long)(position * 1000), sequencer.getBPM(), sequence.getResolution()));
 	}
 
 	@Override
 	public float getPosition() {
-		// not supported yet
-		return 0;
+		return MidiUtil.ticksToMs(sequencer.getPositionInTicks(), sequencer.getBPM(), sequence.getResolution()) / 1000f;
 	}
 
 	@Override
@@ -90,6 +90,11 @@ public class DefaultMidiMusic implements MidiMusic
 	@Override
 	public float getBPM() {
 		return sequencer.getBPM();
+	}
+
+	@Override
+	public float getDuration() {
+		return MidiUtil.ticksToMs(sequence.getLengthInTicks(), sequencer.getBPM(), sequence.getResolution()) / 1000f;
 	}
 
 }
