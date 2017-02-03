@@ -10,7 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.midi.sequence.MidiSequence;
+import net.mgsx.midi.sequence.event.meta.CopyrightNotice;
+import net.mgsx.midi.sequence.event.meta.Tempo;
+import net.mgsx.midi.sequence.event.meta.Text;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.midi.MidiMusic;
 import net.mgsx.pd.patch.PdPatch;
@@ -21,6 +26,7 @@ public class MidiMusicDemo implements Demo
 	private MidiMusic music;
 	
 	private Label copyrightPlaceholder;
+	private Slider tempoController;
 	
 	@Override
 	public Actor create(Skin skin) 
@@ -37,15 +43,17 @@ public class MidiMusicDemo implements Demo
 			}
 		});
 		
-		Slider tempoController = new Slider(40, 180, 100, false, skin);
+		tempoController = new Slider(60, 240, 1, false, skin);
 		tempoController.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				// TODO change tempo
+				if(music != null){
+					music.setBPM(tempoController.getValue());
+				}
 			}
 		});
 		
-		Slider positionController = new Slider(0, 1, 100, false, skin){
+		Slider positionController = new Slider(0, 1, .01f, false, skin){
 			@Override
 			public void act(float delta) {
 				super.act(delta);
@@ -59,11 +67,18 @@ public class MidiMusicDemo implements Demo
 			}
 		});
 		
-		TextButton btPlayStop = new TextButton("Stop", skin);
+		final TextButton btPlayStop = new TextButton("Stop", skin);
 		btPlayStop.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				// TODO change position
+				if(music.isPlaying()){
+					btPlayStop.setText("Play");
+					music.stop();
+				}else{
+					btPlayStop.setText("Stop");
+					music.play();
+				}
+				
 			}
 		});
 		
@@ -83,7 +98,7 @@ public class MidiMusicDemo implements Demo
 		root.add(btPlayStop);
 		root.row();
 		
-		root.add("Copyright");
+		root.add("Copyright Notice");
 		root.add(copyrightPlaceholder = new Label("", skin));
 		root.row();
 		
@@ -99,10 +114,27 @@ public class MidiMusicDemo implements Demo
 		if(music != null){
 			music.dispose();
 		}
-		music = Pd.midi.createMidiMusic(file);
-		music.play();
+		MidiSequence sequence = new MidiSequence(file);
 		
-		// TODO display song meta (copyright notice and text)
+		// display song meta (copyright notice and text)
+		String copyrightText = "";
+		for(CopyrightNotice event : sequence.findEvents(new Array<CopyrightNotice>(), CopyrightNotice.class)){
+			copyrightText += event.getNotice() + "\n";
+		}
+		for(Text event : sequence.findEvents(new Array<Text>(), Text.class)){
+			copyrightText += event.getText() + "\n";
+		}
+		copyrightPlaceholder.setText(copyrightText.trim());
+		
+		// get first tempo change
+		for(Tempo event : sequence.findEvents(new Array<Tempo>(), Tempo.class)){
+			tempoController.setValue(event.getBpm());
+			break;
+		}
+		
+		// create and play music with default sequencer
+		music = Pd.midi.createMidiMusic(sequence);
+		music.play();
 	}
 
 	@Override

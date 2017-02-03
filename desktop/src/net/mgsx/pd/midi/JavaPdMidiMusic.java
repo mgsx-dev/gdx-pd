@@ -36,4 +36,16 @@ public class JavaPdMidiMusic extends JavaMidiMusic
 		PdBase.sendFloat("volume", volume);
 	}
 
+	@Override
+	public void setBPM(float bpm) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float getBPM() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

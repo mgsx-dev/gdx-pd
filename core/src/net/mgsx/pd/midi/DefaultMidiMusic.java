@@ -82,4 +82,14 @@ public class DefaultMidiMusic implements MidiMusic
 		// not supported yet
 	}
 
+	@Override
+	public void setBPM(float bpm) {
+		sequencer.setBPM(bpm);
+	}
+
+	@Override
+	public float getBPM() {
+		return sequencer.getBPM();
+	}
+
 }

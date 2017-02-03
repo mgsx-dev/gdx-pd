@@ -361,4 +361,14 @@ public class MidiProcessor implements Sequencer
             return mNext != null;
         }
     }
+
+	@Override
+	public void setBPM(float bpm) {
+		mMPQN = (int) (60000000 / bpm);
+	}
+
+	@Override
+	public float getBPM() {
+		return mMPQN / 60000000f;
+	}
 }

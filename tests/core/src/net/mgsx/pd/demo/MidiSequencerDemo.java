@@ -139,7 +139,7 @@ public class MidiSequencerDemo implements Demo
 					assets.load(songAsset);
 					assets.finishLoading();
 					song = (DefaultMidiMusic)assets.get(songAsset);
-					MidiSequence midiFile = song.mfile;
+					MidiSequence midiFile = song.sequence;
 	
 					seq.load(midiFile);
 					matrix.clear();

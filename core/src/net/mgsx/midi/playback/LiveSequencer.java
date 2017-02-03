@@ -111,4 +111,14 @@ public class LiveSequencer extends BaseSequencer
 		return shouldPlay;
 	}
 
+	@Override
+	public void setBPM(float bpm) {
+		this.bpm = bpm;
+	}
+
+	@Override
+	public float getBPM() {
+		return bpm;
+	}
+
 }

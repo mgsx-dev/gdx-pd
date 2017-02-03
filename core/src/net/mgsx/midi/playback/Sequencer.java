@@ -6,4 +6,6 @@ public interface Sequencer {
 	public void stop();
 	public void reset();
 	public boolean isRunning();
+	public void setBPM(float bpm);
+	public float getBPM();
 }
