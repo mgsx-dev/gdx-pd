@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.leff.midi.event.meta.MetaEvent;
 import com.leff.midi.util.VariableLengthInt;
 
@@ -27,6 +28,9 @@ public abstract class MidiEvent implements Comparable<MidiEvent>
 {
     protected long mTick;
     protected VariableLengthInt mDelta;
+    
+    /** insert index on track (used for deterministic order) */
+    public int mIndex;
 
     public MidiEvent(long tick, long delta)
     {
@@ -56,27 +60,28 @@ public abstract class MidiEvent implements Comparable<MidiEvent>
         return getEventSize() + mDelta.getByteCount();
     }
 
-    public boolean requiresStatusByte(MidiEvent prevEvent)
-    {
-        if(prevEvent == null)
-        {
-            return true;
-        }
-        if(this instanceof MetaEvent)
-        {
-            return true;
-        }
-        if(this.getClass().equals(prevEvent.getClass()))
-        {
-            return false;
-        }
-        return true;
-    }
-
-    public void writeToFile(OutputStream out, boolean writeType) throws IOException
+    public void writeToFile(OutputStream out) throws IOException
     {
         out.write(mDelta.getBytes());
     }
+    
+    @Override
+    public int compareTo(MidiEvent other)
+    {
+    	// first compare by time position
+        if(this.mTick < other.mTick)
+        {
+            return -1;
+        }
+        if(this.mTick > other.mTick)
+        {
+            return 1;
+        }
+
+        // then compare by insert order (to keep read/write deterministic)
+        return Integer.compare(mIndex, other.mIndex);
+    }
+
 
     private static int sId = -1;
     private static int sType = -1;
@@ -85,13 +90,13 @@ public abstract class MidiEvent implements Comparable<MidiEvent>
     public static final MidiEvent parseEvent(long tick, long delta, InputStream in) throws IOException
     {
         in.mark(1);
-        boolean reset = false;
 
+        
         int id = in.read();
+        System.out.println(String.format("%d +%d 0x%x", tick, delta, id));
         if(!verifyIdentifier(id))
         {
             in.reset();
-            reset = true;
         }
 
         if(sType >= 0x8 && sType <= 0xE)
@@ -111,14 +116,9 @@ public abstract class MidiEvent implements Comparable<MidiEvent>
         }
         else
         {
-            System.out.println("Unable to handle status byte, skipping: " + sId);
-            if(reset)
-            {
-                in.read();
-            }
+        	throw new GdxRuntimeException("Unable to handle status byte, skipping: " + sId);
         }
 
-        return null;
     }
 
     private static boolean verifyIdentifier(int id)

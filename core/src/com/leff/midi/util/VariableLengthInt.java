@@ -19,6 +19,8 @@ package com.leff.midi.util;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 public class VariableLengthInt
 {
     private int mValue;
@@ -58,74 +60,40 @@ public class VariableLengthInt
 
     private void parseBytes(InputStream in) throws IOException
     {
-        int[] ints = new int[4];
+    	mValue = 0;
+    	for(mSizeInBytes = 0 ; mSizeInBytes<4 ; ){
+    		int b = in.read();
+    		mValue = (mValue << 7) | (b & 0x7F);
+    		mSizeInBytes++;
+    		if((b & 0x80) == 0) break;
+    		if(mSizeInBytes == 4) throw new GdxRuntimeException("bad variable length overflow !");
+    	}
 
-        mSizeInBytes = 0;
-        mValue = 0;
-        int shift = 0;
-
-        int b = in.read();
-        while(mSizeInBytes < 4)
-        {
-            mSizeInBytes++;
-            
-            boolean variable = (b & 0x80) > 0;
-            if(!variable)
-            {
-                ints[mSizeInBytes - 1] = (b & 0x7F);
-                break;
-            }
-            ints[mSizeInBytes - 1] = (b & 0x7F);
-
-            b = in.read();
-        }
-
-        for(int i = 1; i < mSizeInBytes; i++)
-        {
-            shift += 7;
-        }
-
-        mBytes = new byte[mSizeInBytes];
-        for(int i = 0; i < mSizeInBytes; i++)
-        {
-            mBytes[i] = (byte) ints[i];
-
-            mValue += ints[i] << shift;
-            shift -= 7;
-        }
+    	createBytes();
     }
 
     private void buildBytes()
     {
-        if(mValue == 0)
-        {
-            mBytes = new byte[1];
-            mBytes[0] = 0x00;
-            mSizeInBytes = 1;
-            return;
-        }
-
-        mSizeInBytes = 0;
-        int[] vals = new int[4];
-        int tmpVal = mValue;
-
-        while(mSizeInBytes < 4 && tmpVal > 0)
-        {
-            vals[mSizeInBytes] = tmpVal & 0x7F;
-
-            mSizeInBytes++;
-            tmpVal = tmpVal >> 7;
-        }
-
-        for(int i = 1; i < mSizeInBytes; i++)
-        {
-            vals[i] |= 0x80;
-        }
-
-        mBytes = new byte[mSizeInBytes];
+    	mSizeInBytes = 0;
+    	int val = mValue;
+    	for(mSizeInBytes = 0; mSizeInBytes<4 ; ){
+    		val >>= 7;
+    		mSizeInBytes++;
+    		if(val == 0) break;
+    		if(mSizeInBytes == 4) throw new GdxRuntimeException("bad variable length overflow !");
+    	};
+    	
+    	createBytes();
+    	
+    }
+    
+    private void createBytes(){
+    	mBytes = new byte[mSizeInBytes];
+        int val = mValue;
         for(int i = 0; i < mSizeInBytes; i++)
         {
-            mBytes[i] = (byte) vals[mSizeInBytes - i - 1];
+            mBytes[mSizeInBytes-1-i] = i==0 ? (byte)( val & 0x7F) : (byte)( val & 0x7F | 0x80);
+            val >>= 7;
         }
     }
 

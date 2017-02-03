@@ -19,7 +19,6 @@ package com.leff.midi.event.meta;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.leff.midi.event.MidiEvent;
 import com.leff.midi.util.VariableLengthInt;
 
 public class EndOfTrack extends MetaEvent
@@ -42,23 +41,5 @@ public class EndOfTrack extends MetaEvent
 
         out.write(0);
     }
-
-    @Override
-    public int compareTo(MidiEvent other)
-    {
-        if(mTick != other.getTick())
-        {
-            return mTick < other.getTick() ? -1 : 1;
-        }
-        if(mDelta.getValue() != other.getDelta())
-        {
-            return mDelta.getValue() < other.getDelta() ? 1 : -1;
-        }
-
-        if(!(other instanceof EndOfTrack))
-        {
-            return 1;
-        }
-        return 0;
-    }
+    
 }

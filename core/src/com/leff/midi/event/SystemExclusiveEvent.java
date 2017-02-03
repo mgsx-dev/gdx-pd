@@ -62,50 +62,13 @@ public class SystemExclusiveEvent extends MidiEvent
     }
 
     @Override
-    public boolean requiresStatusByte(MidiEvent prevEvent)
+    public void writeToFile(OutputStream out) throws IOException
     {
-        return true;
-    }
-
-    @Override
-    public void writeToFile(OutputStream out, boolean writeType) throws IOException
-    {
-        super.writeToFile(out, writeType);
+        super.writeToFile(out);
 
         out.write(mType);
         out.write(mLength.getBytes());
         out.write(mData);
-    }
-
-    @Override
-    public int compareTo(MidiEvent other)
-    {
-        if(this.mTick < other.mTick)
-        {
-            return -1;
-        }
-        if(this.mTick > other.mTick)
-        {
-            return 1;
-        }
-
-        if(this.mDelta.getValue() > other.mDelta.getValue())
-        {
-            return -1;
-        }
-        if(this.mDelta.getValue() < other.mDelta.getValue())
-        {
-            return 1;
-        }
-
-        if(other instanceof SystemExclusiveEvent)
-        {
-            String curr = new String(mData);
-            String comp = new String(((SystemExclusiveEvent) other).mData);
-            return curr.compareTo(comp);
-        }
-
-        return 1;
     }
 
     @Override

@@ -19,8 +19,6 @@ package com.leff.midi.event.meta;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.leff.midi.event.MidiEvent;
-import com.leff.midi.util.MidiUtil;
 import com.leff.midi.util.VariableLengthInt;
 
 public class SequencerSpecificEvent extends MetaEvent
@@ -59,29 +57,4 @@ public class SequencerSpecificEvent extends MetaEvent
         out.write(mData);
     }
 
-    @Override
-    public int compareTo(MidiEvent other)
-    {
-        if(mTick != other.getTick())
-        {
-            return mTick < other.getTick() ? -1 : 1;
-        }
-        if(mDelta.getValue() != other.getDelta())
-        {
-            return mDelta.getValue() < other.getDelta() ? 1 : -1;
-        }
-
-        if(!(other instanceof SequencerSpecificEvent))
-        {
-            return 1;
-        }
-
-        SequencerSpecificEvent o = (SequencerSpecificEvent) other;
-
-        if(MidiUtil.bytesEqual(mData, o.mData, 0, mData.length))
-        {
-            return 0;
-        }
-        return 1;
-    }
 }

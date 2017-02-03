@@ -19,7 +19,6 @@ package com.leff.midi.event;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 
 public class ChannelEvent extends MidiEvent
 {
@@ -27,8 +26,6 @@ public class ChannelEvent extends MidiEvent
     protected int mChannel;
     protected int mValue1;
     protected int mValue2;
-
-    private static HashMap<Integer, Integer> mOrderMap;
 
     protected ChannelEvent(long tick, int type, int channel, int param1, int param2)
     {
@@ -81,76 +78,12 @@ public class ChannelEvent extends MidiEvent
     }
 
     @Override
-    public int compareTo(MidiEvent other)
+    public void writeToFile(OutputStream out) throws IOException
     {
-        if(mTick != other.getTick())
-        {
-            return mTick < other.getTick() ? -1 : 1;
-        }
-        if(mDelta.getValue() != other.mDelta.getValue())
-        {
-            return mDelta.getValue() < other.mDelta.getValue() ? 1 : -1;
-        }
+        super.writeToFile(out);
 
-        if(!(other instanceof ChannelEvent))
-        {
-            return 1;
-        }
-
-        ChannelEvent o = (ChannelEvent) other;
-        if(mType != o.getType())
-        {
-            if(mOrderMap == null)
-            {
-                buildOrderMap();
-            }
-
-            int order1 = mOrderMap.get(mType);
-            int order2 = mOrderMap.get(o.getType());
-
-            return order1 < order2 ? -1 : 1;
-        }
-        if(mValue1 != o.mValue1)
-        {
-            return mValue1 < o.mValue1 ? -1 : 1;
-        }
-        if(mValue2 != o.mValue2)
-        {
-            return mValue2 < o.mValue2 ? -1 : 1;
-        }
-        if(mChannel != o.getChannel())
-        {
-            return mChannel < o.getChannel() ? -1 : 1;
-        }
-        return 0;
-    }
-
-    @Override
-    public boolean requiresStatusByte(MidiEvent prevEvent)
-    {
-        if(prevEvent == null)
-        {
-            return true;
-        }
-        if(!(prevEvent instanceof ChannelEvent))
-        {
-            return true;
-        }
-
-        ChannelEvent ce = (ChannelEvent) prevEvent;
-        return !(mType == ce.getType() && mChannel == ce.getChannel());
-    }
-
-    @Override
-    public void writeToFile(OutputStream out, boolean writeType) throws IOException
-    {
-        super.writeToFile(out, writeType);
-
-        if(writeType)
-        {
-            int typeChannel = (mType << 4) + mChannel;
-            out.write(typeChannel);
-        }
+        int typeChannel = (mType << 4) | mChannel;
+        out.write(typeChannel);
 
         out.write(mValue1);
         if(mType != PROGRAM_CHANGE && mType != CHANNEL_AFTERTOUCH)
@@ -187,20 +120,6 @@ public class ChannelEvent extends MidiEvent
             default:
                 return new ChannelEvent(tick, delta, type, channel, val1, val2);
         }
-    }
-
-    private static void buildOrderMap()
-    {
-
-        mOrderMap = new HashMap<Integer, Integer>();
-
-        mOrderMap.put(PROGRAM_CHANGE, 0);
-        mOrderMap.put(CONTROLLER, 1);
-        mOrderMap.put(NOTE_ON, 2);
-        mOrderMap.put(NOTE_OFF, 3);
-        mOrderMap.put(NOTE_AFTERTOUCH, 4);
-        mOrderMap.put(CHANNEL_AFTERTOUCH, 5);
-        mOrderMap.put(PITCH_BEND, 6);
     }
 
     public static final int NOTE_OFF = 0x8;

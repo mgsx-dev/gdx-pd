@@ -24,7 +24,6 @@ import com.leff.midi.MidiFile;
 import com.leff.midi.MidiTrack;
 import com.leff.midi.event.MidiEvent;
 import com.leff.midi.event.meta.Tempo;
-import com.leff.midi.event.meta.TimeSignature;
 
 public class MidiProcessor
 {
@@ -41,7 +40,6 @@ public class MidiProcessor
     private int mMPQN;
     private int mPPQ;
 
-    private MetronomeTick mMetronome;
     private MidiTrackEventQueue[] mEventQueues;
 
     public MidiProcessor(MidiFile input)
@@ -54,8 +52,6 @@ public class MidiProcessor
 
         mEventsToListeners = new HashMap<Class<? extends MidiEvent>, ArrayList<MidiEventListener>>();
         mListenersToEvents = new HashMap<MidiEventListener, ArrayList<Class<? extends MidiEvent>>>();
-
-        mMetronome = new MetronomeTick(new TimeSignature(), mPPQ);
 
         this.reset();
     }
@@ -86,8 +82,6 @@ public class MidiProcessor
         mRunning = false;
         mTicksElapsed = 0;
         mMsElapsed = 0;
-
-        mMetronome.setTimeSignature(new TimeSignature());
 
         ArrayList<MidiTrack> tracks = mMidiFile.getTracks();
 
@@ -217,17 +211,6 @@ public class MidiProcessor
         {
             mMPQN = ((Tempo) event).getMpqn();
         }
-        else if(event.getClass().equals(TimeSignature.class))
-        {
-
-            boolean shouldDispatch = mMetronome.getBeatNumber() != 1;
-            mMetronome.setTimeSignature((TimeSignature) event);
-
-            if(shouldDispatch)
-            {
-                dispatch(mMetronome);
-            }
-        }
 
         this.sendOnEventForClass(event, event.getClass());
         this.sendOnEventForClass(event, MidiEvent.class);
@@ -281,11 +264,6 @@ public class MidiProcessor
             if(ticksElapsed < 1)
             {
                 continue;
-            }
-
-            if(mMetronome.update(ticksElapsed))
-            {
-                dispatch(mMetronome);
             }
 
             lastMs = now;

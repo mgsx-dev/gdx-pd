@@ -16,10 +16,11 @@ import com.leff.midi.util.MidiProcessor;
 public class DefaultMidiMusic implements MidiMusic
 {
 	private MidiProcessor sequencer;
+	public MidiFile mfile; // XXX
 	
 	public DefaultMidiMusic(FileHandle file) {
 		try {
-			MidiFile mfile = new MidiFile(file.read());
+			mfile = new MidiFile(file.read());
 			sequencer = new MidiProcessor(mfile);
 			sequencer.registerEventListener(new MidiEventListener() {
 				

@@ -19,7 +19,6 @@ package com.leff.midi.event.meta;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.leff.midi.event.MidiEvent;
 import com.leff.midi.util.VariableLengthInt;
 
 public class KeySignature extends MetaEvent
@@ -92,34 +91,4 @@ public class KeySignature extends MetaEvent
         return new KeySignature(tick, delta, key, scale);
     }
 
-    @Override
-    public int compareTo(MidiEvent other)
-    {
-        if(mTick != other.getTick())
-        {
-            return mTick < other.getTick() ? -1 : 1;
-        }
-        if(mDelta.getValue() != other.getDelta())
-        {
-            return mDelta.getValue() < other.getDelta() ? 1 : -1;
-        }
-
-        if(!(other instanceof KeySignature))
-        {
-            return 1;
-        }
-
-        KeySignature o = (KeySignature) other;
-        if(mKey != o.mKey)
-        {
-            return mKey < o.mKey ? -1 : 1;
-        }
-
-        if(mScale != o.mScale)
-        {
-            return mKey < o.mScale ? -1 : 1;
-        }
-
-        return 0;
-    }
 }
