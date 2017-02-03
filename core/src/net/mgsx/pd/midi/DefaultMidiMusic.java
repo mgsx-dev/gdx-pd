@@ -5,22 +5,23 @@ import java.io.IOException;
 import org.puredata.core.PdBase;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.leff.midi.MidiFile;
-import com.leff.midi.event.MidiEvent;
-import com.leff.midi.event.NoteOff;
-import com.leff.midi.event.NoteOn;
-import com.leff.midi.event.ProgramChange;
-import com.leff.midi.util.MidiEventListener;
-import com.leff.midi.util.MidiProcessor;
+
+import net.mgsx.midi.sequence.MidiSequence;
+import net.mgsx.midi.sequence.event.MidiEvent;
+import net.mgsx.midi.sequence.event.NoteOff;
+import net.mgsx.midi.sequence.event.NoteOn;
+import net.mgsx.midi.sequence.event.ProgramChange;
+import net.mgsx.midi.sequence.util.MidiEventListener;
+import net.mgsx.midi.sequence.util.MidiProcessor;
 
 public class DefaultMidiMusic implements MidiMusic
 {
 	private MidiProcessor sequencer;
-	public MidiFile mfile; // XXX
+	public MidiSequence mfile; // XXX
 	
 	public DefaultMidiMusic(FileHandle file) {
 		try {
-			mfile = new MidiFile(file.read());
+			mfile = new MidiSequence(file.read());
 			sequencer = new MidiProcessor(mfile);
 			sequencer.registerEventListener(new MidiEventListener() {
 				
