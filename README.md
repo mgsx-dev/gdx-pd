@@ -7,7 +7,7 @@ Work in progress :
 |------------|-----------|-------------|--------|
 | Linux 64   |     y     |      y      |   y    |
 | Linux 32   |     y     |      y      |        |
-| Android    |     y     |      y      |        |
+| Android    |     y     |      y      |   y    |
 | Windows 64 |     y     |      y      |        |
 | Windows 32 |     y     |      y      |        |
 | MacOSX 64  |     -     |      -      |        |
@@ -131,6 +131,15 @@ sudo chown -R $USER:$USER .
 gradle publishToMavenLocal
 
 ```
+
+## Run examples
+
+A demo application is available in sources and will be published soon on Android store.
+
+# Credits
+
+Demo application is shipped with some midi files authorized by the author Jason "Jay" Reichard who published a lot of
+nice old school game music covers, please have a look at his website : http://zorasoft.net/midi.html
 
 
 
