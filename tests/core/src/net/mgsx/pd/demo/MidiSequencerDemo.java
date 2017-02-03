@@ -108,7 +108,7 @@ public class MidiSequencerDemo implements Demo
 	private Table matrix;
 	SelectBox<Division> trigBox;
 	
-	private void buildGUI(Table table, Skin skin) 
+	private void buildGUI(Table table, final Skin skin) 
 	{
 		final SelectBox<Division> lenBox = new SelectBox<Division>(skin);
 		
@@ -149,7 +149,7 @@ public class MidiSequencerDemo implements Demo
 			}});
 		
 		
-		Label bpmField = new Label("", skin);
+		final Label bpmField = new Label("", skin);
 		
 		header.add("BPM");
 		header.add(bpmField).width(60);
