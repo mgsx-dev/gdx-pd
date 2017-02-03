@@ -21,25 +21,58 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.leff.midi.MidiFile;
-import com.leff.midi.event.MidiEvent;
-import com.leff.midi.event.NoteOn;
-import com.leff.midi.event.meta.TrackName;
 
-import net.mgsx.gdx.pd.PdAudioOpenAL;
+import net.mgsx.midi.playback.LiveSequencer;
+import net.mgsx.midi.playback.LiveTrack;
+import net.mgsx.midi.playback.PdMidiSynth;
+import net.mgsx.midi.sequence.MidiSequence;
+import net.mgsx.midi.sequence.event.MidiEvent;
+import net.mgsx.midi.sequence.event.NoteOn;
+import net.mgsx.midi.sequence.event.meta.TrackName;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
+import net.mgsx.pd.audio.PdAudioDefault;
 import net.mgsx.pd.midi.DefaultMidiMusic;
 import net.mgsx.pd.midi.DefaultPdMidi;
-import net.mgsx.pd.midi.LiveSequencer;
-import net.mgsx.pd.midi.LiveTrack;
 import net.mgsx.pd.midi.MidiMusicLoader;
-import net.mgsx.pd.midi.PdMidiSynth;
 import net.mgsx.pd.patch.PatchLoader;
 import net.mgsx.pd.patch.PdPatch;
 
 public class LiveSequencerDemoApplication extends Game 
 {
+	public static class Division{
+		
+		public static final Division quarterNote = new Division("Quarter", 1); // TODO eighteen ?
+		public static final Division halfNote = new Division("Half", 2);
+		public static final Division wholeNote = new Division("Whole", 4);
+		public static final Division bar2 = new Division("2x", 8);
+		public static final Division bar4 = new Division("4x", 16);
+		public static final Division bar8 = new Division("8x", 32);
+		public static final Division bar16 = new Division("16x", 64);
+		
+		public static final Array<Division> all = new Array<Division>(new Division[]{
+			quarterNote, 
+			halfNote, 
+			wholeNote, 
+			bar2, 
+			bar4, 
+			bar8, 
+			bar16
+		});
+		
+		public String name;
+		public int value;
+		public Division(String name, int value) {
+			super();
+			this.name = name;
+			this.value = value;
+		}
+		@Override
+		public String toString() {
+			return name;
+		}
+	}
+	
 	Stage stage;
 	private DefaultMidiMusic song;
 	private LiveSequencer seq;
@@ -61,7 +94,7 @@ public class LiveSequencerDemoApplication extends Game
 		
 		Pd.midi = new DefaultPdMidi();
 		
-		Pd.audio = new PdAudioOpenAL();
+		Pd.audio = new PdAudioDefault();
 		Pd.audio.create(new PdConfiguration());
 		
 		assets = new AssetManager();
@@ -117,7 +150,7 @@ public class LiveSequencerDemoApplication extends Game
 					assets.load(songAsset);
 					assets.finishLoading();
 					song = (DefaultMidiMusic)assets.get(songAsset);
-					MidiFile midiFile = song.mfile;
+					MidiSequence midiFile = song.mfile;
 	
 					seq.load(midiFile);
 					matrix.clear();

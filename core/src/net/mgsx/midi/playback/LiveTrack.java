@@ -1,13 +1,14 @@
-package net.mgsx.pd.midi;
+package net.mgsx.midi.playback;
 
 import com.badlogic.gdx.utils.Array;
-import com.leff.midi.MidiFile;
-import com.leff.midi.MidiTrack;
-import com.leff.midi.event.MidiEvent;
-import com.leff.midi.event.NoteOn;
-import com.leff.midi.event.ProgramChange;
-import com.leff.midi.event.meta.Tempo;
-import com.leff.midi.util.MidiEventListener;
+
+import net.mgsx.midi.sequence.MidiSequence;
+import net.mgsx.midi.sequence.MidiTrack;
+import net.mgsx.midi.sequence.event.MidiEvent;
+import net.mgsx.midi.sequence.event.NoteOn;
+import net.mgsx.midi.sequence.event.ProgramChange;
+import net.mgsx.midi.sequence.event.meta.Tempo;
+import net.mgsx.midi.sequence.util.MidiEventListener;
 
 public class LiveTrack
 {
@@ -30,7 +31,7 @@ public class LiveTrack
 	private ResetNote off = new ResetNote();
 	private final LiveSequencer master;
 	
-	public LiveTrack(LiveSequencer master, MidiFile file, MidiTrack track, MidiEventListener listener) {
+	public LiveTrack(LiveSequencer master, MidiSequence file, MidiTrack track, MidiEventListener listener) {
 		this.master = master;
 		events = new Array<MidiEvent>();
 		for(MidiEvent e : track.getEvents()){

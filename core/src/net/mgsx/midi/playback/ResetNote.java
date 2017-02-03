@@ -1,6 +1,6 @@
-package net.mgsx.pd.midi;
+package net.mgsx.midi.playback;
 
-import com.leff.midi.event.NoteOn;
+import net.mgsx.midi.sequence.event.NoteOn;
 
 public class ResetNote extends NoteOn
 {
