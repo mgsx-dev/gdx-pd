@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.midi.sequence.MidiSequence;
 import net.mgsx.midi.sequence.MidiTrack;
+import net.mgsx.midi.sequence.event.Controller;
 import net.mgsx.midi.sequence.util.MidiEventListener;
 
 public class LiveSequencer extends BaseSequencer
@@ -84,12 +85,11 @@ public class LiveSequencer extends BaseSequencer
 						// silent fail.
 					}
 				}
-				// XXX force all note off (all note and all channels)
-				ResetNote off = new ResetNote();
-				for(int i=0 ; i<16 ; i++){
-					for(int j=0 ; j<127 ; j++){
-						listener.onEvent(off.set(i, j), 0);
-					}
+				
+				// send all note off on all channels
+		        for(int i=0 ; i<16 ; i++){
+					Controller e = new Controller(0, i, 123, 0); // TODO All notes off code 123
+					listener.onEvent(e, 0);
 				}
 				
 			}

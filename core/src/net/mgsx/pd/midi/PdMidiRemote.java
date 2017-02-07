@@ -93,19 +93,11 @@ public class PdMidiRemote implements PdMidi
 		sequencer.registerEventListener(new MidiEventListener() {
 			
 			@Override
-			public void onStop(boolean finished) 
-			{
-				// All note off should be sent by sequencer itself ? not only network !
-				for(int i=0 ; i<16 ; i++){
-					Controller e = new Controller(0, i, 123, 0); // All notes off
-					onEvent(e, 0);
-				}
+			public void onStop(boolean finished){
 			}
 			
 			@Override
 			public void onStart(boolean fromBeginning) {
-				System.out.println("onStart");
-				
 			}
 			
 			@Override

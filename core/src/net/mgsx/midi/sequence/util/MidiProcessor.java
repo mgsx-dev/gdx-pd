@@ -23,6 +23,7 @@ import java.util.Iterator;
 import net.mgsx.midi.playback.Sequencer;
 import net.mgsx.midi.sequence.MidiSequence;
 import net.mgsx.midi.sequence.MidiTrack;
+import net.mgsx.midi.sequence.event.Controller;
 import net.mgsx.midi.sequence.event.MidiEvent;
 import net.mgsx.midi.sequence.event.meta.Tempo;
 
@@ -131,6 +132,7 @@ public class MidiProcessor implements Sequencer
             MidiEventListener mel = it.next();
             mel.onStop(finished);
         }
+        
     }
 
     public void registerEventListener(MidiEventListener mel, Class<? extends MidiEvent> event)
@@ -299,6 +301,11 @@ public class MidiProcessor implements Sequencer
                 break;
             }
         }
+        
+        for(int i=0 ; i<16 ; i++){
+			Controller e = new Controller(0, i, 123, 0); // All notes off
+			this.dispatch(e);
+		}
 
         mRunning = false;
         onStop(finished);
