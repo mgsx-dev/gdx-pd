@@ -1,0 +1,10 @@
+#N canvas 1015 304 492 287 10;
+#X msg 54 91 listen 3000;
+#X msg 87 128 listen 0;
+#X obj 54 37 loadbang;
+#X text 173 129 <- Stop listeneing;
+#X text 171 91 <- Start listeneing on port 3000;
+#X obj 54 178 gdx-pd-network;
+#X connect 0 0 5 0;
+#X connect 1 0 5 0;
+#X connect 2 0 0 0;
