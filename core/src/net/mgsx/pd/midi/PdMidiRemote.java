@@ -56,7 +56,7 @@ public class PdMidiRemote implements PdMidi
 	 */
 	public static PdMidiRemote createDefaultUnicast()
 	{
-		return new PdMidiRemote("225.0.0.37", 21928);
+		return new PdMidiRemote("localhost", 3001);
 	}
 	
 	public PdMidiRemote(String host, int port) 
