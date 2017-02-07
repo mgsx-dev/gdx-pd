@@ -1,4 +1,4 @@
-#N canvas 463 418 990 495 10;
+#N canvas 457 426 990 495 10;
 #X obj 372 77 inlet;
 #X obj 365 129 pack f f f;
 #X obj 392 447 outlet~;
@@ -12,7 +12,7 @@
 #X obj 678 340 mono-guitar;
 #X obj 576 341 mono-guitar;
 #X obj 372 99 poly 6 1;
-#X obj 392 425 *~ 1;
+#X obj 392 425 *~ 0.7;
 #X connect 0 0 11 0;
 #X connect 1 0 3 0;
 #X connect 3 0 6 0;
