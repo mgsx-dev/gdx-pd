@@ -128,7 +128,7 @@ docker run --rm -v $(pwd):/work -w /work/native -it mgsx/libgdx ../gradlew build
 
 sudo chown -R $USER:$USER .
 
-gradle publishToMavenLocal
+./gradlew publishToMavenLocal
 
 ```
 
