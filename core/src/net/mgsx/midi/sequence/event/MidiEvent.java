@@ -92,9 +92,7 @@ public abstract class MidiEvent implements Comparable<MidiEvent>
     {
         in.mark(1);
 
-        
         int id = in.read();
-        System.out.println(String.format("%d +%d 0x%x", tick, delta, id));
         if(!verifyIdentifier(id))
         {
             in.reset();
