@@ -6,12 +6,18 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import org.puredata.core.PdListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.illposed.osc.AddressSelector;
+import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPortIn;
 import com.illposed.osc.OSCPortOut;
 
 import net.mgsx.pd.PdConfiguration;
@@ -20,12 +26,37 @@ import net.mgsx.pd.patch.PdPatch;
 public class PdAudioRemote implements PdAudio
 {
 	OSCPortOut sender;
+	OSCPortIn receiver;
+	
+	private ObjectMap<String, Array<PdListener>> listeners = new ObjectMap<String, Array<PdListener>>();
 	
 	@Override
 	public void create(PdConfiguration config) 
 	{
 		try {
 			sender = new OSCPortOut(InetAddress.getByName("localhost"), 3000); // TODO config ?
+			receiver = new OSCPortIn(3002); // TODO config
+			receiver.addListener(new AddressSelector() {
+				@Override
+				public boolean matches(String messageAddress) {
+					return true;
+				}
+			}, new OSCListener() {
+				@Override
+				public void acceptMessage(Date time, OSCMessage message) 
+				{
+					if("/send".equals(message.getAddress())){
+						if(message.getArguments().size() > 1){
+							String name = message.getArguments().get(0).toString();
+							Array<PdListener> list = listeners.get(name);
+							if(list != null){
+								for(PdListener l : list) l.receiveFloat(name, Float.valueOf(message.getArguments().get(1).toString()));
+							}
+						}
+					}
+				}
+			});
+			receiver.startListening();
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -134,15 +165,28 @@ public class PdAudioRemote implements PdAudio
 	}
 
 	@Override
-	public void addListener(String arg0, PdListener arg1) {
-		// TODO support remote listener
-		Gdx.app.error("PdAudioRemote", "listeners not supported in remote mode");
+	public void addListener(String source, PdListener listener) {
+		Array<PdListener> listeners = this.listeners.get(source);
+		if(listeners == null){
+			Collection<Object> args = new ArrayList<Object>();
+			args.add(1);
+			OSCMessage msg = new OSCMessage("/subscribe/" + source, args);
+			try {
+				sender.send(msg);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.listeners.put(source, listeners = new Array<PdListener>());
+		}
+		listeners.add(listener);
 	}
 
 	@Override
-	public void removeListener(String arg0, PdListener arg1) {
-		// TODO support remote listener
-		Gdx.app.error("PdAudioRemote", "listeners not supported in remote mode");
+	public void removeListener(String source, PdListener listener) {
+		Array<PdListener> listeners = this.listeners.get(source);
+		if(listeners != null){
+			listeners.removeValue(listener, true);
+		}
 	}
 
 }
