@@ -13,6 +13,7 @@ import org.puredata.core.PdListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.illposed.osc.AddressSelector;
 import com.illposed.osc.OSCListener;
@@ -23,19 +24,53 @@ import com.illposed.osc.OSCPortOut;
 import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.patch.PdPatch;
 
+/**
+ * Remote version of Puredata implementation.
+ * 
+ * To be used with Puredata desktop application and provided patch (gdx-pd-network.pd)
+ * which support network connection with gdx-pd.
+ * 
+ * @author mgsx
+ *
+ */
+// TODO throw or trace errors ... maybe something robust is wanted here
 public class PdAudioRemote implements PdAudio
 {
-	OSCPortOut sender;
-	OSCPortIn receiver;
+	final private String sendHost;
+	final private int sendPort;
+	final private int recvPort;
+	
+	private OSCPortOut sender;
+	private OSCPortIn receiver;
 	
 	private ObjectMap<String, Array<PdListener>> listeners = new ObjectMap<String, Array<PdListener>>();
 	
+	/**
+	 * Create remote with default network settings (as configured by default in gdx-pd-network.pd)
+	 */
+	public PdAudioRemote() {
+		this("localhost", 3000, 3002);
+	}
+	
+	/**
+	 * Create remote with specific network settings
+	 * @param sendHost host where Pd is running (can be "localhost", "192.168.0.45", ...)
+	 * @param sendPort port on which Pd is listening (see gdx-pd-network-help.pd)
+	 * @param recvPort port on which Pd is sending back (see gdx-pd-network-help.pd)
+	 */
+	public PdAudioRemote(String sendHost, int sendPort, int recvPort) {
+		super();
+		this.sendHost = sendHost;
+		this.sendPort = sendPort;
+		this.recvPort = recvPort;
+	}
+
 	@Override
 	public void create(PdConfiguration config) 
 	{
 		try {
-			sender = new OSCPortOut(InetAddress.getByName("localhost"), 3000); // TODO config ?
-			receiver = new OSCPortIn(3002); // TODO config
+			sender = new OSCPortOut(InetAddress.getByName(sendHost), sendPort);
+			receiver = new OSCPortIn(recvPort);
 			receiver.addListener(new AddressSelector() {
 				@Override
 				public boolean matches(String messageAddress) {
@@ -58,11 +93,9 @@ public class PdAudioRemote implements PdAudio
 			});
 			receiver.startListening();
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new GdxRuntimeException(e);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new GdxRuntimeException(e);
 		}
 			 
 	}
@@ -87,7 +120,12 @@ public class PdAudioRemote implements PdAudio
 
 	@Override
 	public void dispose() {
-		
+		receiver.stopListening();
+		receiver.close();
+		sender.close();
+		receiver = null;
+		sender = null;
+		listeners.clear();
 	}
 
 	@Override
