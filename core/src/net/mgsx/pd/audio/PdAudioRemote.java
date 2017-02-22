@@ -196,30 +196,30 @@ public class PdAudioRemote implements PdAudio
 	}
 
 	@Override
-	public int arraySize(String arg0) {
+	public int arraySize(String name) {
 		Gdx.app.error("PdAudioRemote", "get array size not supported in remote mode");
 		return 0;
 	}
 
 	@Override
-	public void close(PdPatch arg0) {
+	public void close(PdPatch patch) {
 		// nothing to close (dummy patch).
 	}
 
 	@Override
-	public PdPatch open(FileHandle arg0) {
+	public PdPatch open(FileHandle file) {
 		// return a dummy patch
 		return new PdPatch(0);
 	}
 
 	@Override
-	public void readArray(float[] arg0, int arg1, String arg2, int arg3, int arg4) {
+	public void readArray(float[] destination, int destOffset, String source, int srcOffset, int n) {
 		Gdx.app.error("PdAudioRemote", "read array not supported in remote mode");
 	}
 
 	@Override
-	public void sendBang(String arg0) {
-		OSCMessage msg = new OSCMessage("/send/" + arg0);
+	public void sendBang(String recv) {
+		OSCMessage msg = new OSCMessage("/send/" + recv);
 		try {
 			sender.send(msg);
 		} catch (IOException e) {
@@ -228,10 +228,10 @@ public class PdAudioRemote implements PdAudio
 	}
 
 	@Override
-	public void sendList(String arg0, Object... arg1) {
+	public void sendList(String recv, Object... values) {
 		Collection<Object> args = new ArrayList<Object>();
-		for(Object o : arg1) args.add(o);
-		OSCMessage msg = new OSCMessage("/send/" + arg0, args);
+		for(Object o : values) args.add(o);
+		OSCMessage msg = new OSCMessage("/send/" + recv, args);
 		try {
 			sender.send(msg);
 		} catch (IOException e) {
@@ -240,11 +240,11 @@ public class PdAudioRemote implements PdAudio
 	}
 
 	@Override
-	public void sendMessage(String arg0, String arg1, Object... arg2) {
+	public void sendMessage(String recv, String message, Object... values) {
 		Collection<Object> args = new ArrayList<Object>();
-		args.add(arg1);
-		for(Object o : arg2) args.add(o);
-		OSCMessage msg = new OSCMessage("/send/" + arg0, args);
+		args.add(message);
+		for(Object o : values) args.add(o);
+		OSCMessage msg = new OSCMessage("/send/" + recv, args);
 		try {
 			sender.send(msg);
 		} catch (IOException e) {
@@ -253,10 +253,10 @@ public class PdAudioRemote implements PdAudio
 	}
 
 	@Override
-	public void sendSymbol(String arg0, String arg1) {
+	public void sendSymbol(String recv, String sym) {
 		Collection<Object> args = new ArrayList<Object>();
-		args.add(arg1);
-		OSCMessage msg = new OSCMessage("/send/" + arg0, args);
+		args.add(sym);
+		OSCMessage msg = new OSCMessage("/send/" + recv, args);
 		try {
 			sender.send(msg);
 		} catch (IOException e) {
@@ -265,7 +265,7 @@ public class PdAudioRemote implements PdAudio
 	}
 
 	@Override
-	public void writeArray(String arg0, int arg1, float[] arg2, int arg3, int arg4) {
+	public void writeArray(String destination, int destOffset, float[] source, int srcOffset, int n) {
 		Gdx.app.error("PdAudioRemote", "write array not supported in remote mode");
 	}
 
