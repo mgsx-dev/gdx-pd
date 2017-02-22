@@ -213,11 +213,6 @@ public class PdAudioRemote implements PdAudio
 	}
 
 	@Override
-	public void readArray(float[] destination, int destOffset, String source, int srcOffset, int n) {
-		Gdx.app.error("PdAudioRemote", "read array not supported in remote mode");
-	}
-
-	@Override
 	public void sendBang(String recv) {
 		OSCMessage msg = new OSCMessage("/send/" + recv);
 		try {
@@ -265,8 +260,41 @@ public class PdAudioRemote implements PdAudio
 	}
 
 	@Override
-	public void writeArray(String destination, int destOffset, float[] source, int srcOffset, int n) {
-		Gdx.app.error("PdAudioRemote", "write array not supported in remote mode");
+	public void readArray(float[] destination, int destOffset, String source, int srcOffset, int n) {
+		Gdx.app.error("PdAudioRemote", "read array not supported in remote mode");
+	}
+
+	@Override
+	public void writeArray(String destination, int destOffset, float[] source, int srcOffset, int n) 
+	{
+		// since pd oscparse doesn't support array type, we need to use standard message
+		// which can be slow for big data.
+		// More, OSC doesn't support really big messages ... then we need to break it up.
+		final int MAX_FLOAT_PER_MESSAGES = 128;
+		
+		Collection<Object> args = new ArrayList<Object>();
+		for(int position = 0 ; position < n ; )
+		{
+			args.clear();
+			args.add(destOffset + position);
+			for(int i=0 ; i<MAX_FLOAT_PER_MESSAGES && position < n ; i++, position++){
+				args.add(source[srcOffset+position]);
+			}
+			OSCMessage msg = new OSCMessage("/write/" + destination, args);
+			try {
+				sender.send(msg);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			// required to wait a little in order to not lost so many packets.
+			// without this, array in pd will be corrupted at some point ...
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 	@Override

@@ -104,7 +104,40 @@ public class PdAudioRemoteTest extends ApplicationAdapter
 		
 		testSendSymbol("Symbol path", "/home/me/myFile.txt");
 		
+		testSendArray("Simple float array", "array_to_write", 0, 32.5f, 54.7f, 62.12f, 99.456f);
+		
+		
+		// One second of 441 Hz sinusoidal signal.
+		float [] sampleData = new float[44100];
+		for(int i=0 ; i<sampleData.length ; i++){
+			sampleData[i] = (float)Math.sin(Math.PI * 2 * 441 * (float)i / 44100f);
+		}
+		
+		testSendArray("Big float array", "big_array", 0, sampleData);
+
+		
 		testListener("send_any");
+	}
+	
+	private void testSendArray(String label, final String name, final int position, final float...values)
+	{
+		String valText = "";
+		if(values.length < 8)
+			for(float v : values) valText += "," + String.valueOf(v);
+		else
+			valText = ",...";
+		if(valText.length()>0) valText = "(" + valText.substring(1) + ")";
+		valText = "at " + String.valueOf(position) + " " + valText;
+		TextButton bt = new TextButton(label + " " + valText, skin);
+		bt.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				Pd.audio.writeArray(name, position, values, 0, values.length);
+			}
+		});
+		table.add("Write array to " + name);
+		table.add(bt);
+		table.row();
 	}
 	
 	private void testListener(final String recv)

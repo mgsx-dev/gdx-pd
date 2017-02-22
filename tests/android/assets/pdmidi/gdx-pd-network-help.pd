@@ -1,4 +1,4 @@
-#N canvas 1281 353 612 402 10;
+#N canvas 1274 143 612 402 10;
 #X msg 54 91 listen 3000;
 #X msg 87 128 listen 0;
 #X obj 53 15 loadbang;
@@ -9,7 +9,7 @@
 #X msg 149 217 connect localhost 3002;
 #X text 319 218 <- Start sending to port 3002;
 #X obj 149 183 loadbang;
-#N canvas 123 232 404 822 gdx-pd-network-tests 1;
+#N canvas 187 91 404 977 gdx-pd-network-tests 1;
 #X obj 20 14 r recv_bang;
 #X obj 20 55 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
@@ -18,12 +18,12 @@
 #X obj 19 155 r recv_list;
 #X obj 19 179 list prepend set;
 #X obj 19 201 list trim;
-#X msg 19 223 foo bar hello world;
+#X msg 19 223 
+ $ \\ ⠴;
 #X obj 155 172 print recv_list;
 #X obj 17 295 list prepend set;
 #X obj 17 317 list trim;
-#X msg 17 339 test 
- $ \\ ⠴;
+#X msg 17 339 foo bar ;
 #X obj 17 271 r recv_msg;
 #X obj 153 288 print recv_msg;
 #X obj 17 386 r recv_sym;
@@ -43,6 +43,18 @@
 #X msg 24 722 hello 45 67;
 #X obj 305 633 s send_any;
 #X floatatom 22 557 5 0 0 0 - - -, f 5;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array array_to_write 8 float 2;
+#X coords 0 100 8 -100 200 140 1 0 0;
+#X restore 189 777 graph;
+#X obj 14 828 table big_array 44100;
+#X obj 17 906 tabread~ big_array;
+#X obj 16 858 phasor~ 1;
+#X obj 16 880 *~ 44100;
+#X obj 16 929 *~ 0;
+#X obj 16 951 dac~;
+#X obj 128 857 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
 #X connect 0 0 1 0;
 #X connect 2 0 3 0;
 #X connect 4 0 5 0;
@@ -67,6 +79,12 @@
 #X connect 26 0 28 0;
 #X connect 27 0 28 0;
 #X connect 29 0 28 0;
+#X connect 32 0 35 0;
+#X connect 33 0 34 0;
+#X connect 34 0 32 0;
+#X connect 35 0 36 0;
+#X connect 35 0 36 1;
+#X connect 37 0 35 1;
 #X restore 54 368 pd gdx-pd-network-tests;
 #X text 319 242 <- Stop sending;
 #X text 234 362 <- Open it to run tests (see PdAudioRemoteTest in gdx-pd
