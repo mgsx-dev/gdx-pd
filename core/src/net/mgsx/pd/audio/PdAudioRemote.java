@@ -80,14 +80,10 @@ public class PdAudioRemote implements PdAudio
 				@Override
 				public void acceptMessage(Date time, OSCMessage message) 
 				{
-					if("/send".equals(message.getAddress())){
-						if(message.getArguments().size() > 1){
-							String name = message.getArguments().get(0).toString();
-							Array<PdListener> list = listeners.get(name);
-							if(list != null){
-								for(PdListener l : list) l.receiveFloat(name, Float.valueOf(message.getArguments().get(1).toString()));
-							}
-						}
+					try{
+						onRemoteMessage(message);
+					}catch(Throwable e){
+						e.printStackTrace();
 					}
 				}
 			});
@@ -99,6 +95,66 @@ public class PdAudioRemote implements PdAudio
 			throw new GdxRuntimeException(e);
 		}
 			 
+	}
+	
+	private void onRemoteMessage(OSCMessage message)
+	{
+		String address = message.getAddress();
+		if(!"/send".equals(address)){
+			throw new GdxRuntimeException("OSC message not supported : " + String.valueOf(address));
+		}
+		if(message.getArguments().size() < 2){
+			throw new GdxRuntimeException("OSC send message at least 2 args expected");
+		}
+		if(!(message.getArguments().get(0) instanceof String)){
+			throw new GdxRuntimeException("OSC send message expect first argument (receiver) to be a string, get : " + String.valueOf(message.getArguments().get(0)));
+		}
+		if(!(message.getArguments().get(1) instanceof String)){
+			throw new GdxRuntimeException("OSC send message expect second argument (type) to be a string, get : " + String.valueOf(message.getArguments().get(1)));
+		}
+		String name = message.getArguments().get(0).toString();
+		Array<PdListener> listener = listeners.get(name);
+		if(listener == null){
+			Gdx.app.error("Pd", "warning no listeners for receiver : " + name);
+			return;
+		}
+		String type = message.getArguments().get(1).toString();
+		if("msg".equals(type)){
+			// case of no args : bang
+			if(message.getArguments().size() <= 2){
+				for(PdListener l : listener) l.receiveBang(name);
+			}
+			// case of one arg : simple handlers
+			else if(message.getArguments().size() <= 3){
+				Object value = message.getArguments().get(2);
+				if(value instanceof Float){
+					for(PdListener l : listener) l.receiveFloat(name, (Float)value);
+				}
+				else if(value instanceof String){
+					for(PdListener l : listener) l.receiveSymbol(name, (String)value);
+				}
+				else{
+					Gdx.app.error("Pd", "warning unsupported type for " + value.toString());
+				}
+			}
+			// case of multi args : message
+			else{
+				Object msg = message.getArguments().get(2);
+				if(!(msg instanceof String)){
+					throw new GdxRuntimeException("first argument of message should be a string, actual : " + String.valueOf(msg));
+				}
+				Object[] arguments = new Object[message.getArguments().size() - 3];
+				for(int i=0 ; i<arguments.length ; i++) arguments[i] = message.getArguments().get(i+3);
+				for(PdListener l : listener) l.receiveMessage(name, (String)msg, arguments);
+			}
+		}else if("list".equals(type)){
+			Object[] arguments = new Object[message.getArguments().size() - 2];
+			for(int i=0 ; i<arguments.length ; i++) arguments[i] = message.getArguments().get(i+2);
+			for(PdListener l : listener) l.receiveList(name, arguments);
+		}else{
+			throw new GdxRuntimeException("OSC send message unsupported type : " + type + ", expect msg or list");
+		}
+		
 	}
 	
 	private void sendClearSubscriptions()

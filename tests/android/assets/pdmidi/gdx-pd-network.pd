@@ -1,4 +1,4 @@
-#N canvas 608 109 991 935 10;
+#N canvas 311 114 991 717 10;
 #X obj 35 116 oscparse;
 #X obj 35 143 list trim;
 #X obj 34 245 list split 1;
@@ -11,9 +11,9 @@
 #X obj 649 313 list prepend send;
 #X obj 649 338 list trim;
 #X obj 649 287 oscformat send;
-#N canvas 261 205 450 434 subscriptions-\$0 0;
+#N canvas 255 213 450 434 subscriptions-\$0 0;
 #X obj 300 200 send events-1004;
-#X obj 10 20 gdx-pd-recv level;
+#X obj 10 20 gdx-pd-recv send_any;
 #X connect 1 0 0 0;
 #X restore 165 653 pd subscriptions-\$0;
 #X obj 165 623 s pd-subscriptions-\$0;
@@ -30,12 +30,11 @@
 #X obj 193 337 t f f;
 #X msg 276 218 reset;
 #X floatatom 649 432 5 0 0 0 - - -, f 5;
-#X obj 649 256 list;
 #X obj 895 244 inlet;
 #X obj 34 165 route send subscribe clear;
 #X msg 529 544 clear;
 #X obj 483 229 t b b b;
-#X obj 649 218 r events-\$0;
+#X obj 649 252 r events-\$0;
 #X obj 479 466 f \$0;
 #X msg 479 500 obj 300 200 send events-\$1;
 #X text 236 6 This patch enable full duplex communication between Pd
@@ -53,7 +52,7 @@ to send the same name once (Pd doesn't verify subscription duplications).
 - clear : will clear all subscriptions. It is recommanded to use clear
 message when starting session to prevent message floods., f 106;
 #X connect 0 0 1 0;
-#X connect 1 0 29 0;
+#X connect 1 0 28 0;
 #X connect 2 0 4 0;
 #X connect 2 1 3 1;
 #X connect 3 0 5 0;
@@ -80,15 +79,14 @@ message when starting session to prevent message floods., f 106;
 #X connect 24 0 19 0;
 #X connect 24 1 20 0;
 #X connect 25 0 21 0;
-#X connect 27 0 11 0;
-#X connect 28 0 8 0;
-#X connect 29 0 2 0;
-#X connect 29 1 14 0;
-#X connect 29 2 31 0;
-#X connect 30 0 13 0;
-#X connect 31 0 21 0;
-#X connect 31 1 33 0;
-#X connect 31 2 30 0;
-#X connect 32 0 27 0;
-#X connect 33 0 34 0;
-#X connect 34 0 13 0;
+#X connect 27 0 8 0;
+#X connect 28 0 2 0;
+#X connect 28 1 14 0;
+#X connect 28 2 30 0;
+#X connect 29 0 13 0;
+#X connect 30 0 21 0;
+#X connect 30 1 32 0;
+#X connect 30 2 29 0;
+#X connect 31 0 11 0;
+#X connect 32 0 33 0;
+#X connect 33 0 13 0;
