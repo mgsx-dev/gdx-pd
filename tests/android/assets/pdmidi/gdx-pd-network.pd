@@ -1,4 +1,4 @@
-#N canvas 411 280 1040 719 10;
+#N canvas 608 109 991 935 10;
 #X obj 35 116 oscparse;
 #X obj 35 143 list trim;
 #X obj 34 245 list split 1;
@@ -7,32 +7,53 @@
 #X obj 75 381 send;
 #X obj 36 69 netreceive -b -u;
 #X obj 36 39 inlet;
-#X obj 34 165 route send subscribe;
-#X obj 651 299 netsend -b -u;
-#X obj 651 202 list prepend send;
-#X obj 651 227 list trim;
-#X obj 651 176 oscformat send;
-#N canvas 264 201 450 434 subscriptions-\$0 0;
-#X obj 287 207 outlet;
-#X restore 651 117 pd subscriptions-\$0;
-#X obj 279 501 s pd-subscriptions-\$0;
-#X obj 278 225 list split 1;
-#X obj 278 255 t a b;
-#X obj 344 286 + 1;
-#X obj 310 286 f 1;
-#X obj 279 446 list append;
-#X obj 308 399 pack f f;
-#X obj 361 368 * 20;
-#X msg 397 239 1;
-#X obj 454 195 loadbang;
-#X msg 279 475 obj 10 \$3 gdx-pd-recv \$1 \, connect \$2 0 0 0;
-#X obj 307 313 t f f;
-#X msg 385 169 reset;
-#X floatatom 651 321 5 0 0 0 - - -, f 5;
-#X obj 651 145 list;
-#X obj 897 133 inlet;
+#X obj 649 410 netsend -b -u;
+#X obj 649 313 list prepend send;
+#X obj 649 338 list trim;
+#X obj 649 287 oscformat send;
+#N canvas 261 205 450 434 subscriptions-\$0 0;
+#X obj 300 200 send events-1004;
+#X obj 10 20 gdx-pd-recv level;
+#X connect 1 0 0 0;
+#X restore 165 653 pd subscriptions-\$0;
+#X obj 165 623 s pd-subscriptions-\$0;
+#X obj 164 249 list split 1;
+#X obj 164 279 t a b;
+#X obj 230 310 + 1;
+#X obj 196 310 f 1;
+#X obj 165 470 list append;
+#X obj 194 423 pack f f;
+#X obj 247 392 * 20;
+#X msg 276 278 1;
+#X obj 331 221 loadbang;
+#X msg 165 499 obj 10 \$3 gdx-pd-recv \$1 \, connect \$2 0 0 0;
+#X obj 193 337 t f f;
+#X msg 276 218 reset;
+#X floatatom 649 432 5 0 0 0 - - -, f 5;
+#X obj 649 256 list;
+#X obj 895 244 inlet;
+#X obj 34 165 route send subscribe clear;
+#X msg 529 544 clear;
+#X obj 483 229 t b b b;
+#X obj 649 218 r events-\$0;
+#X obj 479 466 f \$0;
+#X msg 479 500 obj 300 200 send events-\$1;
+#X text 236 6 This patch enable full duplex communication between Pd
+and any remote application. It using OSC protocol. Forward communication
+from remote application to Pd is done throw one message type (send)
+and is stateless. Backward communication from Pd to remote application
+is done throw subscription mecanism : remote application send which
+message (subscribe) it want to listen to. Then Pd will forward message
+for all subscribtion. This one is statefull and require special considerations
+(see clear message). 3 type of OSC messages are currently supported
+: - send receiver [..args] : This will send message to Pd. This is
+the forward channel from remote application to Pd. - subscribe receiver
+: will subscribe to events based on receiver name. Caller is responsible
+to send the same name once (Pd doesn't verify subscription duplications).
+- clear : will clear all subscriptions. It is recommanded to use clear
+message when starting session to prevent message floods., f 106;
 #X connect 0 0 1 0;
-#X connect 1 0 8 0;
+#X connect 1 0 29 0;
 #X connect 2 0 4 0;
 #X connect 2 1 3 1;
 #X connect 3 0 5 0;
@@ -40,27 +61,34 @@
 #X connect 4 1 5 1;
 #X connect 6 0 0 0;
 #X connect 7 0 6 0;
-#X connect 8 0 2 0;
-#X connect 8 1 15 0;
-#X connect 9 0 27 0;
-#X connect 10 0 11 0;
+#X connect 8 0 26 0;
+#X connect 9 0 10 0;
+#X connect 10 0 8 0;
 #X connect 11 0 9 0;
-#X connect 12 0 10 0;
-#X connect 13 0 28 0;
-#X connect 15 0 16 0;
-#X connect 16 0 19 0;
-#X connect 16 1 18 0;
-#X connect 17 0 18 1;
-#X connect 18 0 17 0;
-#X connect 18 0 25 0;
-#X connect 19 0 24 0;
+#X connect 14 0 15 0;
+#X connect 15 0 18 0;
+#X connect 15 1 17 0;
+#X connect 16 0 17 1;
+#X connect 17 0 16 0;
+#X connect 17 0 24 0;
+#X connect 18 0 23 0;
+#X connect 19 0 18 1;
 #X connect 20 0 19 1;
-#X connect 21 0 20 1;
-#X connect 22 0 18 1;
-#X connect 23 0 22 0;
-#X connect 24 0 14 0;
-#X connect 25 0 20 0;
-#X connect 25 1 21 0;
-#X connect 26 0 22 0;
-#X connect 28 0 12 0;
-#X connect 29 0 9 0;
+#X connect 21 0 17 1;
+#X connect 22 0 21 0;
+#X connect 23 0 13 0;
+#X connect 24 0 19 0;
+#X connect 24 1 20 0;
+#X connect 25 0 21 0;
+#X connect 27 0 11 0;
+#X connect 28 0 8 0;
+#X connect 29 0 2 0;
+#X connect 29 1 14 0;
+#X connect 29 2 31 0;
+#X connect 30 0 13 0;
+#X connect 31 0 21 0;
+#X connect 31 1 33 0;
+#X connect 31 2 30 0;
+#X connect 32 0 27 0;
+#X connect 33 0 34 0;
+#X connect 34 0 13 0;

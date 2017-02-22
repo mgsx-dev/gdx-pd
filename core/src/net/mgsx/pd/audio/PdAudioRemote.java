@@ -92,12 +92,23 @@ public class PdAudioRemote implements PdAudio
 				}
 			});
 			receiver.startListening();
+			sendClearSubscriptions();
 		} catch (SocketException e) {
 			throw new GdxRuntimeException(e);
 		} catch (UnknownHostException e) {
 			throw new GdxRuntimeException(e);
 		}
 			 
+	}
+	
+	private void sendClearSubscriptions()
+	{
+		OSCMessage msg = new OSCMessage("/clear");
+		try {
+			sender.send(msg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
