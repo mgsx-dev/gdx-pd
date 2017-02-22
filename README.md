@@ -107,6 +107,9 @@ send all message to network in OSC format. You can then open your patch in Pured
 Pd.audio = new PdAudioRemote();
 ```
 
+There is currently some limitations working with arrays. You can write to array throw network but not read them or
+get their size (see #5)
+
 # Build from sources
 
 Only require java and docker environement.
