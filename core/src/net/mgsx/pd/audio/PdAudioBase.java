@@ -2,7 +2,9 @@ package net.mgsx.pd.audio;
 
 import java.io.IOException;
 
+import org.puredata.core.NativeLoader;
 import org.puredata.core.PdBase;
+import org.puredata.core.PdBaseLoader;
 import org.puredata.core.PdListener;
 import org.puredata.core.PdReceiver;
 
@@ -27,6 +29,14 @@ abstract public class PdAudioBase implements PdAudio
 	final private ObjectMap<String, Array<PdListener>> listeners = new ObjectMap<String, Array<PdListener>>();
 	
 	public void create(PdConfiguration config){
+		
+		PdBaseLoader.loaderHandler = new PdBaseLoader() {
+			@Override
+			public void load() {
+				NativeLoader.loadLibrary("pthreadGC2", "windows");
+			    NativeLoader.loadLibrary("pdnative");
+			}
+		};
 		
 		PdBase.setReceiver(new PdReceiver(){
 
