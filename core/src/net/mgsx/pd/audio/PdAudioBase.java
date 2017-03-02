@@ -14,6 +14,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.patch.PdPatch;
@@ -33,8 +34,8 @@ abstract public class PdAudioBase implements PdAudio
 		PdBaseLoader.loaderHandler = new PdBaseLoader() {
 			@Override
 			public void load() {
-				NativeLoader.loadLibrary("pthreadGC2", "windows");
-			    NativeLoader.loadLibrary("pdnative");
+				NativeLoader.loadLibrary("pthreadGC2", "windows"); // TODO verify this and see if we could use libgdx loader
+			    new SharedLibraryLoader().load("gdx-pd");
 			}
 		};
 		

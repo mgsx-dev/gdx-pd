@@ -252,54 +252,52 @@ task buildNative(dependsOn: [buildLinux64, buildLinux32, buildWindows64, buildWi
 
 task desktopJar(type: Jar) {
     baseName "desktop-native"
-    from("libs/linux64"){
-    	into "org/puredata/core/natives/linux/x86_64"
-    }
-    from("libs/linux32"){
-    	into "org/puredata/core/natives/linux/x86"
-    }
-    from("libs/macosx64"){
-    	into "org/puredata/core/natives/macosx/x86_64"
-    }
-    from("libs/macosx"){
-    	into "org/puredata/core/natives/macosx/x86"
-    }
-    from("libs/windows64"){
-    	into "org/puredata/core/natives/windows/x86_64"
-    }
-    from("libs/windows32"){
-    	into "org/puredata/core/natives/windows/x86"
-    }
-    rename ".*\\.so", "libpdnative.so"
-    rename ".*\\.dll", "pdnative.dll"
+    from("libs/linux64")
+    from("libs/linux32")
+    from("libs/macosx64")
+    from("libs/macosx")
+    from("libs/windows64")
+    from("libs/windows32")
 }
 
-task androidJar(type: Jar) {
-    baseName "android-natives"
-    from("libs"){
-    	include "arm64-v8a/**"
-    	include "armeabi/**"
-    	include "armeabi-v7a/**"
-    	include "x86/**"
-    	include "x86_64/**"
-    }
-    rename ".*\\.so", "libpdnative.so"
+task androidArmJar(type: Jar) {
+    from("libs/armeabi")
+}
+task androidArm7Jar(type: Jar) {
+    from("libs/armeabi-v7a")
+}
+task androidArm8Jar(type: Jar) {
+    from("libs/arm64-v8a")
+}
+task android32Jar(type: Jar) {
+    from("libs/x86")
+}
+task android64Jar(type: Jar) {
+    from("libs/x86_64")
 }
 
 publishing {
     publications {
-        desktop(MavenPublication) {
+        natives(MavenPublication) {
             groupId groupName
             artifactId "$appName-platform"
             artifact desktopJar {
                 classifier "natives-desktop"
             }
-        }
-        android(MavenPublication) {
-            groupId groupName
-            artifactId "$appName-platform"
-            artifact androidJar {
-                classifier "natives-android"
+            artifact androidArmJar {
+                classifier "natives-armeabi"
+            }
+            artifact androidArm7Jar {
+                classifier "natives-armeabi-v7a"
+            }
+            artifact androidArm8Jar {
+                classifier "natives-arm64-v8a"
+            }
+            artifact android32Jar {
+                classifier "natives-x86"
+            }
+            artifact android64Jar {
+                classifier "natives-x86_64"
             }
         }
     }

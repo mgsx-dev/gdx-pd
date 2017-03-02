@@ -55,6 +55,25 @@ project(":desktop") {
         ...
     }
 }
+
+project(":android") {
+    apply plugin: "android"
+
+    configurations { natives }
+
+    dependencies {
+        compile project(":core")
+        ...
+        compile "net.mgsx.gdx:gdx-pd-backend-android:$pdVersion"
+        natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-armeabi"
+        natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-armeabi-v7a"
+        natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-arm64-v8a"
+        natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-x86"
+        natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-x86_64"
+		 ...        
+    }
+}
+
 ```
 
 ## Initialize in your launchers
