@@ -1,4 +1,5 @@
 apply plugin: "java"
+apply plugin: 'application'
 
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
@@ -6,7 +7,7 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 project.ext.mainClassName = "net.mgsx.pd.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../android/assets");
 
-task run(dependsOn: classes, type: JavaExec) {
+task runLocal(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
@@ -28,6 +29,17 @@ task dist(type: Jar) {
 }
 
 dist.dependsOn classes
+
+startScripts{
+	mainClassName = "net.mgsx.pd.desktop.DesktopLauncher"
+	applicationName = "gdx-pd-demo"
+	// classpath += files(project.assetsDir)
+}
+
+distributions.main.baseName = "gdx-pd-demo"
+applicationDistribution.from(project.assetsDir) {
+    into "bin"
+}
 
 def runPackr(String target, String jre) {
    def assets = new File(projectDir.parent, 'android/assets').path
@@ -77,7 +89,6 @@ task packDistNoJre(type: Zip) {
 }
 
 packDistNoJre.dependsOn dist
-
 
 
 eclipse {
