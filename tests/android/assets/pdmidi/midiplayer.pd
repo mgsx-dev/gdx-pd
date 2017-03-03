@@ -32,7 +32,7 @@
 #X floatatom 372 727 5 0 0 0 - - -, f 5;
 #X floatatom 507 691 5 0 0 0 - - -, f 5;
 #X obj 382 610 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 900 1;
+-1 -1 0 1;
 #X msg 370 572 0.5;
 #X floatatom 696 846 5 0 0 0 - - -, f 5;
 #X floatatom 712 874 5 0 0 0 - - -, f 5;
