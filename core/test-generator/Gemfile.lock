@@ -1,0 +1,13 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    midilib (2.0.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  midilib
+
+BUNDLED WITH
+   1.14.5
