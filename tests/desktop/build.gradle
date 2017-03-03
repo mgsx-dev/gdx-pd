@@ -62,6 +62,24 @@ task packDist {
 
 packDist.dependsOn dist
 
+task packDistNoJre(type: Zip) {
+	baseName = appName
+	appendix = 'all-platforms'
+    classifier = 'no-jre'
+    from files('build/libs'){
+    	include '*.jar'
+    	fileMode = 0755
+    }
+    from files(project.assetsDir){
+    	include 'pd/*', 'pdmidi/*', 'music/*'
+    }
+    destinationDir file('build/dist')
+}
+
+packDistNoJre.dependsOn dist
+
+
+
 eclipse {
     project {
         name = appName + "-desktop"
