@@ -20,6 +20,7 @@ public class PdAudioThreadOpenAL extends Thread implements Disposable
 	
 	public PdAudioThreadOpenAL(PdConfiguration config) {
 		super("PdAudioThreadOpenAL(Patched)");
+		setPriority(MAX_PRIORITY);
 		this.config = config;
 	}
 	
