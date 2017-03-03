@@ -357,6 +357,6 @@ public class MidiSequencerDemo implements Demo
 
 	@Override
 	public String toString() {
-		return "Midi Sequencer";
+		return "Music (advanced)";
 	}
 }

@@ -19,6 +19,7 @@ public class PdAudioThreadOpenAL extends Thread implements Disposable
 	private PdConfiguration config;
 	
 	public PdAudioThreadOpenAL(PdConfiguration config) {
+		super("PdAudioThreadOpenAL(Patched)");
 		this.config = config;
 	}
 	

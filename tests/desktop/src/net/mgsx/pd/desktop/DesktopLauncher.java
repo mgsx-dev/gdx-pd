@@ -13,6 +13,8 @@ public class DesktopLauncher {
 		Pd.audio = new PdAudioOpenAL();
 		Pd.midi = new DefaultPdMidi();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 800;
+		config.height = 600;
 		new LwjglApplication(new GdxPdDemo(), config);
 	}
 }

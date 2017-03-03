@@ -37,7 +37,7 @@ public class GdxPdDemo extends ApplicationAdapter
 		Pd.audio.create(config);
 
 		// new ScreenViewport()
-		stage = new Stage(new FitViewport(500, 300));
+		stage = new Stage(new FitViewport(800, 600));
 		
 		skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
 		
@@ -56,11 +56,11 @@ public class GdxPdDemo extends ApplicationAdapter
 		demoSelector.setItems(new Demo[]{
 			new IntroDemo(),
 			new MidiMusicDemo(),
+			new MidiSequencerDemo(),
 			new AtmosphereDemo(),
 			new SoundEffectsDemo(),
 			new MicAnalysisDemo(),
-			new MicProcessingDemo(),
-			new MidiSequencerDemo()
+			new MicProcessingDemo()
 		});
 		
 		demoPlaceholder = new Table(skin);
