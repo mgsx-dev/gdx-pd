@@ -14,6 +14,10 @@ public abstract class BaseSequencer implements Sequencer
 
 	protected void sendAllNotesOff()
 	{
+		sendAllNotesOff(listener);
+	}
+	public static void sendAllNotesOff(MidiEventListener listener)
+	{
 		Controller noteOff = new Controller(0, 0, 123, 0);
 		for(int i=0 ; i<16 ; i++)
 		{
