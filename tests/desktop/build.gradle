@@ -18,7 +18,9 @@ task dist(type: Jar) {
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
-    from files(project.assetsDir);
+    from files(project.assetsDir){
+    	exclude 'pd', 'pdmidi', 'music'
+    }
  
     manifest {
         attributes 'Main-Class': project.mainClassName
@@ -26,6 +28,39 @@ task dist(type: Jar) {
 }
 
 dist.dependsOn classes
+
+def runPackr(String target, String jre) {
+   def assets = new File(projectDir.parent, 'android/assets').path
+   def username = System.properties['user.name']
+   def uid = ["id", "-u", username].execute().text.trim()
+   def gid = ["id", "-g", username].execute().text.trim()
+   exec {
+        executable "docker"
+        args("run", "-t", "--rm", "-v", "$projectDir:/work", "-v", "$assets:/assets", 
+        	"-u", "$uid:$gid",
+        	"mgsx/libgdx", "java", '-jar', '/libgdx/packr.jar', 
+        	"--platform", target,
+     		"--jdk", "/libgdx/openjdk-1.7.0-u80-unofficial-$jre-image.zip",
+     		"--executable", "$appName",
+     		"--classpath", "build/libs/desktop-${version}.jar",
+     		"--mainclass", project.mainClassName,
+     		"--vmargs", "Xmx1G",
+     		"--resources", "/assets/pd", "/assets/pdmidi", "/assets/music",
+     		"--minimizejre", "packr/min.json",
+     		"--output", "build/packr/$target",
+     		"--verbose")
+    }
+}
+
+task packDist {
+    doLast {
+        runPackr("linux64", "linux-amd64")
+        runPackr("windows64", "windows-amd64")
+        runPackr("mac", "macosx-x86_64")
+    }
+}
+
+packDist.dependsOn dist
 
 eclipse {
     project {
