@@ -5,7 +5,6 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.midi.sequence.MidiSequence;
 import net.mgsx.midi.sequence.MidiTrack;
 import net.mgsx.midi.sequence.event.MidiEvent;
-import net.mgsx.midi.sequence.event.NoteOn;
 import net.mgsx.midi.sequence.event.ProgramChange;
 import net.mgsx.midi.sequence.event.meta.Tempo;
 import net.mgsx.midi.sequence.util.MidiEventListener;
@@ -24,11 +23,6 @@ public class LiveTrack
 	
 	final private Array<MidiEvent> events;
 	
-	private int [] notes = new int[127 * 16];
-	private int [] notesOnIndices = new int[127 * 16];
-	private int notesOnCount = 0;
-	
-	private ResetNote off = new ResetNote();
 	private final LiveSequencer master;
 	
 	public LiveTrack(LiveSequencer master, MidiSequence file, MidiTrack track, MidiEventListener listener) {
@@ -124,15 +118,7 @@ public class LiveTrack
 			nextEvent = events.get(index);
 		}
 		while(inPos >= nextEvent.getTick()){
-			if(nextEvent instanceof NoteOn){
-				NoteOn e = ((NoteOn) nextEvent);
-				int index = (e.getChannel() << 7) | e.getNoteValue();
-				int value = e.getVelocity();
-				if(notes[index] == 0 && value > 0){
-					notes[index] = value;
-					notesOnIndices[notesOnCount++] = index;
-				}
-			}else if(nextEvent instanceof Tempo){
+			if(nextEvent instanceof Tempo){
 				master.bpm = ((Tempo) nextEvent).getBpm();
 			}
 			
@@ -181,18 +167,10 @@ public class LiveTrack
 		return (int)(events.get(events.size-1).getTick() / resolution);
 	}
 
-	public void sendNotesOff() {
-		
-		for(int i=0 ; i<notesOnCount ; i++){
-			int index = notesOnIndices[i];
-			int note = index & 0x7F;
-			int channel = index >> 7;
-			if(notes[index] != 0){
-				listener.onEvent(off.set(channel, note), 0);
-				notes[index] = 0;
-			}
-		}
-		notesOnCount = 0;
+	public void sendNotesOff() 
+	{
+		// TODO only this track (this channel)
+		master.sendAllNotesOff();
 	}
 
 	public Array<MidiEvent> getEvents() {

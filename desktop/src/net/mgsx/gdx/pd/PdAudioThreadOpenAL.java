@@ -34,6 +34,7 @@ public class PdAudioThreadOpenAL extends Thread implements Disposable
 		
 		// TODO when bug is fix libgdx/libgdx#2252 : 
 		// Gdx.audio.newAudioDevice(samplingRate, isMono);
+		// TODO is 44100 will be the futur value ?
 		AudioDevice device = new OpenALDevicePatched((OpenALAudio)Gdx.audio, 44100, false, outBuffer.length * 2, 8);
 		
 		AudioRecorder recorder = null;

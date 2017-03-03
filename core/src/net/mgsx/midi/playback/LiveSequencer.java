@@ -1,13 +1,13 @@
 package net.mgsx.midi.playback;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 
 import net.mgsx.midi.sequence.MidiSequence;
 import net.mgsx.midi.sequence.MidiTrack;
-import net.mgsx.midi.sequence.event.Controller;
 import net.mgsx.midi.sequence.util.MidiEventListener;
 
-public class LiveSequencer extends BaseSequencer
+public class LiveSequencer extends BaseSequencer implements Disposable
 {
 	private final Array<LiveTrack> tracks = new Array<LiveTrack>();
 	
@@ -86,12 +86,7 @@ public class LiveSequencer extends BaseSequencer
 					}
 				}
 				
-				// send all note off on all channels
-		        for(int i=0 ; i<16 ; i++){
-					Controller e = new Controller(0, i, 123, 0); // TODO All notes off code 123
-					listener.onEvent(e, 0);
-				}
-				
+				sendAllNotesOff();
 			}
 		}, "LiveSequencer");
 		thread.start();
@@ -131,6 +126,11 @@ public class LiveSequencer extends BaseSequencer
 	public void setPositionInTicks(long ticks) {
 		// TODO add support
 		
+	}
+
+	@Override
+	public void dispose() {
+		stop();
 	}
 
 }

@@ -70,6 +70,14 @@ public class MidiMusicDemo implements Demo
 			}
 		});
 		
+		final Slider reverbController = new Slider(0, 1, .01f, false, skin);
+		reverbController.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				Pd.audio.sendFloat("reverb", reverbController.getValue());
+			}
+		});
+		
 		final TextButton btPlayStop = new TextButton("Stop", skin);
 		btPlayStop.addListener(new ChangeListener() {
 			@Override
@@ -101,6 +109,10 @@ public class MidiMusicDemo implements Demo
 		root.add(songProgress);
 		root.row();
 		
+		
+		root.add("Reverb");
+		root.add(reverbController);
+		root.row();
 		
 		root.add("Playback");
 		root.add(btPlayStop);

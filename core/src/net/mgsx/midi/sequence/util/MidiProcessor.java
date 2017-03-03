@@ -70,7 +70,7 @@ public class MidiProcessor implements Sequencer
             {
                 process();
             }
-        }).start();
+        }, "MidiSequencer").start();
     }
 
     public void stop()

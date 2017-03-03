@@ -1,9 +1,6 @@
 package net.mgsx.pd.demo;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -26,12 +23,6 @@ import net.mgsx.midi.sequence.event.MidiEvent;
 import net.mgsx.midi.sequence.event.NoteOn;
 import net.mgsx.midi.sequence.event.meta.TrackName;
 import net.mgsx.pd.Pd;
-import net.mgsx.pd.PdConfiguration;
-import net.mgsx.pd.audio.PdAudioDefault;
-import net.mgsx.pd.midi.DefaultMidiMusic;
-import net.mgsx.pd.midi.DefaultPdMidi;
-import net.mgsx.pd.midi.MidiMusicLoader;
-import net.mgsx.pd.patch.PatchLoader;
 import net.mgsx.pd.patch.PdPatch;
 
 public class MidiSequencerDemo implements Demo
@@ -69,60 +60,38 @@ public class MidiSequencerDemo implements Demo
 		}
 	}
 	
-	private DefaultMidiMusic song;
 	private LiveSequencer seq;
-	private AssetManager assets;
+	private PdPatch patch;
+	private Skin skin;
 
 	@Override
 	public Actor create(Skin skin) 
 	{
+		this.skin = skin;
+		
 		Table table = new Table(skin);
 		
-		
-		Pd.midi = new DefaultPdMidi();
-		
-		Pd.audio = new PdAudioDefault();
-		Pd.audio.create(new PdConfiguration());
-		
-		assets = new AssetManager();
-		
-		assets.setLoader(Music.class, "mid", new MidiMusicLoader(assets.getFileHandleResolver()));
-		assets.setLoader(PdPatch.class, "pd", new PatchLoader(assets.getFileHandleResolver()));
-		
-		AssetDescriptor<PdPatch> patchAsset = new AssetDescriptor<PdPatch>("pdmidi/midiplayer.pd", PdPatch.class);
-		
-		assets.load(patchAsset);
-		assets.finishLoading();
-		
-		Pd.audio.sendFloat("volume", 0.2f); // XXX
-		Pd.audio.sendFloat("pan", 0); // XXX
-		Pd.audio.sendFloat("reverb", 0); // XXX
+		patch = Pd.audio.open(Gdx.files.internal("pdmidi/midiplayer.pd"));
 		
 		seq = new LiveSequencer(PdMidiSynth.instance);
 		
-		buildGUI(table, skin);
+		buildGUI(table);
 		
 		return table;
 	}
 
 	private Table matrix;
-	SelectBox<Division> trigBox;
+	private SelectBox<Division> trigBox;
+	private SelectBox<Division> lenBox;
 	
-	private void buildGUI(Table table, final Skin skin) 
+	private void buildGUI(Table table) 
 	{
-		final SelectBox<Division> lenBox = new SelectBox<Division>(skin);
+		lenBox = new SelectBox<Division>(skin);
 		
 		Table header = new Table(skin);
 		
-		final SelectBox<String> songBox = new SelectBox<String>(skin);
-		
-		Array<String> items = new Array<String>();
-		items.add("");
-		for(FileHandle f : Gdx.files.internal("pd-midi").list()){
-			if(f.extension().equals("mid")) items.add(f.path());
-		}
-		
-		songBox.setItems(items);
+		final SelectBox<FileHandle> songBox = new SelectBox<FileHandle>(skin);
+		songBox.setItems(Gdx.files.internal("music").list(".mid"));
 		header.add("Song");
 		header.add(songBox);
 		
@@ -130,23 +99,9 @@ public class MidiSequencerDemo implements Demo
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				String name = songBox.getSelected();
-				seq.stop();
-				seq.clear();
-				if(!name.isEmpty()){
-					AssetDescriptor<Music> songAsset = new AssetDescriptor<Music>(name, Music.class);
-					
-					assets.load(songAsset);
-					assets.finishLoading();
-					song = (DefaultMidiMusic)assets.get(songAsset);
-					MidiSequence midiFile = song.sequence;
-	
-					seq.load(midiFile);
-					matrix.clear();
-					buildMatrix(matrix, skin, lenBox.getSelected());
-				}
-				
-			}});
+				changeSong(songBox.getSelected());
+			}
+		});
 		
 		
 		final Label bpmField = new Label("", skin);
@@ -155,6 +110,7 @@ public class MidiSequencerDemo implements Demo
 		header.add(bpmField).width(60);
 		final Slider slider = new Slider(30, 240, .01f, false, skin);
 		header.add(slider);
+		header.row();
 		
 		slider.setValue(100);
 		slider.addListener(new ChangeListener() {
@@ -193,19 +149,33 @@ public class MidiSequencerDemo implements Demo
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				matrix.clear();
-				buildMatrix(matrix, skin, lenBox.getSelected());
+				buildMatrix(matrix, lenBox.getSelected());
 				
 			}});
 		
 		matrix = new Table(skin);
-		buildMatrix(matrix, skin, lenBox.getSelected());
+		buildMatrix(matrix, lenBox.getSelected());
 		
 		table.add(header).expandX().center();
 		table.row();
 		table.add(new ScrollPane(matrix, skin)).expand().center().top();
+		
+		changeSong(songBox.getSelected());
 	}
 	
-	private void buildMatrix(Table table, Skin skin, final Division division)
+	private void changeSong(FileHandle file)
+	{
+		seq.stop();
+		seq.clear();
+		
+		MidiSequence sequence = new MidiSequence(file);
+
+		seq.load(sequence);
+		matrix.clear();
+		buildMatrix(matrix, lenBox.getSelected());
+	}
+	
+	private void buildMatrix(Table table, final Division division)
 	{
 		table.defaults().fill();
 		
@@ -381,8 +351,8 @@ public class MidiSequencerDemo implements Demo
 
 	@Override
 	public void dispose() {
-		// TODO dispose all stuff
-		
+		seq.dispose();
+		patch.dispose();
 	}
 
 	@Override
