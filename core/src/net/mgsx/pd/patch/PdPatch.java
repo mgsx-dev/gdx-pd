@@ -27,5 +27,8 @@ public class PdPatch implements Disposable
 		Pd.audio.close(this);
 	}
 	
+	public int getPdHandle() {
+		return pdHandle;
+	}
 	
 }

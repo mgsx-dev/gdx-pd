@@ -147,7 +147,7 @@ abstract public class PdAudioBase implements PdAudio
 	
 	@Override
 	public void close(PdPatch patch) {
-		patch.dispose();
+		PdBase.closePatch(patch.getPdHandle());
 	}
 	
 	  public void sendBang(String recv){
