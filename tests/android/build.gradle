@@ -57,10 +57,15 @@ task copyAndroidNatives() {
 task copyPdPatches() {
 	configurations.pd.resolvedConfiguration.resolvedArtifacts.each { artifact ->
 	  // TODO clean before extract ?
-      copy {
-        from zipTree( artifact.getFile() )
-        into 'assets/pd/libs/' + artifact.name
-      }
+	  	  copy {
+			  if(artifact.name == "rjlib"){
+			  	    // special rjdj filter
+			    	from zipTree( artifact.getFile() ).matching{include '*/rj/**'}.files
+			  }else{
+			        from zipTree( artifact.getFile() )
+		      }
+	          into 'assets/pd/libs/' + artifact.name
+	      }
     }
 }
 
