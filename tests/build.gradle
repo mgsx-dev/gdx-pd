@@ -32,6 +32,7 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://jitpack.io" }
     }
 }
 
@@ -58,7 +59,10 @@ project(":android") {
 
 	sourceCompatibility = 1.6
 
-    configurations { natives }
+    configurations { 
+    	natives
+    	pd
+    }
 
     dependencies {
         compile project(":core")
@@ -76,6 +80,7 @@ project(":android") {
         natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-x86"
         natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-x86_64"
         
+        pd 'com.github.mgsx-dev:gdx-pd-patchbank:master-SNAPSHOT'
     }
 }
 

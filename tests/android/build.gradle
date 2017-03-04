@@ -54,6 +54,16 @@ task copyAndroidNatives() {
     }
 }
 
+task copyPdPatches() {
+	configurations.pd.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+	  // TODO clean before extract ?
+      copy {
+        from zipTree( artifact.getFile() )
+        into 'assets/pd/libs/' + artifact.name
+      }
+    }
+}
+
 task run(type: Exec) {
     def path
     def localProperties = project.file("../local.properties")
