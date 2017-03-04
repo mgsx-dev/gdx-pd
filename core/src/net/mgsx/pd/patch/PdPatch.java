@@ -1,8 +1,8 @@
 package net.mgsx.pd.patch;
 
-import org.puredata.core.PdBase;
-
 import com.badlogic.gdx.utils.Disposable;
+
+import net.mgsx.pd.Pd;
 
 /**
  * Puredata patch (file)
@@ -24,7 +24,7 @@ public class PdPatch implements Disposable
 
 	@Override
 	public void dispose() {
-		PdBase.closePatch(pdHandle);
+		Pd.audio.close(this);
 	}
 	
 	
