@@ -76,6 +76,7 @@
 #X obj 424 557 r reverb;
 #X obj 220 36 midi-pgm;
 #X obj 158 310 poly-organ;
+#X obj 292 37 midi-wrapper;
 #X connect 0 0 18 0;
 #X connect 1 0 39 0;
 #X connect 1 2 39 0;
