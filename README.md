@@ -29,6 +29,15 @@ This extension enable audio synthesis in games with pd patches and provides some
 * Asset loaders for both Patch and Midi files.
 * Message dispatcher.
 
+# Documentation
+
+Full documentation is available in this repository :
+
+* [Assets organization](doc/AssetsOrganization.md)
+* [Pd patch libraries](doc/PatchLibraries.md)
+* [Remote live patching](doc/LivePatching.md)
+
+
 # How to use
 
 ## Configure your LibGDX project
