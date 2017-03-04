@@ -17,7 +17,6 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.midi.playback.LiveSequencer;
 import net.mgsx.midi.playback.LiveTrack;
-import net.mgsx.midi.playback.PdMidiSynth;
 import net.mgsx.midi.sequence.MidiSequence;
 import net.mgsx.midi.sequence.event.MidiEvent;
 import net.mgsx.midi.sequence.event.NoteOn;
@@ -73,7 +72,7 @@ public class MidiSequencerDemo implements Demo
 		
 		patch = Pd.audio.open(Gdx.files.internal("pdmidi/midiplayer.pd"));
 		
-		seq = new LiveSequencer(PdMidiSynth.instance);
+		seq = new LiveSequencer(Pd.midi.getPdSynth());
 		
 		buildGUI(table);
 		

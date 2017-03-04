@@ -1,4 +1,4 @@
-package net.mgsx.midi.playback;
+package net.mgsx.pd.midi;
 
 import org.puredata.core.PdBase;
 
@@ -13,10 +13,8 @@ import net.mgsx.midi.sequence.event.ProgramChange;
 import net.mgsx.midi.sequence.event.SystemExclusiveEvent;
 import net.mgsx.midi.sequence.util.MidiEventListener;
 
-public class PdMidiSynth implements MidiEventListener 
+public class DefaultPdMidiSynth implements MidiEventListener 
 {
-	public static final MidiEventListener instance = new PdMidiSynth();
-
 	@Override
 	public void onStop(boolean finished) {
 		System.out.println("onStop");// TODO send all notes off ?

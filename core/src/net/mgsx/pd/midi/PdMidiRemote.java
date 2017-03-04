@@ -41,6 +41,76 @@ public class PdMidiRemote implements PdMidi
 	
 	private DatagramPacket p3, p2;
 	
+	private MidiEventListener synth = new MidiEventListener() {
+		@Override
+		public void onStop(boolean finished){
+		}
+
+		@Override
+		public void onStart(boolean fromBeginning) {
+		}
+
+		@Override
+		public void onEvent(MidiEvent event, long ms) {
+			DatagramPacket p = null;
+			if(event instanceof NoteOn){
+				NoteOn me = (NoteOn)event;
+				datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | (me.getChannel() & 0xFF));
+				datagramBuffer[1] = (byte)(me.getNoteValue() & 0xFF);
+				datagramBuffer[2] = (byte)(me.getVelocity() & 0xFF);
+				p = p3;
+			}
+			else if(event instanceof NoteOff){
+				NoteOff me = (NoteOff)event;
+				datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | (me.getChannel() & 0xFF));
+				datagramBuffer[1] = (byte)(me.getNoteValue() & 0xFF);
+				datagramBuffer[2] = (byte)(me.getVelocity() & 0xFF);
+				 p = p3;
+			}
+			else if(event instanceof Controller){
+				Controller me = (Controller)event;
+				datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | ( me.getChannel() & 0xFF));
+				datagramBuffer[1] = (byte)(me.getControllerType()& 0xFF);
+				datagramBuffer[2] = (byte)(me.getValue() & 0xFF);
+				 p = p3;
+			}
+			else if(event instanceof PitchBend){
+				PitchBend me = (PitchBend)event;
+				datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | ( me.getChannel() & 0xFF));
+				datagramBuffer[1] = (byte)(me.getLeastSignificantBits() & 0xFF);
+				datagramBuffer[2] = (byte)(me.getMostSignificantBits()& 0xFF);
+				 p = p3;
+			}
+			else if(event instanceof NoteAftertouch){
+				NoteAftertouch me = (NoteAftertouch)event;
+				datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | ( me.getChannel() & 0xFF));
+				datagramBuffer[1] = (byte)(me.getNoteValue()& 0xFF);
+				datagramBuffer[3] = (byte)(me.getAmount() & 0xFF);
+				 p = p3;
+			}
+			else if(event instanceof ChannelAftertouch){
+				ChannelAftertouch me = (ChannelAftertouch)event;
+				datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | ( me.getChannel() & 0xFF));
+				datagramBuffer[1] = (byte)(me.getAmount() & 0xFF);
+				 p = p2;
+			}
+			else if(event instanceof ProgramChange){
+				ProgramChange me = (ProgramChange)event;
+				datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | ( me.getChannel() & 0xFF));
+				datagramBuffer[1] = (byte)(me.getProgramNumber()& 0xFF);
+				 p = p2;
+			}
+			if(p != null){
+				try {
+					datagramSocket.send(p);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
+	};
+	
 	/**
 	 * create PdMidiRemote with default broadcast configuration (qmidinet default 225.0.0.37:21928)
 	 * @return
@@ -90,78 +160,14 @@ public class PdMidiRemote implements PdMidi
 	public MidiMusic createMidiMusic(MidiSequence sequence) 
 	{
 		MidiProcessor sequencer = new MidiProcessor(sequence);
-		sequencer.registerEventListener(new MidiEventListener() {
-			
-			@Override
-			public void onStop(boolean finished){
-			}
-			
-			@Override
-			public void onStart(boolean fromBeginning) {
-			}
-			
-			@Override
-			public void onEvent(MidiEvent event, long ms) {
-				DatagramPacket p = null;
-				if(event instanceof NoteOn){
-					NoteOn me = (NoteOn)event;
-					datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | (me.getChannel() & 0xFF));
-					datagramBuffer[1] = (byte)(me.getNoteValue() & 0xFF);
-					datagramBuffer[2] = (byte)(me.getVelocity() & 0xFF);
-					p = p3;
-				}
-				else if(event instanceof NoteOff){
-					NoteOff me = (NoteOff)event;
-					datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | (me.getChannel() & 0xFF));
-					datagramBuffer[1] = (byte)(me.getNoteValue() & 0xFF);
-					datagramBuffer[2] = (byte)(me.getVelocity() & 0xFF);
-					 p = p3;
-				}
-				else if(event instanceof Controller){
-					Controller me = (Controller)event;
-					datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | ( me.getChannel() & 0xFF));
-					datagramBuffer[1] = (byte)(me.getControllerType()& 0xFF);
-					datagramBuffer[2] = (byte)(me.getValue() & 0xFF);
-					 p = p3;
-				}
-				else if(event instanceof PitchBend){
-					PitchBend me = (PitchBend)event;
-					datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | ( me.getChannel() & 0xFF));
-					datagramBuffer[1] = (byte)(me.getLeastSignificantBits() & 0xFF);
-					datagramBuffer[2] = (byte)(me.getMostSignificantBits()& 0xFF);
-					 p = p3;
-				}
-				else if(event instanceof NoteAftertouch){
-					NoteAftertouch me = (NoteAftertouch)event;
-					datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | ( me.getChannel() & 0xFF));
-					datagramBuffer[1] = (byte)(me.getNoteValue()& 0xFF);
-					datagramBuffer[3] = (byte)(me.getAmount() & 0xFF);
-					 p = p3;
-				}
-				else if(event instanceof ChannelAftertouch){
-					ChannelAftertouch me = (ChannelAftertouch)event;
-					datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | ( me.getChannel() & 0xFF));
-					datagramBuffer[1] = (byte)(me.getAmount() & 0xFF);
-					 p = p2;
-				}
-				else if(event instanceof ProgramChange){
-					ProgramChange me = (ProgramChange)event;
-					datagramBuffer[0] = (byte)(((me.getType() << 4)  & 0xFF) | ( me.getChannel() & 0xFF));
-					datagramBuffer[1] = (byte)(me.getProgramNumber()& 0xFF);
-					 p = p2;
-				}
-				if(p != null){
-					try {
-						datagramSocket.send(p);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				
-			}
-		}, MidiEvent.class);
+		sequencer.registerEventListener(synth, MidiEvent.class);
 		
 		return new DefaultMidiMusic(sequencer, sequence);
+	}
+
+	@Override
+	public MidiEventListener getPdSynth() {
+		return synth;
 	}
 
 }
