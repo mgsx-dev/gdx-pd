@@ -20,7 +20,7 @@ allprojects {
         gdxVersion = '1.9.4'
         roboVMVersion = '2.2.0'
         groupName = "net.mgsx.gdx"
-        oscVersion = '0.3'
+        oscVersion = '0.4'
     }
 
     repositories {
@@ -28,6 +28,7 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://jitpack.io" }
     }
 }
 
@@ -57,7 +58,7 @@ project(":core") {
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.illposed.osc:javaosc-core:$oscVersion"
+        compile "com.github.hoijui.JavaOSC:javaosc-core:javaosc-$oscVersion"
         testCompile 'junit:junit:4.12'
     }
 }
