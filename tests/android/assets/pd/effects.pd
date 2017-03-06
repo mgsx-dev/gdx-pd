@@ -1,6 +1,6 @@
-#N canvas 356 272 1099 748 10;
+#N canvas 353 276 1099 748 10;
 #X obj 856 59 r shot;
-#X obj 992 61 r gui;
+#X obj 694 22 r gui;
 #X obj 636 552 *~;
 #X obj 654 486 vline~;
 #X obj 626 662 dac~;
@@ -107,7 +107,7 @@
 #X obj 66 238 /~;
 #X obj 55 203 sig~ 1;
 #X obj 362 89 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 6100 1;
+-1 -1 0 1;
 #X obj 362 225 mtof;
 #X obj 67 262 *~ 600;
 #X msg 144 170 300 3000;
@@ -147,7 +147,7 @@
 #X obj 306 366 vline~;
 #X obj 210 164 phasor~ -14;
 #X obj 96 173 vsl 15 128 60 110 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 6700 1;
+-1 -1 0 1;
 #X obj 96 309 mtof;
 #X obj 229 219 r tone;
 #X obj 210 80 r speed;
@@ -159,12 +159,12 @@
 1;
 #X obj 210 187 lop~ 300;
 #X obj 34 174 vsl 15 128 0 14 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 6900 1;
+-1 -1 0 1;
 #X obj 34 310 mtof;
 #X obj 34 332 s speed;
 #X msg 303 127 1 20;
 #X msg 341 127 0 20;
-#X obj 89 9 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1 1
+#X obj 89 9 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
 ;
 #X obj 89 29 metro 1000;
 #X obj 32 53 random 20;
@@ -223,6 +223,15 @@
 #X connect 7 0 8 0;
 #X connect 8 1 4 0;
 #X restore 275 19 pd shot;
+#X obj 639 205 *~;
+#X obj 639 227 dac~;
+#X obj 714 134 vline~;
+#X obj 715 170 *~;
+#X obj 587 134 osc~ 330;
+#X msg 640 99 0;
+#X msg 714 111 1 5 \, 0 100 10;
+#X connect 1 0 92 0;
+#X connect 1 0 93 0;
 #X connect 2 0 31 0;
 #X connect 3 0 14 0;
 #X connect 3 0 14 1;
@@ -311,3 +320,11 @@
 #X connect 81 0 80 0;
 #X connect 82 0 73 0;
 #X connect 83 0 77 0;
+#X connect 87 0 88 0;
+#X connect 87 0 88 1;
+#X connect 89 0 90 0;
+#X connect 89 0 90 1;
+#X connect 90 0 87 1;
+#X connect 91 0 87 0;
+#X connect 92 0 91 1;
+#X connect 93 0 89 0;

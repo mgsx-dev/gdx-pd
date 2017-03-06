@@ -6,7 +6,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-public class AudioGdxTest {
+public class AudioGdxMusicTest {
 
 	public static void main(String[] args) 
 	{
@@ -16,6 +16,7 @@ public class AudioGdxTest {
 			@Override
 			public void create() {
 				
+				// TODO include something is data
 				Music music = Gdx.audio.newMusic(Gdx.files.absolute("/home/germain/git/puredatapatches/talking.wav"));
 				
 				music.play();

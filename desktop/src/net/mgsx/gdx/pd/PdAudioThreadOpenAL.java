@@ -6,12 +6,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
-import com.badlogic.gdx.backends.lwjgl.audio.OpenALDevicePatched;
+import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudioDevice;
 import com.badlogic.gdx.utils.Disposable;
 
 import net.mgsx.pd.PdConfiguration;
 
-// XXX TEMPORARY (waiting for fix audio CPU)
 public class PdAudioThreadOpenAL extends Thread implements Disposable
 {
 	private volatile boolean processing;
@@ -19,7 +18,7 @@ public class PdAudioThreadOpenAL extends Thread implements Disposable
 	private PdConfiguration config;
 	
 	public PdAudioThreadOpenAL(PdConfiguration config) {
-		super("PdAudioThreadOpenAL(Patched)");
+		super("PdAudioThread");
 		setPriority(MAX_PRIORITY);
 		this.config = config;
 	}
@@ -27,17 +26,19 @@ public class PdAudioThreadOpenAL extends Thread implements Disposable
 	@Override
 	public void run() 
 	{
-		int samplePerBuffer = 512;
+		int samplePerBuffer = config.bufferSize;
 		
+		// FIXME min 1 ! assume PdBase.blockSize() is 64
 		int ticks = samplePerBuffer / PdBase.blockSize();
 		
 		short [] inBuffer = new short[samplePerBuffer * config.inputChannels];
 		short [] outBuffer = new short[samplePerBuffer * config.outputChannels];
 		
-		// TODO when bug is fix libgdx/libgdx#2252 : 
-		// Gdx.audio.newAudioDevice(samplingRate, isMono);
-		// TODO is 44100 will be the futur value ?
-		AudioDevice device = new OpenALDevicePatched((OpenALAudio)Gdx.audio, 44100, false, outBuffer.length * 2, 8);
+		// It could be done like this :
+		// AudioDevice device = Gdx.audio.newAudioDevice(config.sampleRate, config.outputChannels < 2);
+		// but we need to align buffer size : Pd.process and device.write.
+		int bufferSizeBytes = outBuffer.length * 2;
+		AudioDevice device = new OpenALAudioDevice((OpenALAudio)Gdx.audio, config.sampleRate, config.outputChannels<2, bufferSizeBytes, config.bufferCount);
 		
 		AudioRecorder recorder = null;
 		if(config.inputChannels > 0){
@@ -71,7 +72,9 @@ public class PdAudioThreadOpenAL extends Thread implements Disposable
 		
 		device.dispose();
 		
-		recorder.dispose();
+		if(recorder != null){
+			recorder.dispose();
+		}
 	}
 
 	@Override

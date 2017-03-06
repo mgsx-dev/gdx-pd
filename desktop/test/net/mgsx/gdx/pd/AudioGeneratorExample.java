@@ -12,7 +12,8 @@ public class AudioGeneratorExample {
 	public static void main(String[] args) 
 	{
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		
+		config.audioDeviceBufferSize = 512;
+		config.audioDeviceBufferCount = 17;
 		new LwjglApplication(new Game(){
 			@Override
 			public void create() {

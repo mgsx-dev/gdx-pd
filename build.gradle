@@ -17,7 +17,7 @@ allprojects {
     version = '0.6.0-SNAPSHOT'
     ext {
         appName = "gdx-pd"
-        gdxVersion = '1.9.4'
+        gdxVersion = '1.9.6'
         roboVMVersion = '2.2.0'
         groupName = "net.mgsx.gdx"
         oscVersion = '0.4'
