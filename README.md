@@ -85,6 +85,17 @@ project(":android") {
 
 ```
 
+**Note** : because of [#3](https://github.com/mgsx-dev/gdx-pd/issues/3), you need to add jitpack as repository 
+(this workaround is necessary while OSC release 0.4 is not in Maven Central) :
+
+```
+allprojects {
+	repositories {
+		maven { url "https://jitpack.io" }
+	}
+}
+```
+
 ## Initialize in your launchers
 
 
