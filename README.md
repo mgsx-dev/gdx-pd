@@ -156,6 +156,8 @@ get their size (see #5)
 Only require java and docker environement.
 Tested on Ubuntu 16.04 x64.
 
+First setup your local git clone :
+
 ```
 git clone https://github.com/mgsx-dev/gdx-pd.git
 cd gdx-pd
@@ -167,11 +169,26 @@ cd libpd
 git submodule init
 git submodule update
 cd ..
+```
 
+You have to tell gradle about your Android sdk location by creating local.properties file :
+
+```
+echo 'sdk.dir=[absolute path to Android SDK location]' > local.properties
+```
+
+Build libpd natives with docker :
+
+
+```
 docker run --rm -v $(pwd):/work -w /work/native -it mgsx/libgdx ../gradlew buildNative
 
 sudo chown -R $USER:$USER .
+```
 
+And then publish locally in order to use it your local projects :
+
+```
 ./gradlew publishToMavenLocal
 
 ```
