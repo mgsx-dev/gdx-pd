@@ -2,7 +2,6 @@ package net.mgsx.pd.audio;
 
 import java.io.IOException;
 
-import org.puredata.core.NativeLoader;
 import org.puredata.core.PdBase;
 import org.puredata.core.PdBaseLoader;
 import org.puredata.core.PdListener;
@@ -34,8 +33,11 @@ abstract public class PdAudioBase implements PdAudio
 		PdBaseLoader.loaderHandler = new PdBaseLoader() {
 			@Override
 			public void load() {
-				NativeLoader.loadLibrary("pthreadGC2", "windows"); // TODO verify this and see if we could use libgdx loader
-			    new SharedLibraryLoader().load("gdx-pd");
+				SharedLibraryLoader loader = new SharedLibraryLoader();
+				if(SharedLibraryLoader.isWindows){
+					loader.load("pthread");
+				}
+				loader.load("gdx-pd");
 			}
 		};
 		

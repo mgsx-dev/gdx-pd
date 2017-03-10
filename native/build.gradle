@@ -258,6 +258,12 @@ task desktopJar(type: Jar) {
     from("libs/macosx")
     from("libs/windows64")
     from("libs/windows32")
+    from("../libpd/libs/mingw32"){
+    	rename("libwinpthread-1.dll", "pthread.dll")
+    }
+    from("../libpd/libs/mingw64"){
+    	rename("libwinpthread-1.dll", "pthread64.dll")
+    }
 }
 
 task androidArmJar(type: Jar) {

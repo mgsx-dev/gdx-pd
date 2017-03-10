@@ -8,9 +8,9 @@ Work in progress :
 | Platform   | Scheduled | implemented | Tested |
 |------------|-----------|-------------|--------|
 | Linux 64   |     y     |      y      |   y    |
-| Linux 32   |     y     |      y      |        |
+| Linux 32   |     y     |      y      |   y    |
 | Android    |     y     |      y      |   y    |
-| Windows 64 |     y     |      y      |        |
+| Windows 64 |     y     |      y      |   y    |
 | Windows 32 |     y     |      y      |        |
 | MacOSX 64  |     -     |      -      |        |
 | MacOSX 32  |     -     |      -      |        |
