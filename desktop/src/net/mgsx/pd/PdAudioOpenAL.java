@@ -1,4 +1,4 @@
-package net.mgsx.gdx.pd;
+package net.mgsx.pd;
 
 import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.audio.PdAudioBase;

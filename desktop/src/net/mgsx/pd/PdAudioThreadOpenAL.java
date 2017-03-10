@@ -1,4 +1,4 @@
-package net.mgsx.gdx.pd;
+package net.mgsx.pd;
 
 import org.puredata.core.PdBase;
 

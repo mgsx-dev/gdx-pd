@@ -3,7 +3,6 @@ package net.mgsx.pd.audio;
 import java.io.IOException;
 
 import org.puredata.core.PdBase;
-import org.puredata.core.PdBaseLoader;
 import org.puredata.core.PdListener;
 import org.puredata.core.PdReceiver;
 
@@ -13,7 +12,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.patch.PdPatch;
@@ -29,17 +27,6 @@ abstract public class PdAudioBase implements PdAudio
 	final private ObjectMap<String, Array<PdListener>> listeners = new ObjectMap<String, Array<PdListener>>();
 	
 	public void create(PdConfiguration config){
-		
-		PdBaseLoader.loaderHandler = new PdBaseLoader() {
-			@Override
-			public void load() {
-				SharedLibraryLoader loader = new SharedLibraryLoader();
-				if(SharedLibraryLoader.isWindows){
-					loader.load("pthread");
-				}
-				loader.load("gdx-pd");
-			}
-		};
 		
 		PdBase.setReceiver(new PdReceiver(){
 

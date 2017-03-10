@@ -1,7 +1,43 @@
 package net.mgsx.pd;
 
+import net.mgsx.pd.audio.PdAudioRemote;
+
 public class PdConfiguration 
 {
+	/**
+	 * Whether to completely disable Pd (for profiling purpose)
+	 */
+	public static boolean disabled = false;
+	
+	/**
+	 * Whether to enable Pd in remote mode.
+	 * Used with gdx-pd-network.pd patch to enable live patching (see gdx-pd live patching guide).
+	 */
+	public static boolean remoteEnabled = false;
+	
+	/**
+	 * Host to use in remote mode. Can be host name ("localhost") or IP address ("192.160.0.13")
+	 * or broadcast address ("225.0.0.37").
+	 * see {@link PdAudioRemote}
+	 */
+	public static String remoteHost = "localhost";
+	
+	/**
+	 * Port to use in remote mode to send messages to Pd.
+	 */
+	public static int remoteSendPort = 3000;
+	
+	/**
+	 * Port to use in remote mode to send midi stream to Pd.
+	 */
+	public static int remoteMidiPort = 3001;
+	
+	/**
+	 * Port to use in remote mode to receive messages from Pd.
+	 */
+	public static int remoteRecvPort = 3002;
+	
+	
 	/**
 	 * input channels. Supported values are : 
 	 * 0 (no input), 1 (mono microphone), 2 (stereo microphone).
@@ -36,4 +72,5 @@ public class PdConfiguration
 	 * Default latency is about 52 ms.
 	 */
 	public int bufferCount = 9;
+	
 }

@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import org.puredata.core.PdBase;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplicationBase;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -14,11 +16,11 @@ import net.mgsx.pd.patch.PdPatch;
 
 public class PdAudioAndroid extends PdAudioDefault
 {
-	private Context context;
+	private final Context context;
 	
-	public PdAudioAndroid(Context context) {
+	public PdAudioAndroid() {
 		super();
-		this.context = context;
+		this.context = ((AndroidApplicationBase)Gdx.app).getContext();
 		
 		FileHelper.trimCache(context);
 	}
