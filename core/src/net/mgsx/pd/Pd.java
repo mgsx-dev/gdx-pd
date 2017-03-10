@@ -82,13 +82,13 @@ public class Pd
 			if(type == ApplicationType.Desktop && !SharedLibraryLoader.isMac)
 			{
 				String className = "net.mgsx.pd.PdAudioOpenAL";
-				Class cls = ClassReflection.forName(className);
+				Class<? extends PdAudio> cls = ClassReflection.forName(className);
 				audio = ClassReflection.newInstance(cls);
 			}
 			else if(type == ApplicationType.Android)
 			{
 				String className = "net.mgsx.pd.PdAudioAndroid";
-				Class cls = ClassReflection.forName(className);
+				Class<? extends PdAudio> cls = ClassReflection.forName(className);
 				audio = ClassReflection.newInstance(cls);
 			}
 			else

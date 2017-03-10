@@ -9,7 +9,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.pd.Pd;
-import net.mgsx.pd.PdAudioOpenAL;
 import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.events.PdAdapter;
 
@@ -17,8 +16,6 @@ public class PdAudioOpenALFullTest {
 
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.audioDeviceBufferSize = 512;
-		config.audioDeviceBufferCount = 16;
 		
 		new LwjglApplication(new Game(){
 			
@@ -27,8 +24,6 @@ public class PdAudioOpenALFullTest {
 			
 			@Override
 			public void create() {
-				
-				Pd.audio = new PdAudioOpenAL();
 				PdConfiguration config = new PdConfiguration();
 				config.inputChannels = 2;
 				Pd.audio.create(config);

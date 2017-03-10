@@ -302,7 +302,7 @@ public class PdAudioRemoteTest extends ApplicationAdapter
 	{
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
-		Pd.audio = new PdAudioRemote();
+		PdConfiguration.remoteEnabled = true;
 		
 		new LwjglApplication(new PdAudioRemoteTest(), config);
 		
