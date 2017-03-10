@@ -17,6 +17,26 @@ Work in progress :
 | iOS        |     -     |      -      |        |
 | Web        |     -     |      -      |        |
 
+# Features
+
+* Wraps/abstracts libpd in a libGDX fashion.
+* Pd patch loader for AssetManager
+* Midi sequencers (including "à la live" sequencer)
+* Midi file reader/writer and loader for AssetManager
+* Live patching in Pd throw network/OSC
+* LibGDX audio friendly (you can still use Sounds and Musics)
+* Full Pd Vanilla support.
+* Easy custom Pd externals build with docker.
+
+# Limitations
+
+* Apple platforms not supported yet.
+* Web platform not supported yet.
+
+# Futur works
+
+* Audio 3D spatialization / VR
+
 # What is it ?
 
 LibGDX is a cross platform game framework. If you don't know, please visit them : http://www.badlogicgames.com/
@@ -96,26 +116,45 @@ allprojects {
 }
 ```
 
-## Initialize in your launchers
+
+## Initialize in your game
+
+Most of the time no additionnal code is required in your launchers in order to enable Pd.
+
+You always need to initialize audio in your game. This is the right place to configure audio
+channels (enable microphone), tweak audio buffer settings, change sample rate...
 
 
 ```
-// Choose implementation :
-Pd.audio = new PdAudioOpenAL(); // Desktop using LibGDX desktop audio implementation (OpenAL)
-Pd.audio = new PdAudioDesktop(); // Desktop using JavaSoundImplmentation audio implementation
+	@Override
+	public void create () 
+	{
+		PdConfiguration config = new PdConfiguration();
+		Pd.audio.create(config);
+	}
+	...
+	@Override
+	public void dispose () 
+	{
+		Pd.audio.release();
+	}
+```
 
-Pd.audio.create(); // initialize once
-
-PdPatch patch = Pd.audio.open(file); // open a patch
-
-... play with patch ...
-
-Pd.audio.close(patch); // close a patch
-
-Pd.audio.release(); // shutdown audio (before exit)
+Use of microphone eat more CPU and is disabled by default. To enable microphone :
+```
+config.inputChannels = 1; // enable mono microphone
+config.inputChannels = 2; // enable stereo microphone
 ```
 
 ## Play with it
+
+### open/close patches
+
+```
+PdPatch patch = Pd.audio.open(file); // open a patch
+... play with patch ...
+Pd.audio.close(patch);
+```
 
 ### Interact with patch
 
@@ -144,12 +183,24 @@ get to the context.
 With LibGDX you can already live code with JVM hot code swapping. With pd, you can use the OSC implementation which
 send all message to network in OSC format. You can then open your patch in Puredata and modify it directly.
 
+To do so, you need to configure remote mode in your launcher(s) :
 ```
-Pd.audio = new PdAudioRemote();
+PdConfiguration.remoteEnabled = true;
 ```
+
+see [Full Live Patching Documentation](doc/LivePatching.md)
 
 There is currently some limitations working with arrays. You can write to array throw network but not read them or
 get their size (see #5)
+
+## Disable Pd
+
+In some rare cases you want to disable all Pd stuff (profiling your game without Pd for instance).
+To do so, you need to configure Pd in your launcher(s) :
+
+```
+PdConfiguration.disabled = true;
+```
 
 # Build from sources
 
