@@ -17,39 +17,40 @@ Work in progress :
 | iOS        |     -     |      -      |        |
 | Web        |     -     |      -      |        |
 
-# Features
+# Introduction
+
+## What is it ?
+
+LibGDX is a cross platform game framework. If you don't know, please visit : http://www.badlogicgames.com/
+
+Puredata (Pd) is an audio synthesis application coded in C providing graphical programming.
+gdx-pd is based on LibPd java bindings which. If you don't know, please visit : https://github.com/libpd/libpd
+
+This extension enables audio synthesis in games with pd patches and provides some usefull tools for audio design.
+
+## Features
 
 * Wraps/abstracts libpd in a libGDX fashion.
+* Dedicated audio processing thread fully integrated with LibGDX audio implementation : you can use both Pd and Sounds/Musics.
 * Pd patch loader for AssetManager
 * Midi sequencers (including "à la live" sequencer)
 * Midi file reader/writer and loader for AssetManager
 * Live patching in Pd throw network/OSC
-* LibGDX audio friendly (you can still use Sounds and Musics)
+* LibGDX audio friendly ()
 * Full Pd Vanilla support.
 * Easy custom Pd externals build with docker.
 
-# Limitations
+## Limitations
 
 * Apple platforms not supported yet.
 * Web platform not supported yet.
 
-# Futur works
+## Futur works
 
-* Audio 3D spatialization / VR
+* Audio 3D spatialization / VR.
+* Add support for all platforms.
 
-# What is it ?
-
-LibGDX is a cross platform game framework. If you don't know, please visit them : http://www.badlogicgames.com/
-
-Puredata (Pd) is an audio synthesis application coded in C providing graphical programming. 
-gdx-pd is based on LibPD java bindings. If you don't know, please visit them : https://github.com/libpd/libpd
-
-This extension enable audio synthesis in games with pd patches and provides some usefull tools  :
-* new Music type : PdMusic which play midi files and route midi message to Pd.
-* Asset loaders for both Patch and Midi files.
-* Message dispatcher.
-
-# Documentation
+## Documentation
 
 Full documentation is available in this repository :
 
@@ -106,7 +107,7 @@ project(":android") {
 ```
 
 **Note** : because of [#3](https://github.com/mgsx-dev/gdx-pd/issues/3), you need to add jitpack as repository 
-(this workaround is necessary while OSC release 0.4 is not in Maven Central) :
+(this workaround is necessary while OSC release 0.4 is not in Maven Central yet) :
 
 ```
 allprojects {
@@ -140,7 +141,7 @@ channels (enable microphone), tweak audio buffer settings, change sample rate...
 	}
 ```
 
-Use of microphone eat more CPU and is disabled by default. To enable microphone :
+Using microphone eats more CPU and is disabled by default. To enable microphone :
 ```
 config.inputChannels = 1; // enable mono microphone
 config.inputChannels = 2; // enable stereo microphone
@@ -168,8 +169,8 @@ Pd.audio.addListener("symbol", new PdListener(){ ... })
 
 ### Playing music
 
-In order to play midi stream, your patch should implement some of general midi. You can start with provided example
-"pd/midiplayer.pd".
+In order to play midi streams, your have to implement synthetizers in Pd patches following some General MIDI specification. 
+You can start with the provided example "pd/midiplayer.pd".
 
 To play a music, first open the patch and then load the midi file (.mid extension is automatically recognized).
 You can then use LibGDX Music API to play it (Music.play())
@@ -178,10 +179,10 @@ You can then use LibGDX Music API to play it (Music.play())
 ## Take advantages of Live coding
 
 Designing a pd patch for a game could be cumbersome : you have to modify your patch in pd, launch your app and
-get to the context.
+get to the context and restart again.
 
 With LibGDX you can already live code with JVM hot code swapping. With pd, you can use the OSC implementation which
-send all message to network in OSC format. You can then open your patch in Puredata and modify it directly.
+send all message to network in OSC format. You can then open your patch in Puredata and modify it directly during audio design phase.
 
 To do so, you need to configure remote mode in your launcher(s) :
 ```
@@ -195,7 +196,7 @@ get their size (see #5)
 
 ## Disable Pd
 
-In some rare cases you want to disable all Pd stuff (profiling your game without Pd for instance).
+In some rare cases you want to disable all Pd stuff (profiling your game without Pd for example).
 To do so, you need to configure Pd in your launcher(s) :
 
 ```
@@ -204,7 +205,7 @@ PdConfiguration.disabled = true;
 
 # Build from sources
 
-Only require java and docker environement.
+Only require java and docker environement for natives.
 Tested on Ubuntu 16.04 x64.
 
 First setup your local git clone :
@@ -222,7 +223,7 @@ git submodule update
 cd ..
 ```
 
-You have to tell gradle about your Android sdk location by creating local.properties file :
+You have to tell gradle about your Android sdk location by creating a local.properties file :
 
 ```
 echo 'sdk.dir=[absolute path to Android SDK location]' > local.properties
@@ -237,7 +238,7 @@ docker run --rm -v $(pwd):/work -w /work/native -it mgsx/libgdx ../gradlew build
 sudo chown -R $USER:$USER .
 ```
 
-And then publish locally in order to use it your local projects :
+And then publish locally in order to use it in your local projects :
 
 ```
 ./gradlew publishToMavenLocal
@@ -250,8 +251,8 @@ A demo application is available in sources and will be published soon on Android
 
 # Credits
 
-Demo application is shipped with some midi files authorized by the author Jason "Jay" Reichard who published a lot of
-nice old school game music covers, please have a look at his website : http://zorasoft.net/midi.html
+Demo application is shipped with some midi files kindly authorized by the author : Jason "Jay" Reichard who published a lot of
+nice old school game music covers, please take a look at his website : http://zorasoft.net/midi.html
 
 
 
