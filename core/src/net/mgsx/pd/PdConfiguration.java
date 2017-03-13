@@ -1,7 +1,5 @@
 package net.mgsx.pd;
 
-import net.mgsx.pd.audio.PdAudioRemote;
-
 public class PdConfiguration 
 {
 	/**

@@ -20,7 +20,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
-import net.mgsx.pd.audio.PdAudioRemote;
 
 public class PdAudioRemoteTest extends ApplicationAdapter
 {
@@ -50,10 +49,6 @@ public class PdAudioRemoteTest extends ApplicationAdapter
 	
 	private void buildUI()
 	{
-		// TODO test construct with host / port arguments ...
-		
-		// TODO test arrays
-		
 		actionTest("Send Bang on recv_bang", new ActionHandler<Object>() {
 			@Override
 			public void run(Object value) {
@@ -301,7 +296,7 @@ public class PdAudioRemoteTest extends ApplicationAdapter
 	public static void main(String[] args) 
 	{
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		
+		config.height = 1000;
 		PdConfiguration.remoteEnabled = true;
 		
 		new LwjglApplication(new PdAudioRemoteTest(), config);
