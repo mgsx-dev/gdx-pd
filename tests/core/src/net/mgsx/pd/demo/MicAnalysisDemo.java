@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.patch.PdPatch;
@@ -19,8 +18,6 @@ import net.mgsx.pd.utils.PdAdapter;
 public class MicAnalysisDemo implements Demo
 {
 	private PdPatch patch;
-	private PdListener volumelistener;
-	private PdListener pitchListener;
 	
 	@Override
 	public Actor create(Skin skin) {
