@@ -154,6 +154,11 @@ task generateBuildScripts(dependsOn: [importSources]){
 
 		def android = BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Android, false);
 	
+		// All platform flags
+		[linux64, linux32, windows64, windows32, macosx64, macosx32, android].each {
+			it.cFlags += " -DLIBPD_EXTRA"
+		}
+	
 		// Common flags (all platforms except android)
 		[linux64, linux32, windows64, windows32, macosx64, macosx32].each {
 			it.cFlags += " -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -O3 -DLIBPD_SETLOCALE";
