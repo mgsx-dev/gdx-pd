@@ -1,41 +1,49 @@
 package net.mgsx.pd;
 
-import net.mgsx.pd.PdConfiguration;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.AudioDevice;
+import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
+import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudioDevice;
+
 import net.mgsx.pd.audio.PdAudioBase;
+import net.mgsx.pd.audio.PdAudioThread;
 
 /**
- * XXX TEMPORARY (waiting for fix audio CPU)
+ * Pd Audio desktop implementation.
  * 
- * Pd Audio desktop implementation using libGDX OpenAL implementation.
+ * Reason of specific implementation is related to Lwjgl audio configuration confliting
+ * with audio process synchronization (buffers size for audio recorder / pd process / audio device).
+ * It might be unified in the futur.
  * 
  * @author mgsx
  *
  */
 public class PdAudioOpenAL extends PdAudioBase
 {
-	private PdAudioThreadOpenAL thread;
-	
-	@Override
-	public void dispose() {
-	}
-
-	@Override
-	public void create(PdConfiguration config) 
+	private static class PdAudioThreadOpenAL extends PdAudioThread
 	{
-		super.create(config);
+		public PdAudioThreadOpenAL(PdConfiguration config) {
+			super(config);
+		}
 		
-		thread = new PdAudioThreadOpenAL(config);
-		thread.start();
+		@Override
+		protected AudioDevice createAudioDevice() 
+		{
+			// It could be done like this :
+			// AudioDevice device = Gdx.audio.newAudioDevice(config.sampleRate, config.outputChannels < 2);
+			// but we need to align buffer size : Pd.process and device.write.
+			int samplePerFrame = config.bufferSize;
+			int samplePerBuffer = samplePerFrame * config.outputChannels;
+			int bufferSizeBytes = samplePerBuffer * 2;
+			return new OpenALAudioDevice((OpenALAudio)Gdx.audio, config.sampleRate, config.outputChannels<2, bufferSizeBytes, config.bufferCount);
+		}
+
 	}
 	
-	
-
 	@Override
-	public void release() {
-		thread.dispose();
-		thread = null;
-		
-		super.release();
+	protected PdAudioThread createThread(PdConfiguration config) 
+	{
+		return new PdAudioThreadOpenAL(config);
 	}
 
 }

@@ -19,24 +19,31 @@ public class PdAudioThread extends Thread implements Disposable
 {
 	private volatile boolean processing;
 	private volatile boolean requirePolling = true;
-	private PdConfiguration config;
+	protected final PdConfiguration config;
 	
 	public PdAudioThread(PdConfiguration config) {
+		super("PdAudioThread");
+		setPriority(MAX_PRIORITY);
 		this.config = config;
+	}
+	
+	protected AudioDevice createAudioDevice()
+	{
+		return Gdx.audio.newAudioDevice(config.sampleRate, config.outputChannels<2);
 	}
 	
 	@Override
 	public void run() 
 	{
-		int samplePerBuffer = 512;
+		int samplePerBuffer = config.bufferSize;
 		
+		// FIXME min 1 ! assume PdBase.blockSize() is 64
 		int ticks = samplePerBuffer / PdBase.blockSize();
 		
 		short [] inBuffer = new short[samplePerBuffer * config.inputChannels];
 		short [] outBuffer = new short[samplePerBuffer * config.outputChannels];
 		
-		// XXX when bug is fix libgdx/libgdx#2252 : 
-		AudioDevice device = Gdx.audio.newAudioDevice(44100, false);
+		AudioDevice device = createAudioDevice();
 		
 		AudioRecorder recorder = null;
 		if(config.inputChannels > 0){
@@ -70,7 +77,9 @@ public class PdAudioThread extends Thread implements Disposable
 		
 		device.dispose();
 		
-		recorder.dispose();
+		if(recorder != null){
+			recorder.dispose();
+		}
 	}
 
 	@Override

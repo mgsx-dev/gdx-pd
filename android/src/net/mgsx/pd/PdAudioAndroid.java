@@ -11,10 +11,10 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import android.content.Context;
-import net.mgsx.pd.audio.PdAudioDefault;
+import net.mgsx.pd.audio.PdAudioBase;
 import net.mgsx.pd.patch.PdPatch;
 
-public class PdAudioAndroid extends PdAudioDefault
+public class PdAudioAndroid extends PdAudioBase
 {
 	private final Context context;
 	

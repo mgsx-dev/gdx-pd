@@ -26,6 +26,8 @@ abstract public class PdAudioBase implements PdAudio
 {
 	final private ObjectMap<String, Array<PdListener>> listeners = new ObjectMap<String, Array<PdListener>>();
 	
+	private PdAudioThread thread;
+	
 	public void create(PdConfiguration config){
 		
 		PdBase.setReceiver(new PdReceiver(){
@@ -95,12 +97,27 @@ abstract public class PdAudioBase implements PdAudio
 			
 		});
 		
+		thread = createThread(config);
+		thread.start();
+		
+	}
+	
+	protected PdAudioThread createThread(PdConfiguration config)
+	{
+		return new PdAudioThread(config);
 	}
 	
 	public void release()
 	{
+		thread.dispose();
+		thread = null;
 		listeners.clear();
 		PdBase.setReceiver(null);
+	}
+	
+	@Override
+	public void dispose() {
+		release();
 	}
 	
 	@Override
