@@ -23,6 +23,7 @@ import com.illposed.osc.OSCPortOut;
 
 import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.patch.PdPatch;
+import net.mgsx.pd.utils.PdRuntimeException;
 
 /**
  * Remote version of Puredata implementation.
@@ -31,9 +32,10 @@ import net.mgsx.pd.patch.PdPatch;
  * which support network connection with gdx-pd.
  * 
  * @author mgsx
+ * 
+ * TODO recycle OSCMessage objects
  *
  */
-// TODO throw or trace errors ... maybe something robust is wanted here
 public class PdAudioRemote implements PdAudio
 {
 	final private String sendHost;
@@ -90,9 +92,9 @@ public class PdAudioRemote implements PdAudio
 			receiver.startListening();
 			sendClearSubscriptions();
 		} catch (SocketException e) {
-			throw new GdxRuntimeException(e);
+			throw new PdRuntimeException(e);
 		} catch (UnknownHostException e) {
-			throw new GdxRuntimeException(e);
+			throw new PdRuntimeException(e);
 		}
 			 
 	}
@@ -101,16 +103,16 @@ public class PdAudioRemote implements PdAudio
 	{
 		String address = message.getAddress();
 		if(!"/send".equals(address)){
-			throw new GdxRuntimeException("OSC message not supported : " + String.valueOf(address));
+			throw new PdRuntimeException("OSC message not supported : " + String.valueOf(address));
 		}
 		if(message.getArguments().size() < 2){
-			throw new GdxRuntimeException("OSC send message at least 2 args expected");
+			throw new PdRuntimeException("OSC send message at least 2 args expected");
 		}
 		if(!(message.getArguments().get(0) instanceof String)){
-			throw new GdxRuntimeException("OSC send message expect first argument (receiver) to be a string, get : " + String.valueOf(message.getArguments().get(0)));
+			throw new PdRuntimeException("OSC send message expect first argument (receiver) to be a string, get : " + String.valueOf(message.getArguments().get(0)));
 		}
 		if(!(message.getArguments().get(1) instanceof String)){
-			throw new GdxRuntimeException("OSC send message expect second argument (type) to be a string, get : " + String.valueOf(message.getArguments().get(1)));
+			throw new PdRuntimeException("OSC send message expect second argument (type) to be a string, get : " + String.valueOf(message.getArguments().get(1)));
 		}
 		String name = message.getArguments().get(0).toString();
 		Array<PdListener> listener = listeners.get(name);
@@ -152,7 +154,7 @@ public class PdAudioRemote implements PdAudio
 			for(int i=0 ; i<arguments.length ; i++) arguments[i] = message.getArguments().get(i+2);
 			for(PdListener l : listener) l.receiveList(name, arguments);
 		}else{
-			throw new GdxRuntimeException("OSC send message unsupported type : " + type + ", expect msg or list");
+			throw new PdRuntimeException("OSC send message unsupported type : " + type + ", expect msg or list");
 		}
 		
 	}
@@ -163,7 +165,7 @@ public class PdAudioRemote implements PdAudio
 		try {
 			sender.send(msg);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new PdRuntimeException(e);
 		}
 	}
 	
@@ -175,7 +177,7 @@ public class PdAudioRemote implements PdAudio
 		try {
 			sender.send(msg);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new PdRuntimeException(e);
 		}
 	}
 
@@ -218,7 +220,7 @@ public class PdAudioRemote implements PdAudio
 		try {
 			sender.send(msg);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new PdRuntimeException(e);
 		}
 	}
 
@@ -230,7 +232,7 @@ public class PdAudioRemote implements PdAudio
 		try {
 			sender.send(msg);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new PdRuntimeException(e);
 		}
 	}
 
@@ -243,7 +245,7 @@ public class PdAudioRemote implements PdAudio
 		try {
 			sender.send(msg);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new PdRuntimeException(e);
 		}
 	}
 
@@ -255,7 +257,7 @@ public class PdAudioRemote implements PdAudio
 		try {
 			sender.send(msg);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new PdRuntimeException(e);
 		}
 	}
 
@@ -284,14 +286,14 @@ public class PdAudioRemote implements PdAudio
 			try {
 				sender.send(msg);
 			} catch (IOException e) {
-				e.printStackTrace();
+				throw new PdRuntimeException(e);
 			}
 			// required to wait a little in order to not lost so many packets.
 			// without this, array in pd will be corrupted at some point ...
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				// silently fail.
 			}
 		}
 		
@@ -307,7 +309,7 @@ public class PdAudioRemote implements PdAudio
 			try {
 				sender.send(msg);
 			} catch (IOException e) {
-				e.printStackTrace();
+				throw new PdRuntimeException(e);
 			}
 			this.listeners.put(source, listeners = new Array<PdListener>());
 		}

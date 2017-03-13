@@ -10,11 +10,11 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.patch.PdPatch;
+import net.mgsx.pd.utils.PdRuntimeException;
 
 /**
  * Pure Data default implementation (platform independent)
@@ -147,7 +147,7 @@ abstract public class PdAudioBase implements PdAudio
 			int handle = PdBase.openPatch(file.path());
 			return new PdPatch(handle);
 		} catch (IOException e) {
-			throw new GdxRuntimeException("unable to open patch", e);
+			throw new PdRuntimeException("unable to open patch", e);
 		}
 	}
 	
@@ -157,36 +157,46 @@ abstract public class PdAudioBase implements PdAudio
 	}
 	
 	  public void sendBang(String recv){
-		  PdBase.sendBang(recv);
+		  checkError(PdBase.sendBang(recv));
 	  }
 
 	  public void sendFloat(String recv, float x){
-		  PdBase.sendFloat(recv, x);
+		  checkError(PdBase.sendFloat(recv, x));
 	  }
 
 	  public void sendSymbol(String recv, String sym){
-		  PdBase.sendSymbol(recv, sym);
+		  checkError(PdBase.sendSymbol(recv, sym));
 	  }
 	  
 	  public void sendList(String recv, Object... args) {
-	    PdBase.sendList(recv, args);
+		  checkError(PdBase.sendList(recv, args));
 	  }
 
 	  public void sendMessage(String recv, String msg, Object... args) {
-	    PdBase.sendMessage(recv, msg, args);
+		  checkError(PdBase.sendMessage(recv, msg, args));
 	  }
 	  
 	  public int arraySize(String name){
-		  return PdBase.arraySize(name);
+		  int size = PdBase.arraySize(name);
+		  if(size < 0){
+			  throw new PdRuntimeException(size);
+		  }
+		  return size;
 	  }
 
 	  public void readArray(float[] destination, int destOffset, String source, int srcOffset,
 	      int n) {
-	    PdBase.readArray(destination, destOffset, source, srcOffset, n);
+		  checkError(PdBase.readArray(destination, destOffset, source, srcOffset, n));
 	  }
 
 	  public void writeArray(String destination, int destOffset, float[] source, int srcOffset,
 	      int n) {
-		  PdBase.writeArray(destination, destOffset, source, srcOffset, n);
+		  checkError(PdBase.writeArray(destination, destOffset, source, srcOffset, n));
+	  }
+	  
+	  protected void checkError(int code){
+		  if(code != 0){
+			  throw new PdRuntimeException(code);
+		  }
 	  }
 }

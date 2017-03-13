@@ -8,11 +8,11 @@ import org.puredata.core.PdBase;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationBase;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import android.content.Context;
 import net.mgsx.pd.audio.PdAudioBase;
 import net.mgsx.pd.patch.PdPatch;
+import net.mgsx.pd.utils.PdRuntimeException;
 
 public class PdAudioAndroid extends PdAudioBase
 {
@@ -34,21 +34,21 @@ public class PdAudioAndroid extends PdAudioBase
 	        try {
 		        if(patchFolder == null){
 		        	//FileHelper.copyAssetFolder(context.getAssets(), "", context.getCacheDir().getAbsolutePath());
-		        	throw new GdxRuntimeException("can't copy patch from root directory");
+		        	throw new PdRuntimeException("can't copy patch from root directory");
 		        }else{
 					File cachePatchFolder = new File(context.getCacheDir(), patchFolder);
 			        	FileHelper.copyAssetFolder(context.getAssets(), patchFolder, 
 								cachePatchFolder.getAbsolutePath());
 		        }
 	        } catch (IOException e) {
-	        	throw new GdxRuntimeException("unable to copy patch", e);
+	        	throw new PdRuntimeException("unable to copy patch", e);
 	        }
 		}
         try {
 			int handle = PdBase.openPatch(cachePatchFile);
 			return new PdPatch(handle);
 		} catch (IOException e) {
-			throw new GdxRuntimeException("unable to open patch", e);
+			throw new PdRuntimeException("unable to open patch", e);
 		}
 	}
 }
