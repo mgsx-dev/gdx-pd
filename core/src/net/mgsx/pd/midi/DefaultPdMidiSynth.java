@@ -13,7 +13,7 @@ import net.mgsx.midi.sequence.event.ProgramChange;
 import net.mgsx.midi.sequence.event.SystemExclusiveEvent;
 import net.mgsx.midi.sequence.util.MidiEventListener;
 
-public class DefaultPdMidiSynth implements MidiEventListener 
+class DefaultPdMidiSynth implements MidiEventListener 
 {
 	@Override
 	public void onStop(boolean finished) {
