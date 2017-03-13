@@ -28,16 +28,33 @@ public class MicAnalysisDemo implements Demo
 		
 		Table root = new Table(skin);
 		
-		root.add("Microphone Demo").row();
+		root.add("Microphone Tracking Demo :").row();
 		VerticalGroup list = new VerticalGroup();
 		
 		final Label volumeLabel = new Label("", skin);
-		list.addActor(pdLabel("level", skin, "mode", 0, volumeLabel));
+		list.addActor(pdLabel("level", skin, volumeLabel));
 		final Label pitchLabel = new Label("", skin);
-		list.addActor(pdLabel("pitch", skin, "mode", 0, pitchLabel));
-		
-		
+		list.addActor(pdLabel("pitch", skin, pitchLabel));
 		root.add(list);
+		root.add(" ").row();
+		root.add(" ").row();
+		
+		root.add("Attack  Tracking Demo :").row();
+		root.add("1- click start learning,").row();
+		root.add("2- produce a sound 3 times in a row,").row();
+		root.add("3- repeat 2 at will,").row();
+		root.add("4- click stop learning.").row();
+		root.add("The attack tracker is now trained, attackId from mic input  ").row();
+		root.add("should be coherent with the data gathered while training.").row();
+		root.add(" ").row();
+		
+		VerticalGroup list2 = new VerticalGroup();
+		list2.addActor(pdButton("start learning", skin, "start_learning"));
+		list2.addActor(pdButton("stop learning", skin, "stop_learning"));
+		list2.addActor(pdButton("forget", skin, "forget"));
+		final Label attackId = new Label("", skin);
+		list2.addActor(pdLabel("attackId", skin,  attackId));
+		root.add(list2);
 			
 		
 		return root;
@@ -45,8 +62,6 @@ public class MicAnalysisDemo implements Demo
 
 	@Override
 	public void dispose() {
-		Pd.audio.removeListener("level", volumelistener);
-		Pd.audio.removeListener("level", pitchListener);
 		patch.dispose();
 	}
 
@@ -55,19 +70,19 @@ public class MicAnalysisDemo implements Demo
 		return "Mic Controller";
 	}
 	
-	private Actor pdButton(String label, Skin skin, final String recv, final int msg)
+	private Actor pdButton(String label, Skin skin, final String receiver)
 	{
-		TextButton button = new TextButton(label, skin);
-		button.addListener(new ChangeListener() {
+		final TextButton text = new TextButton(label,skin);
+		text.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				Pd.audio.sendList(recv, msg);
+				Pd.audio.sendList(receiver, 0.5f);
 			}
 		});
-		return button;
+		return text;
 	}
 	
-	private Actor pdLabel(final String label, Skin skin, final String recv, final int msg, final Label dlabel)
+	private Actor pdLabel(final String label, Skin skin, final Label dlabel)
 	{
 		PdListener listener;	
 		listener = new PdAdapter(){
