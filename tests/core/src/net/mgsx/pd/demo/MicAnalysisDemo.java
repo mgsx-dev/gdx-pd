@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import net.mgsx.pd.Pd;
-import net.mgsx.pd.events.PdAdapter;
 import net.mgsx.pd.patch.PdPatch;
+import net.mgsx.pd.utils.PdAdapter;
 
 public class MicAnalysisDemo implements Demo
 {
