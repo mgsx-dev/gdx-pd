@@ -21,7 +21,7 @@ public class AtmosphereDemo implements Demo
 		
 		addControl(root, "Rain", "rain");
 		addControl(root, "Wind", "wind");
-		addControl(root, "Storm", "storm");
+		addControl(root, "Earth", "earth");
 		addControl(root, "Fire", "fire");
 		
 		patch = Pd.audio.open(Gdx.files.internal("pd/atmosphere.pd"));

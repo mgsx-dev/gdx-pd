@@ -23,7 +23,7 @@
 #X obj 490 149 bp~ 1700 3;
 #X obj 489 276 *~ 0.2;
 #X obj 709 273 *~;
-#X obj 727 238 r storm;
+#X obj 727 238 r earth;
 #X obj 717 195 clip~ -1 1;
 #X obj 717 166 *~;
 #X obj 712 111 max~ 0;
