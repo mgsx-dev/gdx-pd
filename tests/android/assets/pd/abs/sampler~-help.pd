@@ -1,0 +1,23 @@
+#N canvas 388 562 739 300 10;
+#X obj 109 210 sampler~ ../samples/shotgun.wav 100000;
+#X msg 383 160 load ../samples/shotgun.wav 100000;
+#X msg 391 183 load ../samples/sell_buy_item.wav 100000;
+#X obj 109 252 dac~;
+#X msg 109 88 1;
+#X msg 128 115 1.1;
+#X msg 156 139 1.2;
+#X msg 74 116 0.9;
+#X msg 36 139 0.8;
+#X text 43 15 sampler~ abstraction play PCM file (wav/aiff). Arguments
+are <path> <size max>. First inlet play sample at pitch rate : 1 is
+normal pitch \, 0.5 is half pitch \, 2 is twice pitch. Second inlet
+allow to change PCM file.;
+#X connect 0 0 3 0;
+#X connect 0 0 3 1;
+#X connect 1 0 0 1;
+#X connect 2 0 0 1;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X connect 8 0 0 0;

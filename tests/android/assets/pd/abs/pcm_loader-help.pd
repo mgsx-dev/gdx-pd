@@ -1,0 +1,53 @@
+#N canvas 759 254 748 754 10;
+#X floatatom 365 428 16 0 0 0 - - -, f 16;
+#X symbolatom 88 388 32 0 0 0 - - -, f 32;
+#X text 54 26 pcm_loader loads a PCM (wave file). Arguments are : <path>
+<max size>. . First outlet is array name for later use with tabread~
+or tabread4~. Second outlet is array size which is PCM file size or
+max samples.;
+#X obj 241 590 line~;
+#X obj 241 663 tabread4~;
+#X msg 88 493 set \$1;
+#X obj 384 496 hsl 128 15 0.25 4 1 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 6350 1;
+#X obj 381 516 * 1000;
+#X obj 241 533 pack f f f;
+#X obj 240 704 dac~;
+#X obj 241 430 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X floatatom 381 538 16 0 0 0 - - -, f 16;
+#X msg 241 450 0;
+#X msg 241 567 \$1 \, \$2 \$3;
+#X obj 381 450 loadbang;
+#X msg 381 472 1;
+#X text 264 428 <- trigger;
+#X text 54 124 In this example \, we load shotgun.wav with maximum
+of 100000 samples. Outlets let us configure playback.;
+#X obj 88 357 pcm_loader ../samples/shotgun.wav 100000;
+#X msg 88 309 load ../samples/shotgun.wav 100000;
+#X msg 96 332 load ../samples/sell_buy_item.wav 100000;
+#X text 423 472 <- Reset to normal playback speed;
+#X text 529 496 <- Playback speed;
+#X text 403 321 <- Dynamically load other samples;
+#X obj 61 194 sampler~;
+#X text 138 187 See sampler~ abstraction which wrap pcm_loader in order
+to play sounds.;
+#X connect 0 0 8 1;
+#X connect 1 0 5 0;
+#X connect 3 0 4 0;
+#X connect 4 0 9 0;
+#X connect 4 0 9 1;
+#X connect 5 0 4 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 2;
+#X connect 7 0 11 0;
+#X connect 8 0 13 0;
+#X connect 10 0 12 0;
+#X connect 12 0 8 0;
+#X connect 13 0 3 0;
+#X connect 14 0 15 0;
+#X connect 15 0 6 0;
+#X connect 18 0 1 0;
+#X connect 18 1 0 0;
+#X connect 19 0 18 0;
+#X connect 20 0 18 0;
