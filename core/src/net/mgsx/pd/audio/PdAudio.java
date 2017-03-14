@@ -137,5 +137,16 @@ public interface PdAudio extends Disposable
 	   */
 	  public void removeListener(String source, PdListener listener);
 	  
+	  /**
+	   * Pause audio playback (mainly used by {@link PdAudioBakery})
+	   * Ensure no access to {@link org.puredata.core.PdBase#process(int, float[], float[])} is made by
+	   * audio thread after calling this method (thread safety)
+	   */
+	  public void pause();
+	  
+	  /**
+	   * Resume audio playback (mainly used by {@link PdAudioBakery})
+	   */
+	  public void resume();
 	  
 }

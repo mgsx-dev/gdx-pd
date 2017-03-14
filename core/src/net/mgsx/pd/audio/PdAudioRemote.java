@@ -324,4 +324,14 @@ public class PdAudioRemote implements PdAudio
 		}
 	}
 
+	@Override
+	public void pause() {
+		Gdx.app.error("PdAudioRemote", "pause has no effect in remote mode");
+	}
+
+	@Override
+	public void resume() {
+		Gdx.app.error("PdAudioRemote", "resume has no effect in remote mode");
+	}
+
 }

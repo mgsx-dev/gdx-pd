@@ -76,4 +76,12 @@ public class PdAudioNone implements PdAudio
 	@Override
 	public void removeListener(String source, PdListener listener) {
 	}
+
+	@Override
+	public void pause() {
+	}
+
+	@Override
+	public void resume() {
+	}
 }

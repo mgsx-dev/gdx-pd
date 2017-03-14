@@ -28,7 +28,10 @@ abstract public class PdAudioBase implements PdAudio
 	
 	private PdAudioThread thread;
 	
+	private PdConfiguration config;
+	
 	public void create(PdConfiguration config){
+		this.config = config;
 		
 		PdBase.setReceiver(new PdReceiver(){
 
@@ -199,4 +202,23 @@ abstract public class PdAudioBase implements PdAudio
 			  throw new PdRuntimeException(code);
 		  }
 	  }
+	  
+	@Override
+	public void pause() {
+		thread.dispose();
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			// silently fail.
+		}
+		thread = null;
+	}
+	
+	@Override
+	public void resume() {
+		if(thread == null){
+			thread = createThread(config);
+			thread.start();
+		}
+	}
 }
