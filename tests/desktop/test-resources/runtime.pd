@@ -1,0 +1,14 @@
+#N canvas 236 348 464 349 10;
+#X obj 79 102 r play-backed;
+#X msg 79 124 0 \, 132300 3000;
+#X obj 79 146 line~;
+#X obj 78 231 dac~;
+#X obj 79 53 array define baked-sound 132300;
+#X obj 79 168 tabread4~ baked-sound;
+#X obj 79 190 *~ 1;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 5 0;
+#X connect 5 0 6 0;
+#X connect 6 0 3 0;
+#X connect 6 0 3 1;
