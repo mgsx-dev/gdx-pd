@@ -1,0 +1,31 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+        maven { url "https://jitpack.io" }
+    }
+    dependencies {
+    	classpath "net.mgsx.gdx:gdx-pd:0.6.0-SNAPSHOT"
+        classpath "net.mgsx.gdx:gdx-pd-platform:0.6.0-SNAPSHOT:natives-desktop"
+    }
+}
+
+apply plugin: 'java'
+
+import net.mgsx.pd.audio.PdOffline
+
+task bake(){
+	doLast{
+		buildDir.mkdirs()
+		PdOffline.bake(file("complex-sound.pd"), file("$buildDir/gen-m.wav"), 1, 44100, 3)
+		PdOffline.bake(file("complex-sound.pd"), file("$buildDir/gen-s.wav"), 2, 44100, 3)
+		PdOffline.bake(file("complex-sound.pd"), file("$buildDir/gen-5.1.wav"), 6, 44100, 3)
+		PdOffline.bake(file("complex-sound.pd"), file("$buildDir/gen-48k.wav"), 1, 48000, 3)
+		PdOffline.bake(file("complex-sound.pd"), file("$buildDir/gen-1s.wav"), 1, 44100, 1)
+	}
+	
+}
+
+
