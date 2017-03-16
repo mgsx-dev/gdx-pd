@@ -69,6 +69,28 @@ task copyPdPatches() {
     }
 }
 
+		
+task runPd(type:Exec, group: "pd", description: "Run Puredata with libs path") {  
+	def libs = []
+	configurations.pd.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+		libs += ["-path", "libs/$artifact.name"]
+	}
+	workingDir  "assets/pd"   
+    executable = "pd" 
+  	args = ["-noprefs"] + libs
+} 
+
+task runPdRemote(type:Exec, group: "pd", description: "Run Puredata with libs path and gdx-pd-remote") {  
+	def libs = []
+	configurations.pd.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+		libs += ["-path", "libs/$artifact.name"]
+	}
+	workingDir  "assets/pd"   
+    executable = "pd" 
+    // TODO gdx-pd-tools should be an artifact as well !!!
+  	args = ["-noprefs"] + libs + ["-path", "../../../../tools/pd", "-send", "pd-gdx-pd-network-default.pd vis 0", "gdx-pd-network-default.pd"]
+} 
+
 task run(type: Exec) {
     def path
     def localProperties = project.file("../local.properties")
