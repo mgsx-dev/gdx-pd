@@ -1,13 +1,10 @@
-package net.mgsx.gdx.pd;
+package net.mgsx.pd;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-
-import net.mgsx.pd.Pd;
-import net.mgsx.pd.PdConfiguration;
 
 public class AudioGdxMusicTest {
 
@@ -26,7 +23,7 @@ public class AudioGdxMusicTest {
 				
 				// and a pd patch at the same time
 				Pd.audio.create(new PdConfiguration());
-				Pd.audio.open(Gdx.files.local("test-resources/test.pd"));
+				Pd.audio.open(Gdx.files.local("resources/test.pd"));
 				
 			}}, config);
 		

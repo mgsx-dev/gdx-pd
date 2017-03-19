@@ -5,18 +5,6 @@ Pure Data extension for LibGDX.
 
 Work in progress :
 
-| Platform   | Scheduled | implemented | Tested |
-|------------|-----------|-------------|--------|
-| Linux 64   |     y     |      y      |   y    |
-| Linux 32   |     y     |      y      |   y    |
-| Android    |     y     |      y      |   y    |
-| Windows 64 |     y     |      y      |   y    |
-| Windows 32 |     y     |      y      |        |
-| MacOSX 64  |     -     |      -      |        |
-| MacOSX 32  |     -     |      -      |        |
-| iOS        |     -     |      -      |        |
-| Web        |     -     |      -      |        |
-
 # Introduction
 
 ## What is it ?
@@ -24,7 +12,7 @@ Work in progress :
 LibGDX is a cross platform game framework. If you don't know, please visit : http://www.badlogicgames.com/
 
 Puredata (Pd) is an audio synthesis application coded in C providing graphical programming.
-gdx-pd is based on LibPd java bindings which. If you don't know, please visit : https://github.com/libpd/libpd
+gdx-pd is based on LibPd java bindings. If you don't know, please visit : https://github.com/libpd/libpd
 
 This extension enables audio synthesis in games with pd patches and provides some usefull tools for audio design.
 
@@ -32,18 +20,26 @@ This extension enables audio synthesis in games with pd patches and provides som
 
 * Wraps/abstracts libpd in a libGDX fashion.
 * Dedicated audio processing thread fully integrated with LibGDX audio implementation : you can use both Pd and Sounds/Musics.
-* Pd patch loader for AssetManager
-* Midi sequencers (including "à la live" sequencer)
-* Midi file reader/writer and loader for AssetManager
-* Live patching in Pd throw network/OSC
-* LibGDX audio friendly ()
-* Full Pd Vanilla support.
+* Pd patch loader for AssetManager.
+* Midi sequencers (including "à la live" sequencer).
+* Midi file reader/writer and loader for AssetManager.
+* Live patching in Pd throw network/OSC, see [Full Live Patching Documentation](doc/LivePatching.md)
+* Full Pd Vanilla support including extra externals.
 * Easy custom Pd externals build with docker.
 
-## Limitations
+## Supported platforms
 
-* Apple platforms not supported yet.
-* Web platform not supported yet.
+| Platform   |  Support  |
+|------------|-----------|
+| Linux 64   |    yes    |
+| Linux 32   |    yes    |
+| Android    |    yes    |
+| Windows 64 |    yes    |
+| Windows 32 |    yes    |
+| MacOSX 64  |  not yet  |
+| MacOSX 32  |  not yet  |
+| iOS        |  not yet  |
+| Web        |  not yet  |
 
 ## Futur works
 
@@ -54,10 +50,10 @@ This extension enables audio synthesis in games with pd patches and provides som
 
 Full documentation is available in this repository :
 
+* [Getting started](doc/GettingStarted.md)
 * [Assets organization](doc/AssetsOrganization.md)
 * [Pd patch libraries](doc/PatchLibraries.md)
 * [Remote live patching](doc/LivePatching.md)
-
 
 # How to use
 
@@ -117,91 +113,7 @@ allprojects {
 }
 ```
 
-
-## Initialize in your game
-
-Most of the time no additionnal code is required in your launchers in order to enable Pd.
-
-You always need to initialize audio in your game. This is the right place to configure audio
-channels (enable microphone), tweak audio buffer settings, change sample rate...
-
-
-```
-	@Override
-	public void create () 
-	{
-		PdConfiguration config = new PdConfiguration();
-		Pd.audio.create(config);
-	}
-	...
-	@Override
-	public void dispose () 
-	{
-		Pd.audio.release();
-	}
-```
-
-Using microphone eats more CPU and is disabled by default. To enable microphone :
-```
-config.inputChannels = 1; // enable mono microphone
-config.inputChannels = 2; // enable stereo microphone
-```
-
-## Play with it
-
-### open/close patches
-
-```
-PdPatch patch = Pd.audio.open(file); // open a patch
-... play with patch ...
-Pd.audio.close(patch);
-```
-
-### Interact with patch
-
-Most of PdAudio methods are same as LibPD PdBase class (send, read/write arrays), see PdAudio javadoc for details.
-
-You can register listeners to receive message from pd :
-
-```
-Pd.audio.addListener("symbol", new PdListener(){ ... })
-```
-
-### Playing music
-
-In order to play midi streams, your have to implement synthetizers in Pd patches following some General MIDI specification. 
-You can start with the provided example "pd/midiplayer.pd".
-
-To play a music, first open the patch and then load the midi file (.mid extension is automatically recognized).
-You can then use LibGDX Music API to play it (Music.play())
-
-
-## Take advantages of Live coding
-
-Designing a pd patch for a game could be cumbersome : you have to modify your patch in pd, launch your app and
-get to the context and restart again.
-
-With LibGDX you can already live code with JVM hot code swapping. With pd, you can use the OSC implementation which
-send all message to network in OSC format. You can then open your patch in Puredata and modify it directly during audio design phase.
-
-To do so, you need to configure remote mode in your launcher(s) :
-```
-PdConfiguration.remoteEnabled = true;
-```
-
-see [Full Live Patching Documentation](doc/LivePatching.md)
-
-There is currently some limitations working with arrays. You can write to array throw network but not read them or
-get their size (see #5)
-
-## Disable Pd
-
-In some rare cases you want to disable all Pd stuff (profiling your game without Pd for example).
-To do so, you need to configure Pd in your launcher(s) :
-
-```
-PdConfiguration.disabled = true;
-```
+[Read more ...](doc/GettingStarted.md)
 
 # Build from sources
 
@@ -245,14 +157,16 @@ And then publish locally in order to use it in your local projects :
 
 ```
 
-## Run examples
+# Running tests and examples
 
-A demo application is available in sources and will be published soon on Android store.
+A bunch of examples are provided in "tests" folder. Just import gradle project from "tests" folder and run java classes from desktop project. You don't need to build gdx-pd in order to run these tests.
 
-# Credits
+An example illustrates sound baking during a gradle build. (you have to replace pdVersion variable with latest gdx-pd version) :
 
-Demo application is shipped with some midi files kindly authorized by the author : Jason "Jay" Reichard who published a lot of
-nice old school game music covers, please take a look at his website : http://zorasoft.net/midi.html
+	$ cd tests/example-offline
+	$ ../gradlew -PpdVersion=0.6.0-SNAPSHOT bake 
 
 
+# Thanks
 
+TODO

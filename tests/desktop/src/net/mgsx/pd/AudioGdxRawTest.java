@@ -1,4 +1,4 @@
-package net.mgsx.gdx.pd;
+package net.mgsx.pd;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -6,9 +6,6 @@ import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.math.MathUtils;
-
-import net.mgsx.pd.Pd;
-import net.mgsx.pd.PdConfiguration;
 
 public class AudioGdxRawTest {
 
@@ -23,7 +20,7 @@ public class AudioGdxRawTest {
 			{
 				// play a pd patch
 				Pd.audio.create(new PdConfiguration());
-				Pd.audio.open(Gdx.files.local("test-resources/test.pd"));
+				Pd.audio.open(Gdx.files.local("resources/test.pd"));
 				
 				// and write on raw device at the same time
 				new Thread(new Runnable() {

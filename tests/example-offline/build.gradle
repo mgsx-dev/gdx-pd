@@ -7,8 +7,8 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-    	classpath "net.mgsx.gdx:gdx-pd:0.6.0-SNAPSHOT"
-        classpath "net.mgsx.gdx:gdx-pd-platform:0.6.0-SNAPSHOT:natives-desktop"
+    	classpath "net.mgsx.gdx:gdx-pd:$pdVersion"
+        classpath "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-desktop"
     }
 }
 

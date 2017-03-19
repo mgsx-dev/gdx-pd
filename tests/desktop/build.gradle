@@ -2,8 +2,7 @@ apply plugin: "java"
 
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.test.java.srcDirs = [ "test/"]
-sourceSets.test.resources.srcDirs = [ "test-resources/"]
+sourceSets.main.resources.srcDirs = [ "resources/"]
 
 project.ext.mainClassName = "net.mgsx.pd.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../android/assets");

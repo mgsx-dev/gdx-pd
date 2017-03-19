@@ -1,4 +1,4 @@
-package net.mgsx.gdx.pd;
+package net.mgsx.pd;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -6,9 +6,6 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-
-import net.mgsx.pd.Pd;
-import net.mgsx.pd.PdConfiguration;
 
 public class AudioGdxSoundTest {
 
@@ -22,10 +19,10 @@ public class AudioGdxSoundTest {
 				
 				// play a pd patch
 				Pd.audio.create(new PdConfiguration());
-				Pd.audio.open(Gdx.files.local("test-resources/test.pd"));
+				Pd.audio.open(Gdx.files.local("resources/test.pd"));
 				
 				// and sounds at the same time
-				final Sound snd = Gdx.audio.newSound(Gdx.files.local("test-resources/shotgun.wav"));
+				final Sound snd = Gdx.audio.newSound(Gdx.files.classpath("shotgun.wav"));
 				snd.play();
 				Gdx.input.setInputProcessor(new InputAdapter(){
 					@Override

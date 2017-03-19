@@ -1,4 +1,4 @@
-package net.mgsx.gdx.pd;
+package net.mgsx.pd;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -7,8 +7,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 
-import net.mgsx.pd.Pd;
-import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.audio.PdAudioBakery;
 import net.mgsx.pd.audio.PdAudioBakery.BakingListener;
 
@@ -29,12 +27,12 @@ public class AudioGdxBakingTest {
 			{
 				// we first load patch owning destination arrays.
 				Pd.audio.create(new PdConfiguration());
-				Pd.audio.open(Gdx.files.local("test-resources/runtime.pd"));
+				Pd.audio.open(Gdx.files.local("resources/runtime.pd"));
 				
 				// then we schedule baking of our complex patches.
 				bakery = new PdAudioBakery();
 				
-				bakery.addTask(Gdx.files.local("test-resources/complex-sound.pd"), "baked-sound", 44100, 3);
+				bakery.addTask(Gdx.files.local("resources/complex-sound.pd"), "baked-sound", 44100, 3);
 				
 				bakery.start(new BakingListener() {
 					@Override
