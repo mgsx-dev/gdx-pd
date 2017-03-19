@@ -10,25 +10,11 @@ buildscript {
     }
 }
 
-allprojects {
-    apply plugin: "eclipse"
-    apply plugin: "idea"
+apply from: 'gradle/common.gradle'
 
-    version = '0.6.0-SNAPSHOT'
+allprojects {
     ext {
         appName = "gdx-pd"
-        gdxVersion = '1.9.6'
-        roboVMVersion = '2.2.0'
-        groupName = "net.mgsx.gdx"
-        oscVersion = '0.4'
-    }
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        maven { url "https://jitpack.io" }
     }
 }
 
