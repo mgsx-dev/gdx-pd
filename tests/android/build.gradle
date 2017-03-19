@@ -54,22 +54,6 @@ task copyAndroidNatives() {
     }
 }
 
-task copyPdPatches() {
-	configurations.pd.resolvedConfiguration.resolvedArtifacts.each { artifact ->
-	  // TODO clean before extract ?
-	  	  copy {
-			  if(artifact.name == "rjlib"){
-			  	    // special rjdj filter
-			    	from zipTree( artifact.getFile() ).matching{include '*/rj/**'}.files
-			  }else{
-			        from zipTree( artifact.getFile() )
-		      }
-	          into 'assets/pd/libs/' + artifact.name
-	      }
-    }
-}
-
-		
 task runPd(type:Exec, group: "pd", description: "Run Puredata with libs path") {  
 	def libs = []
 	configurations.pd.resolvedConfiguration.resolvedArtifacts.each { artifact ->

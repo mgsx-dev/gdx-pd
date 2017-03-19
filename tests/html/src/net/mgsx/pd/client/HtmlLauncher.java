@@ -4,7 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 
-import net.mgsx.pd.GdxPdDemo;
+import net.mgsx.pd.GdxPdTests;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -15,6 +15,6 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
-                return new GdxPdDemo();
+                return new GdxPdTests();
         }
 }
