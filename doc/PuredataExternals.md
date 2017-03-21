@@ -6,3 +6,5 @@ TODOC : gdx-pd is based on pd vanilla which includes only vanilla externals (exp
 TODOC : add some externals (your own or others), using deken ?
 
 TODOC : rebuild natives and whole library with docker (modify project version to identify your build/fork)
+
+TODOC : libpd C code as to be modified in order to initialize externals.

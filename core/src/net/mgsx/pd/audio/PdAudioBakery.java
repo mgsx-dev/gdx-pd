@@ -15,11 +15,39 @@ import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.patch.PdPatch;
 import net.mgsx.pd.utils.PdRuntimeException;
 
+/**
+ * PdAudioBakery allows to bake some patch to waveform table at runtime.
+ * First call {@link #addTask(FileHandle, String, int, float)} to schedule all baking you need. And then
+ * call {@link #start(BakingListener)} to begin baking process. No tasks should be added during process.
+ * baking is done in a separated thread but require Pd audio context to work, so it's advised to close all
+ * your patch before baking and don't use any {@link PdAudio} methods during the process.
+ * Baking process will inform your code on progression and when completed through the {@link BakingListener}.
+ * 
+ * Only mono sounds baking (1 channel) is supported for now.
+ * 
+ * @author mgsx
+ *
+ */
 public class PdAudioBakery 
 {
+	/**
+	 * Baking process listener.
+	 * Both {@link #progress(float)} and {@link #complete()} methods are executed in
+	 * GL Thread.
+	 * @author mgsx
+	 *
+	 */
 	public static interface BakingListener
 	{
+		/**
+		 * called at start and after each completed tasks
+		 * @param percents progression in percent.
+		 */
 		public void progress(float percents);
+		
+		/**
+		 * Called when all tasks are completed.
+		 */
 		public void complete();
 	}
 	
@@ -37,6 +65,13 @@ public class PdAudioBakery
 	
 	private Thread bakingThread;
 	
+	/**
+	 * Add a new baking task.
+	 * @param patchFile patch file to bake.
+	 * @param array destination array to write to.
+	 * @param sampleRate sample rate to use.
+	 * @param time destination duration.
+	 */
 	public void addTask(FileHandle patchFile, String array, int sampleRate, float time){
 		if(bakingThread != null){
 			throw new GdxRuntimeException("addTask should only be called before baking process.");
@@ -79,6 +114,10 @@ public class PdAudioBakery
 		PdBase.closePatch(patch.getPdHandle());
 	}
 	
+	/**
+	 * Start the baking process.
+	 * @param listener used to get processing progression.
+	 */
 	public void start(final BakingListener listener)
 	{
 		if(bakingThread != null){

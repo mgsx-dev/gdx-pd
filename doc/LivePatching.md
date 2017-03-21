@@ -1,3 +1,20 @@
+## Take advantages of Live coding
+
+Designing a pd patch for a game could be cumbersome : you have to modify your patch in pd, launch your app and
+get to the context and restart again.
+
+With LibGDX you can already live code with JVM hot code swapping. With pd, you can use the OSC implementation which
+send all message to network in OSC format. You can then open your patch in Puredata and modify it directly during audio design phase.
+
+To do so, you need to configure remote mode in your launcher(s) :
+```
+PdConfiguration.remoteEnabled = true;
+```
+
+see [Full Live Patching Documentation](LivePatching.md)
+
+There is currently some limitations working with arrays. You can write to array throw network but not read them or
+get their size (see #5)
 
 # Live code with Puredata
 
@@ -10,19 +27,14 @@ machines in the same network.
 
 ## Messaging
 
-It is very useful to tweak your SFX directly in Puredata application.
-To do so, you need to change audio implementation as follow :
-
-```
-Pd.audio = new PdAudioRemote("localhost", 3000);
-```
-
-Then all calls like Pd.audio.sendXXX will be sent throw OSC protocole to your patch.
+All calls like `Pd.audio.sendFloat(...)` will be sent through OSC protocole to your patch.
 Make sure you have `gdx-pd-network` abstraction in your Puredata context listeneing on port 3000.
 
 Open your patch in Puredata and you can live code your patch now.
 
 ## Midi sequences
+
+TODOC already included in remote mode, just talk about some alternatives ... (aplaymidi, ...etc) !
 
 There is several ways to play midi sequence with puredata application : ALSA midi player (aplaymidi).
 You can play sequence from your gdx game as well (with gdx-pd) which is very useful to tweak your synth directly

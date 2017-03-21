@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Disposable;
 import net.mgsx.pd.PdConfiguration;
 
 /**
- * futur unified implementation (when audio CPU bug will be fixed)
+ * Main Pd audio thread.
  * 
  * @author mgsx
  *

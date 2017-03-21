@@ -18,14 +18,15 @@ This extension enables audio synthesis in games with pd patches and provides som
 
 ## Features
 
-* Wraps/abstracts libpd in a libGDX fashion.
-* Dedicated audio processing thread fully integrated with LibGDX audio implementation : you can use both Pd and Sounds/Musics.
+* Wraps/abstracts libpd in a libGDX fashion way.
+* Audio processing thread fully integrated with LibGDX audio implementation : you can use both Pd and Sounds/Musics.
 * Pd patch loader for AssetManager.
 * Midi sequencers (including "à la live" sequencer).
 * Midi file reader/writer and loader for AssetManager.
-* Live patching in Pd throw network/OSC, see [Full Live Patching Documentation](doc/LivePatching.md)
 * Full Pd Vanilla support including extra externals.
-* Easy custom Pd externals build with docker.
+* Live patching in Pd throw network/OSC, see [Full Live Patching Documentation](doc/LivePatching.md)
+* Audio baking at runtime or during gradle build, see [Baking Documentation](doc/BakingSounds.md)
+* Easy custom Pd externals build with docker (*work in progress*).
 
 ## Supported platforms
 
@@ -43,7 +44,7 @@ This extension enables audio synthesis in games with pd patches and provides som
 
 ## Futur works
 
-* Audio 3D spatialization / VR.
+* Audio 3D spatialization (with a VR demo).
 * Add support for all platforms.
 
 ## Documentation
@@ -52,8 +53,16 @@ Full documentation is available in this repository :
 
 * [Getting started](doc/GettingStarted.md)
 * [Assets organization](doc/AssetsOrganization.md)
-* [Pd patch libraries](doc/PatchLibraries.md)
+* [Working with MIDI](doc/WorkingWithMidi.md)
 * [Remote live patching](doc/LivePatching.md)
+* [Baking Sounds](doc/BakingSounds.md)
+
+## Resources
+
+* TODOC rainstick demo
+* TODOC gdx-pd demo
+* TODOC patchbank
+...
 
 # How to use
 
@@ -159,7 +168,7 @@ And then publish locally in order to use it in your local projects :
 
 # Running tests and examples
 
-A bunch of examples are provided in "tests" folder. Just import gradle project from "tests" folder and run java classes from desktop project. You don't need to build gdx-pd in order to run these tests.
+A bunch of examples are provided in [desktop test project](tests/desktop/src/net/mgsx/pd). Just import gradle project from "tests" folder and run java classes. You don't need to build gdx-pd in order to run these tests.
 
 An example illustrates sound baking during a gradle build. (you have to replace pdVersion variable with latest gdx-pd version) :
 

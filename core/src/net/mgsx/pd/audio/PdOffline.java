@@ -14,8 +14,24 @@ import org.puredata.core.PdBase;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
 
+/**
+ * Headless version of the {@link PdAudioBakery}.
+ * Can be used outside LibGDX Context : from command line or gradle buid.
+ * 
+ * @author mgsx
+ *
+ */
 public class PdOffline {
 
+	/**
+	 * Bake a path to a wav file
+	 * @param patch the patch to bake
+	 * @param wav the wav file to write
+	 * @param channels how many channels (1 for mono, 2 for stereo, can be more than 2 channels)
+	 * @param sampleRate sample rate used by Pd
+	 * @param time baking duration in seconds
+	 * @throws IOException
+	 */
 	public static void bake(File patch, File wav, int channels, int sampleRate, float time) throws IOException {
 		
 		// disable Pd : does nothing if Pd alreay initialized.

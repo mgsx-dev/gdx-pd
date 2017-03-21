@@ -1,4 +1,6 @@
 
+TODO : simplify explanations and add some concrete examples!
+
 # Baking sounds
 
 Baking is a common technic well known in game developement which is to pre-render stuff like lighting,
