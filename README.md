@@ -1,6 +1,8 @@
 
 [![Build Status](https://travis-ci.org/mgsx-dev/gdx-pd.svg?branch=master)](https://travis-ci.org/mgsx-dev/gdx-pd)
 
+[![StackExchange](https://img.shields.io/badge/stackoverflow-gdxpd-green.svg)](http://stackoverflow.com/search?q=gdxpd)
+
 Pure Data extension for LibGDX.
 
 Work in progress :
