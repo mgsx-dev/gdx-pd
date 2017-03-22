@@ -79,7 +79,7 @@ public class Pd
 		else
 		{
 			ApplicationType type = Gdx.app.getType();
-			if(type == ApplicationType.Desktop && !SharedLibraryLoader.isMac)
+			if(type == ApplicationType.Desktop)
 			{
 				String className = "net.mgsx.pd.PdAudioOpenAL";
 				Class<? extends PdAudio> cls = ClassReflection.forName(className);
