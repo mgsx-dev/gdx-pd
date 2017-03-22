@@ -25,6 +25,7 @@ public class PdAudioThread extends Thread implements Disposable
 		super("PdAudioThread");
 		setPriority(MAX_PRIORITY);
 		this.config = config;
+		processing = true;
 	}
 	
 	protected AudioDevice createAudioDevice()
@@ -51,8 +52,6 @@ public class PdAudioThread extends Thread implements Disposable
 		}
 		PdBase.openAudio(config.inputChannels, config.outputChannels, config.sampleRate);
 		PdBase.computeAudio(true);
-		
-		processing = true;
 		
 		final Runnable pollRunnable = new Runnable() {
 			
