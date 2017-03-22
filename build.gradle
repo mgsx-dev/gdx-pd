@@ -45,7 +45,7 @@ project(":core") {
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.github.hoijui.JavaOSC:javaosc-core:javaosc-$oscVersion"
+		compile "com.illposed.osc:javaosc-core:$oscVersion"
         testCompile 'junit:junit:4.12'
     }
 }
