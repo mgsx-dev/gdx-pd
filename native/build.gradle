@@ -260,7 +260,7 @@ task desktopJar(type: Jar) {
     from("libs/linux64")
     from("libs/linux32")
     from("libs/macosx64")
-    from("libs/macosx")
+    from("libs/macosx32")
     from("libs/windows64")
     from("libs/windows32")
     from("../libpd/libs/mingw32"){
