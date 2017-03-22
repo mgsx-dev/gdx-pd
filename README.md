@@ -126,45 +126,57 @@ allprojects {
 
 # Build from sources
 
-Only require java and docker environement for natives.
-Tested on Ubuntu 16.04 x64.
+Note that pre-built native binaries are already tracked in this repository and doesn't need to be built exept changes in C sources.
 
 First setup your local git clone :
 
-```
-git clone https://github.com/mgsx-dev/gdx-pd.git
-cd gdx-pd
-
-git submodule init
-git submodule update
-
-cd libpd
-git submodule init
-git submodule update
-cd ..
-```
+	$ git clone https://github.com/mgsx-dev/gdx-pd.git
+	$ cd gdx-pd
+	$ git submodule init
+	$ git submodule update
 
 You have to tell gradle about your Android sdk location by creating a local.properties file :
 
-```
-echo 'sdk.dir=[absolute path to Android SDK location]' > local.properties
-```
+	$ echo 'sdk.dir=[absolute path to Android SDK location]' > local.properties
 
-Build libpd natives with docker :
+Optionnaly you may want to publish locally in order to use it in your local projects :
 
+	$ ./gradlew publishToMavenLocal
 
-```
-docker run --rm -v $(pwd):/work -w /work/native -it mgsx/libgdx ../gradlew buildNative
+## Re-Build natives
 
-sudo chown -R $USER:$USER .
-```
+First fetch pd sources :
 
-And then publish locally in order to use it in your local projects :
+	$ cd gdx-pd/libpd
+	$ git submodule init
+	$ git submodule update
+	$ cd ..
 
-```
-./gradlew publishToMavenLocal
+### Build Linux, Android and Windows binaries
 
-```
+Linux, Android and Windows binaries can be built on any platform supporting Docker (Linux, Windows and OSX).
+It only requires Docker installed (see https://docs.docker.com/engine/installation/), NDK and other cross compiler tools are already included in the docker image.
+
+To rebuild binaries, just run command below :
+
+	$ docker run --rm -v $(pwd):/work -w /work/native -it mgsx/libgdx ../gradlew buildNative
+	$ sudo chown -R $USER:$USER .
+
+### Build OSX binaries
+
+Only OSX bianries require a Mac development environnement :
+* XCode and command line tools (make, gcc, g++...)
+* Java 1.8+
+* homebrew : https://brew.sh
+* Ant : `brew install ant`
+
+To rebuild binaries, just run command below :
+
+	$ cd native
+	$ ../gradlew generateBuildScripts
+	$ ant -f jni/build-macosx32.xml -v -Dhas-compiler=true clean postcompile
+	$ ant -f jni/build-macosx64.xml -v -Dhas-compiler=true clean postcompile
+
 
 # Running tests and examples
 

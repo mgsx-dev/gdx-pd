@@ -257,6 +257,10 @@ task buildAndroid(dependsOn: generateBuildScripts){
 	}
 }
 
+task buildNativeMac(dependsOn: [buildMacOSX64, buildMacOSX32]){
+	
+}
+
 task buildNative(dependsOn: [buildLinux64, buildLinux32, buildWindows64, buildWindows32, buildAndroid]){
 	
 }
