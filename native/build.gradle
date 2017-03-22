@@ -171,9 +171,15 @@ task generateBuildScripts(dependsOn: [importSources]){
 			it.libraries += " -shared -ldl -Wl,-Bsymbolic";
 		}
 		
-		[macosx64, macosx32].each {
-			it.cFlags += " -DHAVE_LIBDL -arch x86_64 -arch i386 -g"
-			it.libraries += " -framework JavaVM -arch x86_64 -arch i386 -dynamiclib -ldl"
+		[macosx64].each {
+			it.cFlags += " -DHAVE_LIBDL -arch x86_64 -g"
+			it.libraries += " -framework JavaVM -arch x86_64 -dynamiclib -ldl"
+			it.headerDirs += ["/System/Library/Frameworks/JavaVM.framework/Headers"]
+		}
+		
+		[macosx32].each {
+			it.cFlags += " -DHAVE_LIBDL -arch i386 -g"
+			it.libraries += " -framework JavaVM -arch i386 -dynamiclib -ldl"
 			it.headerDirs += ["/System/Library/Frameworks/JavaVM.framework/Headers"]
 		}
 		
