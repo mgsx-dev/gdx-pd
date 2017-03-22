@@ -37,15 +37,10 @@ This extension enables audio synthesis in games with pd patches and provides som
 | Android    |    yes    |
 | Windows 64 |    yes    |
 | Windows 32 |    yes    |
-| MacOSX 64  |  not yet  |
-| MacOSX 32  |  not yet  |
+| MacOSX 64  |    yes    |
+| MacOSX 32  |    yes    |
 | iOS        |  not yet  |
 | Web        |  not yet  |
-
-## Futur works
-
-* Audio 3D spatialization (with a VR demo).
-* Add support for all platforms.
 
 ## Documentation
 
@@ -57,12 +52,16 @@ Full documentation is available in this repository :
 * [Remote live patching](doc/LivePatching.md)
 * [Baking Sounds](doc/BakingSounds.md)
 
-## Resources
+## Showcase and Resources
 
-* TODOC rainstick demo
-* TODOC gdx-pd demo
-* TODOC patchbank
-...
+* **Rainstick** (coming soon) : A rainstick available on Android.
+* **gdx-pd demo** (coming soon) : Gdx-Pd Show case.
+* **pd-patchbank** (coming soon) : A "Starter Kit" collection of pd patches. 
+
+## Futur works
+
+* Audio 3D spatialization (with a VR demo).
+* Add support for all platforms.
 
 # How to use
 
@@ -111,17 +110,6 @@ project(":android") {
 
 ```
 
-**Note** : because of [#3](https://github.com/mgsx-dev/gdx-pd/issues/3), you need to add jitpack as repository 
-(this workaround is necessary while OSC release 0.4 is not in Maven Central yet) :
-
-```
-allprojects {
-	repositories {
-		maven { url "https://jitpack.io" }
-	}
-}
-```
-
 [Read more ...](doc/GettingStarted.md)
 
 # Build from sources
@@ -139,7 +127,7 @@ You have to tell gradle about your Android sdk location by creating a local.prop
 
 	$ echo 'sdk.dir=[absolute path to Android SDK location]' > local.properties
 
-Optionnaly you may want to publish locally in order to use it in your local projects :
+Optionnaly you may want to publish locally in order to use it in your local projects (including gdx-pd-tests projects) :
 
 	$ ./gradlew publishToMavenLocal
 
