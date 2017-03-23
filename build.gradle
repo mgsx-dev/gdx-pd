@@ -11,6 +11,9 @@ buildscript {
 }
 
 apply from: 'gradle/common.gradle'
+apply plugin: 'maven-publish'
+
+group = project.groupName
 
 allprojects {
     ext {
@@ -59,3 +62,18 @@ tasks.eclipse.doLast {
     delete ".project"
 }
 
+task patchZip(type: Zip, group: "build", description: "Zip Pd patch tools") {
+	group = "build"
+  	description = "Package Pd patches"
+    from fileTree('tools/pd').include('**/*.pd')
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+			artifact patchZip {
+                classifier "pd"
+            }
+        }
+    }
+}
