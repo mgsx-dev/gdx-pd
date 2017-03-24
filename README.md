@@ -30,7 +30,7 @@ This extension enables audio synthesis in games with pd patches and provides som
 
 ## Supported platforms
 
-| Platform   |  Support  |
+| Platform   | Supported |
 |------------|-----------|
 | Linux 64   |    yes    |
 | Linux 32   |    yes    |
@@ -175,7 +175,17 @@ An example illustrates sound baking during a gradle build. (you have to replace 
 	$ cd tests/example-offline
 	$ ../gradlew -PpdVersion=0.6.0-SNAPSHOT bake 
 
+# Licence
+
+Pure Data and LibPD (git submodules and native binaries) are licenced under the [Standard Improved BSD License](PDLICENCE)
+
+Gdx-pd is licensed under the [Apache 2 License](LICENCE)
 
 # Thanks
 
-TODO
+Thanks to Miller Puckette for [Pure Data](http://puredata.info).
+
+Thanks to Peter Brinkmann & the libpd team for their [Pure Data wrappers](https://github.com/libpd/libpd)
+
+Thanks to [b2renger](https://github.com/b2renger) for his contribution in all gdx-pd related projects.
+
