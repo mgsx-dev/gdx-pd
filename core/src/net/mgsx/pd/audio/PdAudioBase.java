@@ -198,7 +198,7 @@ abstract public class PdAudioBase implements PdAudio
 	  }
 	  
 	  protected void checkError(int code){
-		  if(code != 0){
+		  if(PdConfiguration.safe && code != 0){
 			  throw new PdRuntimeException(code);
 		  }
 	  }

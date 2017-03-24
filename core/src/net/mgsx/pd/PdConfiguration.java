@@ -34,6 +34,14 @@ public class PdConfiguration
 	 * Port to use in remote mode to receive messages from Pd.
 	 */
 	public static int remoteRecvPort = 3002;
+
+	/**
+	 * Whether to check all pd errors. 
+	 * When true, any send methods will throw {@link net.mgsx.pd.utils.PdRuntimeException} if receiver
+	 * doesn't exists.
+	 * Default is true.
+	 */
+	public static boolean safe = true;
 	
 	
 	/**
