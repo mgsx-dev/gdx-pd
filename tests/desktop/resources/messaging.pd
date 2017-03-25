@@ -1,0 +1,5 @@
+#N canvas 805 355 450 300 10;
+#X obj 144 41 r value;
+#X obj 262 41 r in;
+#X obj 262 120 s out;
+#X connect 1 0 2 0;
