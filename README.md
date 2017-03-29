@@ -3,8 +3,6 @@
 
 Pure Data extension for LibGDX.
 
-Work in progress :
-
 # Introduction
 
 ## What is it ?
@@ -54,12 +52,13 @@ Full documentation is available in this repository :
 
 ## Showcase and Resources
 
-* **Rainstick** (coming soon) : A rainstick available on Android.
-* **gdx-pd demo** (coming soon) : Gdx-Pd Show case.
+* **Rainstick** : A rainstick [available on Android](https://play.google.com/store/apps/details?id=net.mgsx.rainstick). Sources [https://github.com/mgsx-dev/rainstick](here)
+* **gdx-pd demo** : Gdx-Pd features demo available for [Desktop](https://github.com/mgsx-dev/gdx-pd-demo/releases) and *Android (soon)*. Sources [https://github.com/mgsx-dev/gdx-pd-demo](here)
 * **pd-patchbank** (coming soon) : A "Starter Kit" collection of pd patches. 
 
 ## Futur works
 
+* Deploy on Maven Central
 * Audio 3D spatialization (with a VR demo).
 * Add support for all platforms.
 
@@ -68,6 +67,8 @@ Full documentation is available in this repository :
 ## Configure your LibGDX project
 
 Just add gradle dependencies as usual :
+
+**Jars are not available on Maven Central yet. Please read the "Build from sources" section.**
 
 ```
 project(":core") {
@@ -147,7 +148,7 @@ It only requires Docker installed (see https://docs.docker.com/engine/installati
 
 To rebuild binaries, just run command below :
 
-	$ docker run --rm -v $(pwd):/work -w /work/native -it mgsx/libgdx ../gradlew buildNative
+	$ docker run --rm -v $(pwd):/work -w /work/native -it mgsx/gdx-docker ../gradlew buildNative
 	$ sudo chown -R $USER:$USER .
 
 ### Build OSX binaries
