@@ -12,12 +12,12 @@ import net.mgsx.midi.sequence.util.MidiEventListener;
 public class LiveTrack
 {
 	final private MidiEventListener listener;
-	public long loopStart, loopEnd, trackEnd;
-	public int nextLoopStart, nextLoopEnd, modulus;
-	public boolean loop = false;
-	public boolean nextLoop = false;
-	public int index, loopStartIndex;
-	public int resolution;
+	private long loopStart, loopEnd, trackEnd;
+	private int nextLoopStart, nextLoopEnd, modulus;
+	private boolean loop = false;
+	private boolean nextLoop = false;
+	private int index, loopStartIndex;
+	private int resolution;
 	private long offset;
 	private long virtualPosition;
 	
@@ -25,6 +25,8 @@ public class LiveTrack
 	
 	private final LiveSequencer master;
 	
+	// TODO sequence, just need resolution !
+	// TODO master, just need to change tempo
 	public LiveTrack(LiveSequencer master, MidiSequence file, MidiTrack track, MidiEventListener listener) {
 		this.master = master;
 		events = new Array<MidiEvent>();
@@ -39,7 +41,41 @@ public class LiveTrack
 		prePos = 0;
 	}
 	
-	public void setLoop(int startBeat, int endBeat){
+	public boolean isNextLoop() {
+		return nextLoop;
+	}
+	
+	public long getLoopStart() {
+		return loopStart;
+	}
+
+	public long getLoopEnd() {
+		return loopEnd;
+	}
+
+	public long getTrackEnd() {
+		return trackEnd;
+	}
+
+	public int getNextLoopStart() {
+		return nextLoopStart;
+	}
+
+	public int getNextLoopEnd() {
+		return nextLoopEnd;
+	}
+
+	public int getResolution() {
+		return resolution;
+	}
+
+	public boolean isRunning() {
+		return running;
+	}
+
+
+
+	private void setLoop(int startBeat, int endBeat){
 		loopStart = startBeat * resolution;
 		loopEnd = endBeat * resolution;
 		// find index
@@ -69,6 +105,11 @@ public class LiveTrack
 	
 	public long update(long position)
 	{
+		if(events.size == 0)
+		{
+			return 0;
+		}
+		
 		virtualPosition = position;
 		
 		if(nextLoop){
@@ -89,6 +130,11 @@ public class LiveTrack
 			inPos = loopStart + (((position) % loopLen) + loopLen) % loopLen;
 		}else{
 			inPos = position + offset;
+		}
+		
+		if(prePos > trackEnd){
+			prePos = inPos;
+			return trackEnd;
 		}
 		
 		if(!running){
@@ -117,18 +163,25 @@ public class LiveTrack
 			index = loopStartIndex;
 			nextEvent = events.get(index);
 		}
+		
 		while(inPos >= nextEvent.getTick()){
+			// handle tempo change 
+			// TODO first track only ?
+			// TODO should be handled by sequencer not track
 			if(nextEvent instanceof Tempo){
 				master.bpm = ((Tempo) nextEvent).getBpm();
 			}
+			// dispatch event
+			listener.onEvent(nextEvent, 0);
 			
-			if(index < events.size - 1){
+			// move to next event
+			// or stay on last event if track exhausted
+			if(index < events.size-1){
 				index++;
+				nextEvent = events.get(index);
 			}else{
 				break;
 			}
-			listener.onEvent(nextEvent, 0);
-			nextEvent = events.get(index);
 		}
 		prePos = inPos;
 		// return tick
