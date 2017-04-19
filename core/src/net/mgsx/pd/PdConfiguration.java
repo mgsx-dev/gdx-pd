@@ -66,17 +66,18 @@ public class PdConfiguration
 	
 	/**
 	 * Buffer size in frames (stereo means 2 samples per frames, mono means 1 sample per frame).
-	 * Default is 256 frames per buffer.
+	 * Default is 64 frames per buffer.
 	 * Can be decreased to reduce latency or increased to avoid glitches.
 	 */
-	public int bufferSize = 256;
+	public int bufferSize = 64;
 	
 	/**
 	 * Buffer count is number of pre-filled buffers.
+	 * Default bufferSize and bufferCount are high to ensure most hardware compatibility.
 	 * Overall latency in sample is bufferSize * bufferCount.
 	 * Overall latency in miliseconds is 1000 * bufferSize * bufferCount / sampleRate.
-	 * Default latency is about 52 ms.
+	 * With 4096 samples (64x64), default latency is about 93 ms.
 	 */
-	public int bufferCount = 9;
+	public int bufferCount = 64;
 	
 }
