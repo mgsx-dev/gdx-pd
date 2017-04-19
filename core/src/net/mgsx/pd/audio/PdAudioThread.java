@@ -62,11 +62,45 @@ public class PdAudioThread extends Thread implements Disposable
 			}
 		};
 		
+		short[] pdBufferIn = new short[PdBase.blockSize() * config.inputChannels];
+		short[] pdBufferOut = new short[PdBase.blockSize() * config.outputChannels];
+		
+		long nanoDuration = (long)(1e9 * (double)PdBase.blockSize() / (double)config.sampleRate);
+		
+		long realTime = System.nanoTime();
+		long logicTime = realTime;
+		
 		while(processing){
 			if(recorder != null){
 				recorder.read(inBuffer, 0, inBuffer.length);
 			}
-			PdBase.process(ticks, inBuffer, outBuffer);
+			
+			int inIndex = 0;
+			int outIndex = 0;
+			for(int i=0 ; i<ticks ; i++){
+				
+				realTime = System.nanoTime();
+				long waitTime = (logicTime - realTime) / 1000000;
+				if(waitTime > 0){
+					try {
+						Thread.sleep(waitTime);
+					} catch (InterruptedException e) {
+					}
+				}else{
+					logicTime = realTime;
+				}
+				logicTime += nanoDuration;
+				
+				for(int j=0 ; j<pdBufferIn.length ; j++){
+					pdBufferIn[j] = inBuffer[inIndex++];
+				}
+				PdBase.process(1, pdBufferIn, pdBufferOut);
+				for(int j=0 ; j<pdBufferOut.length ; j++){
+					outBuffer[outIndex++] = pdBufferOut[j];
+				}
+				
+			}
+			
 			device.writeSamples(outBuffer, 0, outBuffer.length);
 			
 			if(requirePolling){
