@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import net.mgsx.midi.playback.BaseSequencer;
 import net.mgsx.midi.playback.Sequencer;
 import net.mgsx.midi.sequence.MidiSequence;
 import net.mgsx.midi.sequence.MidiTrack;
@@ -274,26 +275,28 @@ public class MidiProcessor implements Sequencer
             mTicksElapsed += ticksElapsed;
 
             boolean more = false;
-            for(int i = 0; i < mEventQueues.length; i++)
-            {
-
-                MidiTrackEventQueue queue = mEventQueues[i];
-                if(!queue.hasMoreEvents())
-                {
-                    continue;
-                }
-
-                ArrayList<MidiEvent> events = queue.getNextEventsUpToTick(mTicksElapsed);
-                for(MidiEvent event : events)
-                {
-                    this.dispatch(event);
-                }
-
-                if(queue.hasMoreEvents())
-                {
-                    more = true;
-                }
-            }
+            synchronized (mEventQueues) {
+            	for(int i = 0; i < mEventQueues.length; i++)
+            	{
+            		
+            		MidiTrackEventQueue queue = mEventQueues[i];
+            		if(!queue.hasMoreEvents())
+            		{
+            			continue;
+            		}
+            		
+            		ArrayList<MidiEvent> events = queue.getNextEventsUpToTick(mTicksElapsed);
+            		for(MidiEvent event : events)
+            		{
+            			this.dispatch(event);
+            		}
+            		
+            		if(queue.hasMoreEvents())
+            		{
+            			more = true;
+            		}
+            	}
+			}
 
             if(!more)
             {
@@ -328,6 +331,16 @@ public class MidiProcessor implements Sequencer
             mEventsToDispatch = new ArrayList<MidiEvent>();
 
             if(mIterator.hasNext())
+            {
+                mNext = mIterator.next();
+            }
+        }
+        
+        public void reset()
+        {
+        	mEventsToDispatch.clear();
+        	mIterator = mTrack.getEvents().iterator();
+        	if(mIterator.hasNext())
             {
                 mNext = mIterator.next();
             }
@@ -386,6 +399,20 @@ public class MidiProcessor implements Sequencer
 
 	@Override
 	public void setPositionInTicks(long ticks) {
-		// not supported
+		synchronized (mEventQueues) {
+			mTicksElapsed = ticks;
+			for(int i = 0; i < mEventQueues.length; i++)
+			{
+				
+				MidiTrackEventQueue queue = mEventQueues[i];
+				queue.reset();
+				ArrayList<MidiEvent> events = queue.getNextEventsUpToTick(mTicksElapsed);
+				events.clear();
+			}
+			for(MidiEventListener listener : mListenersToEvents.keySet()){
+				BaseSequencer.sendAllNotesOff(listener);
+			}
+		}
+		
 	}
 }
