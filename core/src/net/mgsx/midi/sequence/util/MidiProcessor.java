@@ -65,13 +65,15 @@ public class MidiProcessor implements Sequencer
             return;
 
         mRunning = true;
-        new Thread(new Runnable()
+        Thread t = new Thread(new Runnable()
         {
             public void run()
             {
                 process();
             }
-        }, "MidiSequencer").start();
+        }, "MidiSequencer");
+        t.setPriority(Thread.MAX_PRIORITY);
+        t.start();
     }
 
     public void stop()
