@@ -70,6 +70,11 @@ public class PdAudioThread extends Thread implements Disposable
 		long realTime = System.nanoTime();
 		long logicTime = realTime;
 		
+		// fill empty buffers to avoid glitches at startup.
+		for(int i=0 ; i<config.bufferCount ; i++){
+			device.writeSamples(outBuffer, 0, outBuffer.length);
+		}
+		
 		while(processing){
 			if(recorder != null){
 				recorder.read(inBuffer, 0, inBuffer.length);
