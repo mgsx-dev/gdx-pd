@@ -66,18 +66,25 @@ public class PdConfiguration
 	
 	/**
 	 * Buffer size in frames (stereo means 2 samples per frames, mono means 1 sample per frame).
-	 * Default is 64 frames per buffer.
-	 * Can be decreased to reduce latency or increased to avoid glitches.
+	 * Buffer size is a tradeoff between synchronization accuracy and performances : MIDI music
+	 * require events processing at high frequency.
+	 * Minimum is 64 (default PD block size) and should be power of 2.
+	 * Default is 512 which is well suited for MIDI music.
+	 * Greater value use less CPU but may lead to synchronization issues (MIDI events at high BPM).
+	 * Smaller value use more CPU and could bring audio glitches.
 	 */
-	public int bufferSize = 64;
+	public int bufferSize = 512;
 	
 	/**
-	 * Buffer count is number of pre-filled buffers.
-	 * Default bufferSize and bufferCount are high to ensure most hardware compatibility.
-	 * Overall latency in sample is bufferSize * bufferCount.
-	 * Overall latency in miliseconds is 1000 * bufferSize * bufferCount / sampleRate.
-	 * With 4096 samples (64x64), default latency is about 93 ms.
+	 * Only used by desktop (OpenAL) implementation.
+	 * Buffer count is the number of pre-filled buffers.
+	 * Buffer count is a tradeoff between latency and performances.
+	 * Default bufferCount is 8 to ensure most hardware compatibility.
+	 * Latency can be computed as follow : bufferSize * bufferCount / sampleRate.
+	 * With 4096 samples (512x8), default latency is about 93 ms.
+	 * This value can be decreased to reduce latency.
+	 * This value can be increased to avoid glitches or free CPU usage.
 	 */
-	public int bufferCount = 64;
+	public int bufferCount = 8;
 	
 }
