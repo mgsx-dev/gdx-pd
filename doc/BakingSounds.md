@@ -1,5 +1,4 @@
-
-TODO : simplify explanations and add some concrete examples!
+*DRAFT*
 
 # Baking sounds
 

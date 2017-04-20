@@ -23,8 +23,7 @@ This extension enables audio synthesis in games with pd patches and provides som
 * Midi file reader/writer and loader for AssetManager.
 * Full Pd Vanilla support including extra externals.
 * Live patching in Pd throw network/OSC, see [Full Live Patching Documentation](doc/LivePatching.md)
-* Audio baking at runtime or during gradle build, see [Baking Documentation](doc/BakingSounds.md)
-* Easy custom Pd externals build with docker (*work in progress*).
+* Audio baking at runtime or during gradle build.
 
 ## Supported platforms
 
@@ -48,7 +47,6 @@ Full documentation is available in this repository :
 * [Assets organization](doc/AssetsOrganization.md)
 * [Working with MIDI](doc/WorkingWithMidi.md)
 * [Remote live patching](doc/LivePatching.md)
-* [Baking Sounds](doc/BakingSounds.md)
 
 ## Showcase and Resources
 
@@ -61,6 +59,7 @@ Full documentation is available in this repository :
 * Deploy on Maven Central
 * Audio 3D spatialization (with a VR demo).
 * Add support for all platforms.
+* Easy custom external integration.
 
 # How to use
 
