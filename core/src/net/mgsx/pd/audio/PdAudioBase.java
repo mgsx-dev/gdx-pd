@@ -112,8 +112,10 @@ abstract public class PdAudioBase implements PdAudio
 	
 	public void release()
 	{
-		thread.dispose();
-		thread = null;
+		if(thread != null){
+			thread.dispose();
+			thread = null;
+		}
 		listeners.clear();
 		PdBase.setReceiver(null);
 	}
