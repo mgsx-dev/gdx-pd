@@ -50,8 +50,8 @@ Full documentation is available in this repository :
 
 ## Showcase and Resources
 
-* **Rainstick** : A rainstick [available on Android](https://play.google.com/store/apps/details?id=net.mgsx.rainstick). Sources [https://github.com/mgsx-dev/rainstick](here)
-* **gdx-pd demo** : Gdx-Pd features demo available for [Desktop](https://github.com/mgsx-dev/gdx-pd-demo/releases) and [Android](https://play.google.com/store/apps/details?id=net.mgsx.pd.demo). Sources [https://github.com/mgsx-dev/gdx-pd-demo](here)
+* **Rainstick** : A rainstick [available on Android](https://play.google.com/store/apps/details?id=net.mgsx.rainstick). Sources [here](https://github.com/mgsx-dev/rainstick)
+* **gdx-pd demo** : Gdx-Pd features demo available for [Desktop](https://github.com/mgsx-dev/gdx-pd-demo/releases) and [Android](https://play.google.com/store/apps/details?id=net.mgsx.pd.demo). Sources [here](https://github.com/mgsx-dev/gdx-pd-demo)
 * **pd-patchbank** (coming soon) : A "Starter Kit" collection of pd patches. 
 
 ## Futur works
