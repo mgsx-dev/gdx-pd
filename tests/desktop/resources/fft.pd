@@ -1,0 +1,57 @@
+#N canvas 566 208 752 791 10;
+#X obj 382 515 tabreceive~ fft-in;
+#X obj 382 546 rfft~;
+#X obj 384 708 tabsend~ fft-out-r;
+#X obj 414 618 tabsend~ fft-out-i;
+#X obj 385 675 /~ 64;
+#X obj 415 585 /~ 32;
+#X obj 418 288 r fft-start;
+#X obj 589 436 s fft-completed;
+#X obj 382 485 switch~;
+#X obj 138 287 loadbang;
+#X obj 223 286 r fft-size;
+#X obj 418 362 t b;
+#X obj 200 515 array define fft-in;
+#X msg 160 434 resize \$1;
+#X obj 197 711 array define fft-out-r;
+#X obj 200 618 array define fft-out-i;
+#X msg 272 432 set \$1 1 1 \, 0;
+#X obj 223 360 f;
+#X msg 138 317 64;
+#X text 127 14 FFT with dynamic sizing;
+#X text 149 74 'fft-completed' is triggered once FFT complete \, fft-out-r/fft-out-i
+can be read after with event.;
+#X text 150 39 Send 'fft-start' to perform anaysis \, fft-in should
+be filled before.;
+#X text 147 114 [Optional] send 'fft-size' with block size power of
+2 \, from 64 to 4096 Default is 64, f 74;
+#X text 154 172 DSP is disabled and proceed step by step banging switch~
+at each FFT request.;
+#X obj 396 291 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X msg 95 318 4096;
+#X obj 519 371 bang~;
+#X msg 445 423 0;
+#X msg 391 427 1;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 1 1 5 0;
+#X connect 4 0 2 0;
+#X connect 5 0 3 0;
+#X connect 6 0 11 0;
+#X connect 9 0 18 0;
+#X connect 10 0 17 0;
+#X connect 11 0 28 0;
+#X connect 13 0 12 0;
+#X connect 13 0 14 0;
+#X connect 13 0 15 0;
+#X connect 16 0 8 0;
+#X connect 17 0 16 0;
+#X connect 17 0 13 0;
+#X connect 18 0 17 0;
+#X connect 24 0 11 0;
+#X connect 25 0 17 0;
+#X connect 26 0 7 0;
+#X connect 26 0 27 0;
+#X connect 27 0 8 0;
+#X connect 28 0 8 0;
