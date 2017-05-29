@@ -35,7 +35,9 @@ public class PdAudioOpenAL extends PdAudioBase
 			int samplePerFrame = config.bufferSize;
 			int samplePerBuffer = samplePerFrame * config.outputChannels;
 			int bufferSizeBytes = samplePerBuffer * 2;
-			return new OpenALAudioDevice((OpenALAudio)Gdx.audio, config.sampleRate, config.outputChannels<2, bufferSizeBytes, config.bufferCount);
+			if(Gdx.audio instanceof OpenALAudio)
+				return new OpenALAudioDevice((OpenALAudio)Gdx.audio, config.sampleRate, config.outputChannels<2, bufferSizeBytes, config.bufferCount);
+			return Gdx.audio.newAudioDevice(config.sampleRate, config.outputChannels<2);
 		}
 
 	}
