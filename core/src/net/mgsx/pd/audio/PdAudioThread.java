@@ -55,6 +55,7 @@ public class PdAudioThread extends Thread implements Disposable
 			@Override
 			public void run() {
 				PdBase.pollPdMessageQueue();
+				PdBase.pollMidiQueue();
 				requirePolling = true;
 			}
 		};
