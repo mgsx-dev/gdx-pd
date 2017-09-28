@@ -75,6 +75,7 @@ public class FFTAnalysisTest  {
 			private void processInput()
 			{
 				// read music
+				// XXX note that MP3 won't work due to buffer size is too small.
 				if(music instanceof Ogg.Music){
 					Ogg.Music ogg = (Ogg.Music)music;
 					ogg.read(musicBuffer);
