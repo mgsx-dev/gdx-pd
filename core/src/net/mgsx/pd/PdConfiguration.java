@@ -85,6 +85,6 @@ public class PdConfiguration
 	 * This value can be decreased to reduce latency.
 	 * This value can be increased to avoid glitches or free CPU usage.
 	 */
-	public int bufferCount = 8;
+	public int bufferCount = 9;
 	
 }
