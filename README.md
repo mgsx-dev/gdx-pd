@@ -177,9 +177,9 @@ An example illustrates sound baking during a gradle build. (you have to replace 
 
 # Licence
 
-Pure Data and LibPD (git submodules and native binaries) are licenced under the [Standard Improved BSD License](PDLICENCE)
+Pure Data and LibPD (git submodules and native binaries) are licenced under the [Standard Improved BSD License](PDLICENSE)
 
-Gdx-pd is licensed under the [Apache 2 License](LICENCE)
+Gdx-pd is licensed under the [Apache 2 License](LICENSE)
 
 # Thanks
 
